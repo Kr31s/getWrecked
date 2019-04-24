@@ -15,6 +15,6 @@ class MYSTATEMACHPRO_API UFGState : public USM_State
 	GENERATED_BODY()
 	
 		virtual FStateMachineResult LoopState(const UObject* RefObject,
-			const TArray<USM_InputAtom*>& DataSource, int32 DataIndex, int32 RemainigSteps) override; 
+			const TArray<USM_InputAtom*>& DataSource, int32 DataIndex, int32 RemainigSteps) /*override*/; 
 
 };

@@ -29,6 +29,11 @@ void AFGDefaultPawn::BeginPlay()
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Linked Move: "), *CurrentMove->LinkedMoves[0]->Move->MoveName.ToString());
+
+	}
 	// Check that we have all the states we need.
 	if (!DirectionDownBackAtom || !DirectionDownAtom || !DirectionDownForwardAtom
 		|| !DirectionBackAtom || !DirectionNeutralAtom || !DirectionForwardAtom
@@ -70,6 +75,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionBackAtom;
+			SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
@@ -96,6 +102,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionForwardAtom;
+			SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
@@ -146,7 +153,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 	}
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
-	if (MoveLinkToFollow.Link)
+	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Switching to state %s"), *MoveLinkToFollow.Link->Move->MoveName.ToString());
 		if (MoveLinkToFollow.Link->bClearInput || MoveLinkToFollow.Link->Move->bClearInputOnEntry || CurrentMove->bClearInputOnExit)
