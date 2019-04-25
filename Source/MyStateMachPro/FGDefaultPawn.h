@@ -15,7 +15,7 @@ class UFGMove;
  * 
  */
 UCLASS()
-class MYSTATEMACHPRO_API AFGDefaultPawn : public ADefaultPawn
+class MYSTATEMACHPRO_API AFGDefaultPawn : public ACharacter
 {
 	GENERATED_BODY()
 	

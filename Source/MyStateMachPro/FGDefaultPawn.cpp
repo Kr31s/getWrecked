@@ -12,26 +12,27 @@
 AFGDefaultPawn::AFGDefaultPawn() 
 {
 	// Needed because we re using DefaultPawn.
-	bAddDefaultMovementBindings = false;
+	//bAddDefaultMovementBindings = false;
 	// This is ridiculously long, but we ll use it to make a point.
 	InputExpirationTime = 0.75f;
+	//MovementComponent = CreateDefaultSubobject<UPawnMovementComponent>(ADefaultPawn::MovementComponentName);
+	//MovementComponent->UpdatedComponent = GetCollisionComponent();
+
 }
 
 void AFGDefaultPawn::BeginPlay()
 {
+
 	Super::BeginPlay();
 
-	if (UStaticMeshComponent* SMC = GetMeshComponent())
-	{
-		SMC->SetHiddenInGame(true);
-	}
 
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Linked Move: "), *CurrentMove->LinkedMoves[0]->Move->MoveName.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("Linked Move: %s"), *CurrentMove->LinkedMoves[0]->Move->MoveName.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("Linked Move: "), *CurrentMove->MoveName.ToString());
 
 	}
 	// Check that we have all the states we need.
@@ -75,7 +76,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionBackAtom;
-			SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
+			this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
+			//SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
@@ -92,6 +94,18 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			InputDirection = DirectionNeutralAtom;
 		}
+		else
+		{
+			APlayerController* pController = Cast<APlayerController>(GetController());
+
+			InputDirection = DirectionUpAtom;
+			
+			
+			UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
+			
+			//this->AddMovementInput(this->GetActorUpVector(), 1000.0F);
+			//LaunchPawn(FVector(0, 0, 1) * 10000.0f,false,false);
+		}
 	}
 	else
 	{
@@ -102,7 +116,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionForwardAtom;
-			SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
+			this->AddMovementInput(this->GetActorForwardVector(), 100.0F);
+			//SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
