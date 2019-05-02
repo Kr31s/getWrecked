@@ -1,0 +1,6 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(954,5): warning MSB8027: Two or more files with the name of BWPHYSIK.CPP will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are BWPHYSIK.CPP, include\Physik\BWPhysik.cpp.
+  NetAddress.cpp
+  NetSocketTCP.cpp
+  Generating Code...
+E:\GitRepositories\BWLib\library\Debug\BWPhysik.obj : warning LNK4042: object specified more than once; extras ignored
+  BWLib.vcxproj -> E:\GitRepositories\BWLib\library\BWLib.lib
