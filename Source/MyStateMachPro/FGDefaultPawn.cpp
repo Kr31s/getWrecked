@@ -102,7 +102,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			
 			
 			UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
-			
+			this->Jump();
 			//this->AddMovementInput(this->GetActorUpVector(), 1000.0F);
 			//LaunchPawn(FVector(0, 0, 1) * 10000.0f,false,false);
 		}
@@ -180,7 +180,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			// Consume the input we used to get to this move.
 			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
-			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 3, false);
+			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex /*/ 3*/, false);
 			InputStream.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex, false);
 		}
 
@@ -221,6 +221,8 @@ void AFGDefaultPawn::ReadYAxis(float Value)
 void AFGDefaultPawn::LeftButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::LeftFace);
+	UE_LOG(LogTemp, Warning, TEXT("LeftButtonPressed"));
+	//UE_LOG(LogTemp, Warning, TEXT(" %s"), FString::FromInt(ButtonsDown));
 }
 
 void AFGDefaultPawn::LeftButtonReleased()
