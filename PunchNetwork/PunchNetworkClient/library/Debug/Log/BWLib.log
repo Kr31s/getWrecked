@@ -1,0 +1,5 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(1883,5): warning : The referenced project '..\Rendering\Rendering.vcxproj' does not exist.
+  NetAddress.cpp
+  NetSocketUDP.cpp
+  Generating Code...
+  BWLib.vcxproj -> E:\GitRepositories\BWLib\library\BWLib.lib
