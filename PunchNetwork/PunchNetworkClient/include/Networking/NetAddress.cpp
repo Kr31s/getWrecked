@@ -1,4 +1,5 @@
 #include "NetAddress.h"
+#include <iostream>
 
 NetAddress::NetAddress()
 {
@@ -16,7 +17,7 @@ NetAddress::NetAddress(unsigned int p_ipv4, unsigned short p_port)
 	m_addr.sin_addr.s_addr = htonl(p_ipv4);
 	m_addr.sin_port = htons(p_port);
 }
-NetAddress::NetAddress(const NetAddress& p_NetAddress)
+NetAddress::NetAddress(const NetAddress & p_NetAddress)
 {
 	m_addr = p_NetAddress.m_addr;
 }

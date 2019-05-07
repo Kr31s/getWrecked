@@ -12,22 +12,28 @@
 AFGDefaultPawn::AFGDefaultPawn() 
 {
 	// Needed because we re using DefaultPawn.
-	bAddDefaultMovementBindings = false;
+	//bAddDefaultMovementBindings = false;
 	// This is ridiculously long, but we ll use it to make a point.
 	InputExpirationTime = 0.75f;
+	//MovementComponent = CreateDefaultSubobject<UPawnMovementComponent>(ADefaultPawn::MovementComponentName);
+	//MovementComponent->UpdatedComponent = GetCollisionComponent();
+
 }
 
 void AFGDefaultPawn::BeginPlay()
 {
+
 	Super::BeginPlay();
 
-	if (UStaticMeshComponent* SMC = GetMeshComponent())
-	{
-		SMC->SetHiddenInGame(true);
-	}
 
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Linked Move: %s"), *CurrentMove->LinkedMoves[0]->Move->MoveName.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("Linked Move: "), *CurrentMove->MoveName.ToString());
+
 	}
 	// Check that we have all the states we need.
 	if (!DirectionDownBackAtom || !DirectionDownAtom || !DirectionDownForwardAtom
@@ -70,6 +76,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionBackAtom;
+			this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
+			//SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
@@ -86,6 +94,18 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			InputDirection = DirectionNeutralAtom;
 		}
+		else
+		{
+			APlayerController* pController = Cast<APlayerController>(GetController());
+
+			InputDirection = DirectionUpAtom;
+			
+			
+			UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
+			this->Jump();
+			//this->AddMovementInput(this->GetActorUpVector(), 1000.0F);
+			//LaunchPawn(FVector(0, 0, 1) * 10000.0f,false,false);
+		}
 	}
 	else
 	{
@@ -96,6 +116,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionForwardAtom;
+			this->AddMovementInput(this->GetActorForwardVector(), 100.0F);
+			//SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
@@ -146,7 +168,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 	}
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
-	if (MoveLinkToFollow.Link)
+	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Switching to state %s"), *MoveLinkToFollow.Link->Move->MoveName.ToString());
 		if (MoveLinkToFollow.Link->bClearInput || MoveLinkToFollow.Link->Move->bClearInputOnEntry || CurrentMove->bClearInputOnExit)
@@ -158,7 +180,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			// Consume the input we used to get to this move.
 			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
-			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 3, false);
+			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex /*/ 3*/, false);
 			InputStream.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex, false);
 		}
 
@@ -199,6 +221,8 @@ void AFGDefaultPawn::ReadYAxis(float Value)
 void AFGDefaultPawn::LeftButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::LeftFace);
+	UE_LOG(LogTemp, Warning, TEXT("LeftButtonPressed"));
+	//UE_LOG(LogTemp, Warning, TEXT(" %s"), FString::FromInt(ButtonsDown));
 }
 
 void AFGDefaultPawn::LeftButtonReleased()

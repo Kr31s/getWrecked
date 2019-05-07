@@ -1,12 +1,11 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(411,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (PunchNetwork.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   mainServer.cpp
-E:\PunchNetwork\PunchNetworkServer\mainServer.cpp(86): warning C4018: '<': signed/unsigned mismatch
-E:\PunchNetwork\PunchNetworkServer\mainServer.cpp(165): warning C4554: '^': check operator precedence for possible error; use parentheses to clarify precedence
-E:\PunchNetwork\PunchNetworkServer\mainServer.cpp(165): warning C4804: '<': unsafe use of type 'bool' in operation
-E:\PunchNetwork\PunchNetworkServer\mainServer.cpp(173): warning C4804: '>': unsafe use of type 'bool' in operation
-E:\PunchNetwork\PunchNetworkServer\mainServer.cpp(248): warning C4326: return type of 'main' should be 'int' instead of 'void'
-BWLib.lib(BWNet.obj) : warning LNK4099: PDB 'BWLib.pch' was not found with 'BWLib.lib(BWNet.obj)' or at 'E:\PunchNetwork\PunchNetworkServer\x64\Debug\BWLib.pch'; linking object as if no debug info
-BWLib.lib(NetSocketUDP.obj) : warning LNK4099: PDB 'BWLib.pch' was not found with 'BWLib.lib(NetSocketUDP.obj)' or at 'E:\PunchNetwork\PunchNetworkServer\x64\Debug\BWLib.pch'; linking object as if no debug info
-BWLib.lib(NetAddress.obj) : warning LNK4099: PDB 'BWLib.pch' was not found with 'BWLib.lib(NetAddress.obj)' or at 'E:\PunchNetwork\PunchNetworkServer\x64\Debug\BWLib.pch'; linking object as if no debug info
-BWLib.lib(NetSocketTCP.obj) : warning LNK4099: PDB 'BWLib.pch' was not found with 'BWLib.lib(NetSocketTCP.obj)' or at 'E:\PunchNetwork\PunchNetworkServer\x64\Debug\BWLib.pch'; linking object as if no debug info
-  PunchNetwork.vcxproj -> E:\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(74): warning C4018: '<': signed/unsigned mismatch
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(141): warning C4554: '^': check operator precedence for possible error; use parentheses to clarify precedence
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(141): warning C4804: '<': unsafe use of type 'bool' in operation
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(173): warning C4554: '^': check operator precedence for possible error; use parentheses to clarify precedence
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(173): warning C4804: '<': unsafe use of type 'bool' in operation
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(182): warning C4554: '^': check operator precedence for possible error; use parentheses to clarify precedence
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(182): warning C4804: '<': unsafe use of type 'bool' in operation
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(302): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  PunchNetwork.vcxproj -> E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe

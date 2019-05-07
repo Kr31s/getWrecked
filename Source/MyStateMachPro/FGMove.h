@@ -32,7 +32,7 @@ struct  FFGMoveLinkToFollow {
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class MYSTATEMACHPRO_API UFGMove : public UDataAsset
 {
 	GENERATED_BODY()

@@ -5,7 +5,7 @@
 #include "FGDefaultPawn.h"
 #include "FGMoveLink.h"
 
-FFGMoveLinkToFollow UFGMove::TryLinks(const AFGDefaultPawn* RefObject, const TArray<USM_InputAtom*>& DataSource, int32 DataIndex, int32 RemainingSteps)
+FFGMoveLinkToFollow UFGMove::TryLinks(const AFGDefaultPawn* RefObject, const TArray<USM_InputAtom*>& DataSource, int32 DataIndex /* = 0 */, int32 RemainingSteps)
 {
 	FFGMoveLinkToFollow ResultLink;
 

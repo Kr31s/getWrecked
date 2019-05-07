@@ -9,6 +9,7 @@
 #include <bitset>
 #include <algorithm>
 
+
 #define crypt(x) x^89^3<25^79<47^1>55<33
 
 static unsigned int totalRoomID = 0;
@@ -25,27 +26,27 @@ struct Client
 	Client(NetAddress p_netaddress, char* p_nickname)
 	{
 		m_netaddress = p_netaddress;
-		for (int i = 0; (p_nickname[i] != NULL) && (i < 20); ++i)
+		for (int i = 2; (p_nickname[i] != NULL) && (i < 22); ++i)
 		{
-			m_nickname[i] = p_nickname[i];
+			m_nickname[i - 2] = p_nickname[i];
 		}
 	}
 };
 struct PunchRoom
 {
 	bool m_full = false;
-	unsigned int m_roomID;
+	unsigned short m_roomID;
 
 	unsigned short m_roundState;
 	unsigned short m_timeState;
 
-	Client m_Player1;
-	Client m_Player2;
+	Client m_Owner;
+	Client m_Member;
 
 
 	PunchRoom(Client p_client, unsigned short p_roundState, unsigned short p_timeState)
 	{
-		m_Player1 = p_client;
+		m_Owner = p_client;
 		m_roundState = p_roundState;;
 		m_timeState = p_timeState;;
 		m_roomID = totalRoomID;
@@ -53,23 +54,10 @@ struct PunchRoom
 	}
 	void AddRival(Client p_client)
 	{
-		m_Player2 = p_client;
+		m_Member = p_client;
 		m_full = true;
 	}
-
-	void LeavePlayer1()
-	{
-		m_Player1 = Client();
-		serverSocket.Send(m_Player2.m_netaddress, (static_cast<char>(4) < 1), 1);
-	}
-	void LeavePlayer2()
-	{
-		m_Player2 = Client();
-		receiveArray[0] = static_cast<char>(4) < 1;
-		serverSocket.Send(m_Player1.m_netaddress, receiveArray, 1);
-	}
 };
-
 struct PunchMessage
 {
 	NetAddress m_netAddress;
@@ -105,7 +93,6 @@ void DecodeMessageServer();
 
 void ServerThread()
 {
-
 	while (true)
 	{
 		receiveAddress = serverSocket.Receive((char*)receiveArray, 50);
@@ -116,15 +103,13 @@ void ServerThread()
 	}
 }
 
-void SendData(bool p_status, unsigned int lengthArrayToSend)
+void SendData(NetAddress receiver, bool p_status, char* dataArray, unsigned int lengthArrayToSend)
 {
-	receiveArray[0] = receiveArray[0] >> 1;
-	receiveArray[0] = (receiveArray[0] << 1);
-	receiveArray[0] |= static_cast<char>(p_status);
-	receiveAddress.GetTransportAddress().sin_port =ntohs(ntohs(receiveAddress.GetPortRef()));
+	dataArray[0] = dataArray[0] >> 1;
+	dataArray[0] = (dataArray[0] << 1);
+	dataArray[0] |= static_cast<char>(p_status);
 
-	NetAddress serverAddress(127, 0, 0, 1, 4000);
-	Println(serverSocket.Send(serverAddress, (char*)receiveArray, lengthArrayToSend).m_errorCode);
+	Println(serverSocket.Send(receiver, (char*)dataArray, lengthArrayToSend).m_errorCode);
 }
 void ReceiveArrayAddString(unsigned int startPos, char* nameArray, unsigned int arrayLength)
 {
@@ -136,54 +121,144 @@ void ReceiveArrayAddString(unsigned int startPos, char* nameArray, unsigned int 
 
 void RoomRequest()
 {
-	rounds = static_cast<unsigned char>(receiveArray[1]) >> 5;
-	gameTime = (static_cast<unsigned char>(receiveArray[1]) << 3) >> 5;
+	Print("Received \"room room\" request from: ");
+	for (int i = 0; (i < 20) && (receiveArray[i + 2] != -52); i++)
+		Print(receiveArray[i + 2]);
 
-	for (unsigned int roomCounter = 0; roomCounter < roomList[rounds][gameTime].size(); ++roomCounter)
+	rounds = receiveArray[1] >> 5;
+	gameTime = receiveArray[1] << 3;
+	gameTime = gameTime >> 5;
+
+	if (rounds == 0 || gameTime == 0)
 	{
-		if (!roomList[rounds][gameTime][roomCounter]->m_full)
+		if (rounds == 0)
 		{
-			roomList[rounds][gameTime][roomCounter]->AddRival(Client(receiveAddress, (char*)receiveArray[2]));//unsicher ob man nen pointer miten im array anlegen kann
-			ReceiveArrayAddString(2, roomList[rounds][gameTime][roomCounter]->m_Player1.m_nickname, sizeof(roomList[rounds][gameTime][roomCounter]->m_Player1.m_nickname));
-			SendData(true, 22);//first id next room adjustments and 20 for opponent name
-			return;
+			if (gameTime == 0)
+			{
+
+				return;
+			}
 		}
 	}
-	SendData(false, 1);//first id next room adjustments and 20 for opponent name
+	else
+	{
+		--rounds;
+		--gameTime;
+
+		for (unsigned int roomCounter = 0; roomCounter < roomList[rounds][gameTime].size(); ++roomCounter)
+		{
+			if (!roomList[rounds][gameTime][roomCounter]->m_full)
+			{
+				roomList[rounds][gameTime][roomCounter]->AddRival(Client(receiveAddress, receiveArray));
+				ReceiveArrayAddString(2, roomList[rounds][gameTime][roomCounter]->m_Owner.m_nickname, sizeof(roomList[rounds][gameTime][roomCounter]->m_Owner.m_nickname));
+				receiveArray[1] = crypt((roomList[rounds][gameTime][roomCounter]->m_roomID));
+				SendData(receiveAddress, true, receiveArray, 22);//first id next room adjustments and 20 for opponent name
+				receiveArray[0] = 1 << 1;
+
+				for (int i = 0; (i < 20) && (roomList[rounds][gameTime][roomCounter]->m_Member.m_nickname[i] != -52); i++)
+				{
+					receiveArray[i + 1] = roomList[rounds][gameTime][roomCounter]->m_Member.m_nickname[i];
+				}
+
+				SendData(roomList[rounds][gameTime][roomCounter]->m_Owner.m_netaddress, true, receiveArray, 22);
+				Print("Player joined room with ID ");
+				Println((int)receiveArray[1]);
+				return;
+			}
+		}
+	}
+
+	SendData(receiveAddress, false, receiveArray, 1);//first id next room adjustments and 20 for opponent name
+	Println("Room request failed");
 	return;
 }
 void CreateRoom()
 {
+	Print("Received \"create room\" request from: ");
+	for (int i = 0; (i < 20) && (receiveArray[i + 2] != -52); i++)
+		Print(receiveArray[i + 2]);
+	Println("");
+
 	rounds = receiveArray[1] >> 5;
 	gameTime = receiveArray[1] << 3;
 	gameTime = gameTime >> 5;
 
 	roomIDList.push_back(PunchRoom(Client(receiveAddress, receiveArray), rounds, gameTime));
-	roomList[rounds-1][gameTime-1].push_back(&roomIDList[totalRoomID - 1]);
+	roomList[rounds - 1][gameTime - 1].push_back(&roomIDList[totalRoomID - 1]);
 	receiveArray[1] = crypt((totalRoomID - 1));
 
 	messageListe.push_back(PunchMessage(receiveAddress, std::chrono::system_clock::now(), receiveArray, 2));
-	SendData(true, 2);
+	SendData(receiveAddress, true, receiveArray, 2);
+	Print("Room created with ID ");
+	Println((int)receiveArray[1]);
 }
 void LeaveRoom()
 {
-	rounds = static_cast<unsigned char>(receiveArray[1]) > 5;
-	gameTime = (static_cast<unsigned char>(receiveArray[1]) < 3) > 5;
+	unsigned int a = (crypt((int)receiveArray[1]));
+	unsigned int roundState = roomIDList[a].m_roundState - 1;
+	unsigned int timeState = roomIDList[a].m_timeState - 1;
 
-	receiveAddress.GetIpv4Ref();
-	for (int i = 0; i < sizeof(roomList[rounds][gameTime]); ++i)
+	if (roomIDList[a].m_Owner.m_netaddress.GetIpv4Ref() == receiveAddress.GetIpv4Ref() && roomIDList[a].m_Owner.m_netaddress.GetPortRef() == receiveAddress.GetPortRef())
 	{
-		if (roomList[rounds][gameTime][i]->m_Player1.m_netaddress.GetIpv4Ref() == receiveAddress.GetIpv4Ref())
+
+		if (!roomIDList[a].m_full)
 		{
-			roomList[rounds][gameTime][i]->LeavePlayer1();
-			return;
+			for (int i = 0; i < roomList[roundState][timeState].size(); ++i)
+			{
+				if (roomList[roundState][timeState][i]->m_roomID == roomIDList[a].m_roomID)
+				{
+					SendData(roomIDList[a].m_Owner.m_netaddress, true, receiveArray, 1);
+
+					roomList[roundState][timeState].erase(roomList[roundState][timeState].begin() + i);
+					roomIDList.erase(roomIDList.begin() + a);
+					return;
+				}
+			}
 		}
-		else if (roomList[rounds][gameTime][i]->m_Player2.m_netaddress.GetIpv4Ref() == receiveAddress.GetIpv4Ref())
+		else
 		{
-			roomList[rounds][gameTime][i]->LeavePlayer2();
-			return;
+			SendData(roomIDList[a].m_Owner.m_netaddress, true, receiveArray, 1);
+			receiveArray[0] = 4 << 1;
+			SendData(roomIDList[a].m_Member.m_netaddress, true, receiveArray, 1);
+
+			roomIDList[a].m_Owner = roomIDList[a].m_Member;
+			roomIDList[a].m_Member = Client();
+			roomIDList[a].m_full = false;
 		}
+		SendData(roomIDList[a].m_Owner.m_netaddress, false, receiveArray, 1);
 	}
+	else if (roomIDList[a].m_Member.m_netaddress.GetIpv4Ref() == receiveAddress.GetIpv4Ref() && roomIDList[a].m_Member.m_netaddress.GetPortRef() == receiveAddress.GetPortRef())
+	{
+		if (!roomIDList[a].m_full)
+		{
+			for (int i = 0; i < roomList[roundState][timeState].size(); ++i)
+			{
+				if (roomList[roundState][timeState][i]->m_roomID == roomIDList[a].m_roomID)
+				{
+					SendData(roomIDList[a].m_Member.m_netaddress, true, receiveArray, 1);
+
+					roomList[roundState][timeState].erase(roomList[roundState][timeState].begin() + i);
+					roomIDList.erase(roomIDList.begin() + a);
+					return;
+				}
+			}
+		}
+		else
+		{
+
+			SendData(roomIDList[a].m_Member.m_netaddress, true, receiveArray, 1);
+			receiveArray[0] = 4 << 1;
+			SendData(roomIDList[a].m_Owner.m_netaddress, true, receiveArray, 1);
+
+			roomIDList[a].m_Member = Client();
+			roomIDList[a].m_full = false;
+			return;
+		}
+
+		SendData(roomIDList[a].m_Member.m_netaddress, false, receiveArray, 1);
+	}
+
+
 }
 void NonServerMessage()
 {
@@ -192,9 +267,9 @@ void NonServerMessage()
 
 void SearchForReplyMessage(NetAddress p_netAddress)
 {
-	for(int i = 0; i < messageListe.size(); ++i)
+	for (int i = 0; i < messageListe.size(); ++i)
 	{
-		if(messageListe[i].m_netAddress.GetIpv4Ref() == p_netAddress.GetIpv4Ref())
+		if (messageListe[i].m_netAddress.GetIpv4Ref() == p_netAddress.GetIpv4Ref())
 		{
 			messageListe.erase(messageListe.begin() + i);
 		}
@@ -222,7 +297,6 @@ void DecodeMessageServer()
 		default:
 			NonServerMessage();
 			break;
-
 		}
 	}
 	else
@@ -238,7 +312,6 @@ void ClearReceiveArray()
 		receiveArray[i] = NULL;
 	}
 }
-
 
 void main()
 {
