@@ -32,6 +32,10 @@ protected:
 	void LeftButtonReleased();
 	void TopButtonPressed();
 	void TopButtonReleased();
+	void RightButtonPressed();
+	void RightButtonReleased();
+	void BottomButtonPressed();
+	void BottomButtonReleased();
 	void ReadXAxis(float Value);
 	void ReadYAxis(float Value);
 

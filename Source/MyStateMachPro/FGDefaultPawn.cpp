@@ -89,6 +89,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		if (DirectionInput.Y < -DirectionThreshold)
 		{
 			InputDirection = DirectionDownAtom;
+			UE_LOG(LogTemp, Warning, TEXT("i want to crouch"));
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
@@ -112,6 +113,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		if (DirectionInput.Y < -DirectionThreshold)
 		{
 			InputDirection = DirectionDownForwardAtom;
+			UE_LOG(LogTemp, Warning, TEXT("i want to crouchForward"));
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
@@ -153,7 +155,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
 	InputTimeStamps.Add(CurrentTime);
 
-	// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
+	// Prune penis old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
 	for (int32 i = 0; i < InputStream.Num(); ++i)
 	{
 		if ((InputTimeStamps[i] + InputExpirationTime) >= CurrentTime)
@@ -205,6 +207,10 @@ void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent
 	InInputComponent->BindAction("LeftButton", IE_Released, this, &AFGDefaultPawn::LeftButtonReleased);
 	InInputComponent->BindAction("TopButton", IE_Pressed, this, &AFGDefaultPawn::TopButtonPressed);
 	InInputComponent->BindAction("TopButton", IE_Released, this, &AFGDefaultPawn::TopButtonReleased);
+	InInputComponent->BindAction("RightButton", IE_Pressed, this, &AFGDefaultPawn::RightButtonPressed);
+	InInputComponent->BindAction("RightButton", IE_Released, this, &AFGDefaultPawn::RightButtonReleased);
+	InInputComponent->BindAction("BottomButton", IE_Pressed, this, &AFGDefaultPawn::BottomButtonPressed);
+	InInputComponent->BindAction("BottomButton", IE_Released, this, &AFGDefaultPawn::BottomButtonReleased);
 }
 
 void AFGDefaultPawn::ReadXAxis(float Value)
@@ -221,8 +227,6 @@ void AFGDefaultPawn::ReadYAxis(float Value)
 void AFGDefaultPawn::LeftButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::LeftFace);
-	UE_LOG(LogTemp, Warning, TEXT("LeftButtonPressed"));
-	//UE_LOG(LogTemp, Warning, TEXT(" %s"), FString::FromInt(ButtonsDown));
 }
 
 void AFGDefaultPawn::LeftButtonReleased()
@@ -240,3 +244,23 @@ void AFGDefaultPawn::TopButtonReleased()
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::TopFace);
 }
 
+void AFGDefaultPawn::RightButtonPressed()
+{
+	UE_LOG(LogTemp, Warning, TEXT("RightButtonPressed"));
+	ButtonsDown |= (1 << (int32)EFGInputButtons::RightFace);
+}
+
+void AFGDefaultPawn::RightButtonReleased()
+{
+	ButtonsDown &= ~(1 << (int32)EFGInputButtons::RightFace);
+}
+void AFGDefaultPawn::BottomButtonPressed()
+{
+	UE_LOG(LogTemp, Warning, TEXT("BottomButtonPressed"));
+	ButtonsDown |= (1 << (int32)EFGInputButtons::BottomFace);
+}
+
+void AFGDefaultPawn::BottomButtonReleased()
+{
+	ButtonsDown &= ~(1 << (int32)EFGInputButtons::BottomFace);
+}
