@@ -1,0 +1,3 @@
+﻿  mainClient.cpp
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkClient\mainClient.cpp(30): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  PunchNetworkClient.vcxproj -> E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkClient\x64\Debug\PunchNetworkClient.exe
