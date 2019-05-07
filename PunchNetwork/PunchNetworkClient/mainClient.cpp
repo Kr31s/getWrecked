@@ -9,6 +9,7 @@ void ReceiveThread();
 void SendRequestClient(int messageType, NetSocketUDP socketUDP);
 void ReceiveMessageClient();
 void SendReceiveMessageClient();
+void ClearReceiveArray();
 
 
 NetSocketUDP socketUDP;
@@ -20,7 +21,7 @@ unsigned char opponentName[20];
 unsigned char sendArray[50];
 char receiveArray[50];
 
-unsigned char myRoomID = NULL;
+int myRoomID = -1;
 unsigned char identifier = NULL;
 unsigned char status = NULL;
 int input;
@@ -46,6 +47,7 @@ void main()
 	do
 	{
 		std::cin >> input;
+		Println("");
 		SendRequestClient(input, socketUDP);
 	} while (true);
 }
@@ -65,6 +67,8 @@ void ReceiveThread()
 
 void SendRequestClient(int messageType, NetSocketUDP socketUDP)
 {
+	ClearReceiveArray();
+
 	switch (messageType)
 	{
 	case 0:
@@ -81,8 +85,10 @@ void SendRequestClient(int messageType, NetSocketUDP socketUDP)
 		Println("1: Best of 1");
 		Println("2: Best of 3");
 		Println("3: Best of 5");
-		Print("Your Action: ")
-			std::cin >> input;
+		Print("Your Action: ");
+		std::cin >> input;
+		Println("");
+
 		if (input != 0 && input != 1 && input != 2 && input != 3)
 		{
 			Println("UNKOWN INPUT: Message canceled!");
@@ -96,8 +102,10 @@ void SendRequestClient(int messageType, NetSocketUDP socketUDP)
 		Println("1: 60 seconds");
 		Println("2: 90 seconds");
 		Println("3: 120 seconds");
-		Print("Your Action: ")
-			std::cin >> input;
+		Print("Your Action: ");
+		std::cin >> input;
+		Println("");
+
 		if (input != 0 && input != 1 && input != 2 && input != 3)
 		{
 			Println("UNKOWN INPUT: Message canceled!\n");
@@ -105,7 +113,8 @@ void SendRequestClient(int messageType, NetSocketUDP socketUDP)
 		}
 		sendArray[1] |= input << 2;
 
-		Println(socketUDP.Send(serverAddress, (char*)sendArray, 22).m_errorCode);
+		socketUDP.Send(serverAddress, (char*)sendArray, 22).m_errorCode;
+		//Println(socketUDP.Send(serverAddress, (char*)sendArray, 22).m_errorCode);
 		break;
 
 
@@ -129,8 +138,8 @@ void SendRequestClient(int messageType, NetSocketUDP socketUDP)
 		Println("1: Best of 1");
 		Println("2: Best of 3");
 		Println("3: Best of 5");
-		Print("Your Action: ")
-			std::cin >> input;
+		Print("Your Action: ");
+		std::cin >> input;
 		if (input != 1 && input != 2 && input != 3)
 		{
 			Println("UNKOWN INPUT: Message canceled!");
@@ -140,11 +149,12 @@ void SendRequestClient(int messageType, NetSocketUDP socketUDP)
 		sendArray[1] = input << 5;
 
 		Println("\nTime Settings: ");
-		Println("1: Best of 60");
-		Println("2: Best of 90");
-		Println("3: Best of 120");
-		Print("Your Action: ")
-			std::cin >> input;
+		Println("1: 60 seconds");
+		Println("2: 90 seconds");
+		Println("3: 120 seconds");
+		Print("Your Action: ");
+		std::cin >> input;
+		Println("");
 		if (input != 1 && input != 2 && input != 3)
 		{
 			Println("UNKOWN INPUT: Message canceled!\n");
@@ -152,7 +162,8 @@ void SendRequestClient(int messageType, NetSocketUDP socketUDP)
 		}
 		sendArray[1] |= input << 2;
 
-		Println(socketUDP.Send(serverAddress, (char*)sendArray, 22).m_errorCode);
+		socketUDP.Send(serverAddress, (char*)sendArray, 22).m_errorCode;
+		//Println(socketUDP.Send(serverAddress, (char*)sendArray, 22).m_errorCode);
 		break;
 
 
@@ -160,20 +171,22 @@ void SendRequestClient(int messageType, NetSocketUDP socketUDP)
 
 
 	case 3:
-		if (myRoomID != NULL)
+		if (myRoomID >= 0)
 		{
 			sendArray[0] = 3 << 1;
 			sendArray[1] = myRoomID;
 
 			Println("Request to leave your room (ID: " << (int)myRoomID << ") was send");
-			Println(socketUDP.Send(serverAddress, (char*)sendArray, 2).m_errorCode);
+			socketUDP.Send(serverAddress, (char*)sendArray, 2).m_errorCode;
+			//Println(socketUDP.Send(serverAddress, (char*)sendArray, 2).m_errorCode);
 			break;
 		}
 		Println("You are in no room");
 		break;
 	default:
-		Println("UNKOWN COMMAND")
-			break;
+
+		Println("UNKOWN COMMAND");
+		break;
 	}
 }
 void ReceiveMessageClient()
@@ -209,7 +222,7 @@ void ReceiveMessageClient()
 
 	case 1:
 		Print("Player: ");
-		for (int i = 0; (i < 20) && (receiveArray[i + 1] != -52); i++) 
+		for (int i = 0; (i < 20) && (receiveArray[i + 1] != -52); i++)
 		{
 			opponentName[i] = receiveArray[i + 1];
 			Print(receiveArray[i + 1]);
@@ -237,15 +250,16 @@ void ReceiveMessageClient()
 		}
 		else
 		{
-			Print("Room leave request failed");
+			Println("Room leave request failed");
 		}
 		break;
 	case 4:
+		Println("");
 		Print("The Player: ");
-		for (int i = 0; (i < 20) && (receiveArray[i + 1] != -52); i++)
-			Print(receiveArray[i + 1]);
+		for (int i = 0; (i < 20) && (opponentName[i] != 0); i++)
+			Print(opponentName[i]);
 
-		Print(" left the room");
+		Println(" left the room");
 		break;
 	default:
 		myRoomID = NULL;
@@ -260,8 +274,9 @@ void SendReceiveMessageClient()
 	sendArray[0] = receiveArray[0] >> 1;
 	sendArray[0] = sendArray[0] << 1;
 	sendArray[0] |= static_cast<char>(1);
-	Print("ErrorCode of sending receive message: ")
-		Println(socketUDP.Send(serverAddress, (char*)sendArray, 1).m_errorCode);
+	socketUDP.Send(serverAddress, (char*)sendArray, 1).m_errorCode;
+	//Print("ErrorCode of sending receive message: ");
+	//Println(socketUDP.Send(serverAddress, (char*)sendArray, 1).m_errorCode);
 
 	Println("");
 	Println("0: Room request");
@@ -269,4 +284,20 @@ void SendReceiveMessageClient()
 	Println("3: Leave room");
 	Println("");
 	Print("Your Action: ");
+}
+
+void ClearReceiveArray()
+{
+	int a = 21;
+	for (int i = 0; i < a; ++i)
+	{
+		charInput[i] = 0;
+	}
+
+	a = sizeof(sendArray) / sizeof(*sendArray);
+	for (int i = 0; i < a; ++i)
+	{
+		receiveArray[i] = 0;
+		sendArray[i] = 0;
+	}
 }

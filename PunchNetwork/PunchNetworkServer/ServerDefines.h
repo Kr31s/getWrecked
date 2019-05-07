@@ -3,17 +3,10 @@
 #include "Inc_SmartMacros.h"
 #include "Inc_BWMath.h"
 
-#include <stdexcept>
 #include <vector>
 #include <thread>
 #include <chrono>
-#include <bitset>
-#include <algorithm>
+#include <map>
 
-class PClient;
-class PRoom;
-class PMessage;
+static unsigned int totalRoomID = 0;
 
-static std::vector<PRoom*> roomList[3][3];
-static std::vector<PRoom> roomIDList;
-static std::vector<PMessage> messageListe;
