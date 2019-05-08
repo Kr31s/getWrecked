@@ -1,3 +1,23 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(411,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (PunchNetwork.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  BCServer.cpp
-  PunchNetwork.vcxproj -> E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe
+  BCRoom.cpp
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCRoom.cpp(11): error C2027: use of undefined type 'BCClient'
+  E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\ServerDefines.h(13): note: see declaration of 'BCClient'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCRoom.cpp(20): error C2027: use of undefined type 'BCClient'
+  E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\ServerDefines.h(13): note: see declaration of 'BCClient'
+  mainServer.cpp
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(163): error C2228: left of '.m_nickname' must have class/struct/union
+  E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(163): note: type is 'BCClient *'
+  E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(163): note: did you intend to use '->' instead?
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(163): error C2660: 'ReceiveArrayAddString': function does not take 1 arguments
+  E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(124): note: see declaration of 'ReceiveArrayAddString'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(164): warning C4244: '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(173): error C2664: 'void SendDataBCM(BCClient &,SendType,char *,unsigned int)': cannot convert argument 1 from 'BCClient *' to 'BCClient &'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(197): warning C4018: '<=': signed/unsigned mismatch
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(247): error C2664: 'void SendDataBCM(BCClient &,SendType,char *,unsigned int)': cannot convert argument 1 from 'BCClient *' to 'BCClient &'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(250): error C2440: '=': cannot convert from 'BCClient' to 'BCClient *'
+  E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(250): note: No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(278): error C2664: 'void SendDataBCM(BCClient &,SendType,char *,unsigned int)': cannot convert argument 1 from 'BCClient *' to 'BCClient &'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(280): error C2440: '=': cannot convert from 'BCClient' to 'BCClient *'
+  E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(280): note: No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(327): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  Generating Code...

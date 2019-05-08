@@ -1,12 +1,9 @@
 #include "BCRoom.h"
+#include "BCClient.h"
 
 
 
-BCRoom::BCRoom()
-{
-}
-
-BCRoom::BCRoom(BCClient p_client, unsigned short p_roundState, unsigned short p_timeState)
+BCRoom::BCRoom(BCClient* p_client, unsigned short p_roundState, unsigned short p_timeState)
 {
 	m_Owner = p_client;
 	m_roundState = p_roundState;;
@@ -14,7 +11,7 @@ BCRoom::BCRoom(BCClient p_client, unsigned short p_roundState, unsigned short p_
 	m_roomID = totalRoomID;
 }
 
-void BCRoom::AddRival(BCClient p_client)
+void BCRoom::AddRival(BCClient* p_client)
 {
 
 	m_Member = p_client;

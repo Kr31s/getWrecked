@@ -1,6 +1,5 @@
 #pragma once
 #include "ServerDefines.h"
-#include "BCClient.h"
 
 class BCRoom
 {
@@ -11,11 +10,10 @@ public:
 	unsigned short m_roundState;
 	unsigned short m_timeState;
 
-	BCClient m_Owner;
-	BCClient m_Member;
+	BCClient* m_Owner;
+	BCClient* m_Member;
 
-	BCRoom();
-	BCRoom(BCClient client, unsigned short roundState, unsigned short timeState);
-	void AddRival(BCClient client);
+	BCRoom(BCClient* client, unsigned short roundState, unsigned short timeState);
+	void AddRival(BCClient* client);
 };
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "ServerDefines.h"
 
-class BCClient;
 
 class BCMessage
 {
