@@ -9,4 +9,12 @@
 #include <map>
 
 static unsigned int totalRoomID = 0;
+static bool serverRunning = true;
 
+
+enum SendType
+{
+	None,
+	True,
+	False
+};

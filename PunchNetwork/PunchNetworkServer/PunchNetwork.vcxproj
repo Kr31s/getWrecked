@@ -135,12 +135,14 @@
     <ClCompile Include="BCClient.cpp" />
     <ClCompile Include="BCMessage.cpp" />
     <ClCompile Include="BCRoom.cpp" />
+    <ClCompile Include="BCServer.cpp" />
     <ClCompile Include="mainServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BCClient.h" />
     <ClInclude Include="BCMessage.h" />
     <ClInclude Include="BCRoom.h" />
+    <ClInclude Include="BCServer.h" />
     <ClInclude Include="ServerDefines.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

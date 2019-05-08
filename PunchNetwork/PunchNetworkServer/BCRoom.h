@@ -15,7 +15,7 @@ public:
 	BCClient m_Member;
 
 	BCRoom();
-	BCRoom(BCClient p_client, unsigned short p_roundState, unsigned short p_timeState);
-	void AddRival(BCClient p_client);
+	BCRoom(BCClient client, unsigned short roundState, unsigned short timeState);
+	void AddRival(BCClient client);
 };
 

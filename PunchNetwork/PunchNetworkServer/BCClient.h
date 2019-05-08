@@ -7,8 +7,9 @@ class BCClient
 public:
 	NetAddress m_netaddress;
 	char m_nickname[20];
+	unsigned char m_ping;
 
 	BCClient();
-	BCClient(NetAddress p_netaddress, char* p_nickname);
+	BCClient(NetAddress netaddress, char* nickname);
 };
 
