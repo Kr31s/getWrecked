@@ -11,13 +11,20 @@
 
 AFGDefaultPawn::AFGDefaultPawn() 
 {
-	// Needed because we re using DefaultPawn.
-	//bAddDefaultMovementBindings = false;
 	// This is ridiculously long, but we ll use it to make a point.
 	InputExpirationTime = 0.75f;
 	//MovementComponent = CreateDefaultSubobject<UPawnMovementComponent>(ADefaultPawn::MovementComponentName);
 	//MovementComponent->UpdatedComponent = GetCollisionComponent();
+	RessourceComp = CreateDefaultSubobject<URessourceComponent>(TEXT("RComp"));//NewObject<UActorComponent>(this, "RessourceComp");
+	//RessourceComp->RegisterComponent();
+	//AddOwnedComponent(RessourceComp);
+	PunchL = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchL"), true);
+	KickL = CreateDefaultSubobject<UBoxComponent>(TEXT("KickL"), true);
 
+	
+	PunchL->AttachTo(this->GetMesh(), TEXT("HandLSocket"), EAttachLocation::SnapToTarget, true);//SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));
+	KickL->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("HandLSocket"));//SetupAttachment(this->GetMesh());
+	
 }
 
 void AFGDefaultPawn::BeginPlay()
@@ -195,6 +202,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	{
 		TimeInCurrentMove += DeltaSeconds;		// Modulate by move animation length
 	}
+}
+
+void AFGDefaultPawn::OnOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+
 }
 
 void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent)
