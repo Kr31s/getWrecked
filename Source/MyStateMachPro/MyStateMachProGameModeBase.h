@@ -14,4 +14,12 @@ class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+		
+public:
+
+	virtual void StartPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+		TSubclassOf<class UUserWidget> wMainMenu;
+	UUserWidget* MyMainMenu;
 };
