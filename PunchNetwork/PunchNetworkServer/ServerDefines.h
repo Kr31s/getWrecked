@@ -23,19 +23,23 @@ enum SendType
 };
 
 static BCServer* theServer = nullptr;
-static unsigned char rounds = 0;
-static unsigned char gameTime = 0;
-static unsigned char identifier = NULL;
-static unsigned char status = NULL;
 
 
-long long GetTimeInMilli()
+static long long GetTimeInMilli()
 {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-void ErrorCheck(short errorCode)
+static void ErrorCheck(short errorCode)
 {
 	if (errorCode != 0)
 		Println("Error: " << errorCode);
+}
+
+static void ReceiveArrayAddString(char* receiveArray, unsigned int startPos, char* nameArray, unsigned int arrayLength)
+{
+	for (unsigned int i = startPos; i < (startPos + arrayLength); ++i)
+	{
+		receiveArray[i] = nameArray[i - startPos];
+	}
 }
