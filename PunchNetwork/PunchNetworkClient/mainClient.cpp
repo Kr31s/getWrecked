@@ -199,13 +199,16 @@ void ReceiveMessageClient()
 	switch (identifier)
 	{
 	case 0:
+		Println(sendArray[0]);
+		sendArray[0] = receiveArray[22];
+
 		if (status)
 		{
 			Print("Joined Room with ID: ");
 			Println((int)receiveArray[1]);
 
 			Print("Rival: ");
-			for (int i = 0; (i < 20) && (receiveArray[i + 2] != -52); i++)
+			for (int i = 0; (i < 20) && (receiveArray[i + 2] != 0); i++)
 			{
 				opponentName[i] = receiveArray[i + 2];
 				Print(receiveArray[i + 2]);
@@ -221,8 +224,10 @@ void ReceiveMessageClient()
 		break;
 
 	case 1:
+		Println(sendArray[0]);
+		sendArray[0] = receiveArray[21];
 		Print("Player: ");
-		for (int i = 0; (i < 20) && (receiveArray[i + 1] != -52); i++)
+		for (int i = 0; (i < 20) && (receiveArray[i + 1] != 0); i++)
 		{
 			opponentName[i] = receiveArray[i + 1];
 			Print(receiveArray[i + 1]);
@@ -231,6 +236,8 @@ void ReceiveMessageClient()
 		break;
 
 	case 2:
+		Println(sendArray[0]);
+		sendArray[0] = receiveArray[2];
 		if (status)
 		{
 			Print("Created Room with ID: ");
@@ -242,7 +249,10 @@ void ReceiveMessageClient()
 			Println("Room creation failed");
 		}
 		break;
+
 	case 3:
+		Println(sendArray[0]);
+		sendArray[0] = receiveArray[1];
 		if (status)
 		{
 			Println("You left your Room with ID: " << (int)myRoomID);
@@ -253,7 +263,10 @@ void ReceiveMessageClient()
 			Println("Room leave request failed");
 		}
 		break;
+
 	case 4:
+		sendArray[0] = receiveArray[1];
+		Println(sendArray[0]);
 		Println("");
 		Print("The Player: ");
 		for (int i = 0; (i < 20) && (opponentName[i] != 0); i++)
@@ -261,9 +274,17 @@ void ReceiveMessageClient()
 
 		Println(" left the room");
 		break;
+	
+	case 5:
+		sendArray[0] = receiveArray[1];
+		Println(sendArray[0]);
+		Println("");
+		Println("Heartbeat/ Messagenumber: " << (int)receiveArray[1]);
+		break;
+
 	default:
 		myRoomID = NULL;
-		Println("UNKOWN COMMAND")
+		Println("UNKOWN COMMAND");
 			break;
 	}
 
@@ -275,8 +296,6 @@ void SendReceiveMessageClient()
 	sendArray[0] = sendArray[0] << 1;
 	sendArray[0] |= static_cast<char>(1);
 	socketUDP.Send(serverAddress, (char*)sendArray, 1).m_errorCode;
-	//Print("ErrorCode of sending receive message: ");
-	//Println(socketUDP.Send(serverAddress, (char*)sendArray, 1).m_errorCode);
 
 	Println("");
 	Println("0: Room request");

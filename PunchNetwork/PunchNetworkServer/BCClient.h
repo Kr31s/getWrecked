@@ -5,10 +5,14 @@
 class BCClient
 {
 public:
-	NetAddress m_netaddress;
-	char m_nickname[20];
+	static unsigned int totalClientID;
 
-	BCClient();
-	BCClient(NetAddress p_netaddress, char* p_nickname);
+	NetAddress m_netaddress;
+	unsigned short m_clientID;
+
+	char m_nickname[20];
+	unsigned char m_ping = 150;
+
+	BCClient(NetAddress netaddress, char* nickname);
 };
 

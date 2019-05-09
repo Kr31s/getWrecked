@@ -11,18 +11,32 @@
 
 AFGDefaultPawn::AFGDefaultPawn() 
 {
-	// Needed because we re using DefaultPawn.
-	//bAddDefaultMovementBindings = false;
 	// This is ridiculously long, but we ll use it to make a point.
 	InputExpirationTime = 0.75f;
 	//MovementComponent = CreateDefaultSubobject<UPawnMovementComponent>(ADefaultPawn::MovementComponentName);
 	//MovementComponent->UpdatedComponent = GetCollisionComponent();
+	RessourceComp = CreateDefaultSubobject<URessourceComponent>(TEXT("RComp"));//NewObject<UActorComponent>(this, "RessourceComp");
+	//RessourceComp->RegisterComponent();
+	//AddOwnedComponent(RessourceComp);
+	PunchL = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchL"), true);
+	PunchR = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchR"), true);
+	KickL = CreateDefaultSubobject<UBoxComponent>(TEXT("KickL"), true);
+	KickR = CreateDefaultSubobject<UBoxComponent>(TEXT("KickR"), true);
 
+	
+	//PunchL->AttachTo(this->GetMesh(), TEXT("HandLSocket"), EAttachLocation::SnapToTarget, true);//SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));
+	PunchL->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("HandLSocket"));//SetupAttachment(this->GetMesh());
+	PunchR->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("HandRSocket"));//SetupAttachment(this->GetMesh());
+	KickL->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("FootLSocket"));//SetupAttachment(this->GetMesh());
+	KickR->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("FootRSocket"));//SetupAttachment(this->GetMesh());
+	
 }
 
 void AFGDefaultPawn::BeginPlay()
 {
-
+	if (KickL->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("HandLSocket"))) {
+		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
+	}
 	Super::BeginPlay();
 
 
@@ -182,7 +196,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			// Consume the input we used to get to this move.
 			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
-			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex /*/ 3*/, false);
+			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 3, false);
 			InputStream.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex, false);
 		}
 
@@ -195,6 +209,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	{
 		TimeInCurrentMove += DeltaSeconds;		// Modulate by move animation length
 	}
+}
+
+void AFGDefaultPawn::OnOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	RessourceComp->Health -= 100;
 }
 
 void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent)
