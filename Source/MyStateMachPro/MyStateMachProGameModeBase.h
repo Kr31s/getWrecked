@@ -21,5 +21,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 		TSubclassOf<class UUserWidget> wMainMenu;
-	UUserWidget* MyMainMenu;
+	
+	UPROPERTY()
+		UUserWidget* MyMainMenu;
 };
