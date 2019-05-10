@@ -15,4 +15,6 @@ public:
 	unsigned int m_messageArrayLength;
 
 	BCMessage(BCClient* receiver, long long timeStamp, char* messageArray, unsigned int messageArrayLength);
+	static void CheckResendMessages();
+	static void GetReplyMessage(unsigned char& messageID);
 };

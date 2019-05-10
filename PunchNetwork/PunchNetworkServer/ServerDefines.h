@@ -22,8 +22,6 @@ enum SendType
 	False
 };
 
-static BCServer* theServer = nullptr;
-
 
 static long long GetTimeInMilli()
 {
@@ -36,10 +34,11 @@ static void ErrorCheck(short errorCode)
 		Println("Error: " << errorCode);
 }
 
-static void ReceiveArrayAddString(char* receiveArray, unsigned int startPos, char* nameArray, unsigned int arrayLength)
+static void CharArrayAddChar(char* receiveArray, unsigned int startPos, char* nameArray, unsigned int arrayLength)
 {
 	for (unsigned int i = startPos; i < (startPos + arrayLength); ++i)
 	{
 		receiveArray[i] = nameArray[i - startPos];
+		Println("letter" << receiveArray[i])
 	}
 }

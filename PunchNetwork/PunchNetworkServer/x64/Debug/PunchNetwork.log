@@ -1,4 +1,32 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(411,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (PunchNetwork.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  BCClient.cpp
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(16): warning C4305: 'initializing': truncation from 'int' to 'unsigned char'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(16): warning C4309: 'initializing': truncation of constant value
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.cpp(19): warning C4018: '<=': signed/unsigned mismatch
+  BCMessage.cpp
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(16): warning C4305: 'initializing': truncation from 'int' to 'unsigned char'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(16): warning C4309: 'initializing': truncation of constant value
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(13): warning C4018: '<': signed/unsigned mismatch
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(18): warning C4018: '<=': signed/unsigned mismatch
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(45): error C2064: term does not evaluate to a function taking 0 arguments
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(60): warning C4244: '=': conversion from '__int64' to 'unsigned char', possible loss of data
+  BCRoom.cpp
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(16): warning C4305: 'initializing': truncation from 'int' to 'unsigned char'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(16): warning C4309: 'initializing': truncation of constant value
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCRoom.cpp(16): warning C4018: '<=': signed/unsigned mismatch
+  BCServer.cpp
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(16): warning C4305: 'initializing': truncation from 'int' to 'unsigned char'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(16): warning C4309: 'initializing': truncation of constant value
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(35): warning C4244: '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(54): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(80): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(113): warning C4244: '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(147): warning C4244: '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(186): warning C4244: '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(203): warning C4244: '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(283): warning C4244: '=': conversion from '__int64' to 'unsigned char', possible loss of data
   mainServer.cpp
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(75): warning C4018: '<': signed/unsigned mismatch
-  PunchNetwork.vcxproj -> E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(16): warning C4305: 'initializing': truncation from 'int' to 'unsigned char'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(16): warning C4309: 'initializing': truncation of constant value
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(55): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...

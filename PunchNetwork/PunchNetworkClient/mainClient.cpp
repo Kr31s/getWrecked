@@ -18,8 +18,9 @@ NetAddress receiveAddress;
 
 unsigned char opponentName[20];
 
-unsigned char sendArray[50];
-char receiveArray[50];
+unsigned char sendArray[51];
+unsigned char heartBeatArray[51];
+char receiveArray[51];
 
 int myRoomID = -1;
 unsigned char identifier = NULL;
@@ -146,6 +147,7 @@ void SendRequestClient(int messageType, NetSocketUDP socketUDP)
 			return;
 		}
 		sendArray[0] = 2 << 1;
+		sendArray[0] = 2 << 1;
 		sendArray[1] = input << 5;
 
 		Println("\nTime Settings: ");
@@ -208,7 +210,7 @@ void ReceiveMessageClient()
 			Println((int)receiveArray[1]);
 
 			Print("Rival: ");
-			for (int i = 0; (i < 20) && (receiveArray[i + 2] != 0); i++)
+			for (int i = 0; (i < 20) && (receiveArray[i + 2] != -52); i++)
 			{
 				opponentName[i] = receiveArray[i + 2];
 				Print(receiveArray[i + 2]);
@@ -227,12 +229,14 @@ void ReceiveMessageClient()
 		Println(sendArray[0]);
 		sendArray[0] = receiveArray[21];
 		Print("Player: ");
-		for (int i = 0; (i < 20) && (receiveArray[i + 1] != 0); i++)
+		for (int i = 0; (i < 20) && (receiveArray[i + 1] != -52); i++)
 		{
 			opponentName[i] = receiveArray[i + 1];
 			Print(receiveArray[i + 1]);
 		}
 		Println(" joined your room");
+		SendReceiveMessageClient();
+
 		break;
 
 	case 2:
@@ -251,16 +255,14 @@ void ReceiveMessageClient()
 		break;
 
 	case 3:
-		Println(sendArray[0]);
-		sendArray[0] = receiveArray[1];
 		if (status)
 		{
-			Println("You left your Room with ID: " << (int)myRoomID);
+			Println("You left your Room")
 			myRoomID = NULL;
 		}
 		else
 		{
-			Println("Room leave request failed");
+			Println("You are allready left or your not in he room");
 		}
 		break;
 
@@ -273,13 +275,19 @@ void ReceiveMessageClient()
 			Print(opponentName[i]);
 
 		Println(" left the room");
+		SendReceiveMessageClient();
 		break;
+
 	
 	case 5:
-		sendArray[0] = receiveArray[1];
-		Println(sendArray[0]);
+		heartBeatArray[0] = receiveArray[1];
+		/*Println(sendArray[0]);
 		Println("");
-		Println("Heartbeat/ Messagenumber: " << (int)receiveArray[1]);
+		Println("Heartbeat/ Messagenumber: " << (int)receiveArray[1]);*/
+		heartBeatArray[0] = heartBeatArray[0] << 1;
+		heartBeatArray[0] |= static_cast<char>(1);
+		socketUDP.Send(serverAddress, (char*)heartBeatArray, 1).m_errorCode;
+		
 		break;
 
 	default:
@@ -288,21 +296,19 @@ void ReceiveMessageClient()
 			break;
 	}
 
-	SendReceiveMessageClient();
 }
 void SendReceiveMessageClient()
 {
-	sendArray[0] = receiveArray[0] >> 1;
 	sendArray[0] = sendArray[0] << 1;
 	sendArray[0] |= static_cast<char>(1);
 	socketUDP.Send(serverAddress, (char*)sendArray, 1).m_errorCode;
 
-	Println("");
+	/*Println("");
 	Println("0: Room request");
 	Println("2: Create room");
 	Println("3: Leave room");
 	Println("");
-	Print("Your Action: ");
+	Print("Your Action: ");*/
 }
 
 void ClearReceiveArray()
