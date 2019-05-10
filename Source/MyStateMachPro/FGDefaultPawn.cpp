@@ -6,23 +6,41 @@
 #include "FGMove.h"
 #include "FGMoveLink.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Public/MyCameraActor.h"
 #include "MyStateMachProGameModeBase.h"
 
 
 AFGDefaultPawn::AFGDefaultPawn() 
 {
-	// Needed because we re using DefaultPawn.
-	//bAddDefaultMovementBindings = false;
 	// This is ridiculously long, but we ll use it to make a point.
 	InputExpirationTime = 0.75f;
 	//MovementComponent = CreateDefaultSubobject<UPawnMovementComponent>(ADefaultPawn::MovementComponentName);
 	//MovementComponent->UpdatedComponent = GetCollisionComponent();
+	RessourceComp = CreateDefaultSubobject<URessourceComponent>(TEXT("RComp"));//NewObject<UActorComponent>(this, "RessourceComp");
+	//RessourceComp->RegisterComponent();
+	//AddOwnedComponent(RessourceComp);
+	PunchL = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchL"), true);
+	PunchR = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchR"), true);
+	KickL = CreateDefaultSubobject<UBoxComponent>(TEXT("KickL"), true);
+	KickR = CreateDefaultSubobject<UBoxComponent>(TEXT("KickR"), true);
 
+	
+	//PunchL->AttachTo(this->GetMesh(), TEXT("HandLSocket"), EAttachLocation::SnapToTarget, true);//SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));
+	PunchL->SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));//SetupAttachment(this->GetMesh());
+	PunchR->SetupAttachment(this->GetMesh(), TEXT("HandRSocket"));//SetupAttachment(this->GetMesh());
+	KickL->SetupAttachment(this->GetMesh(), TEXT("FootLSocket"));//SetupAttachment(this->GetMesh());
+	KickR->SetupAttachment(this->GetMesh(), TEXT("FootRSocket"));//SetupAttachment(this->GetMesh());
+	
+	//OnActorBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+
+	//PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 }
 
 void AFGDefaultPawn::BeginPlay()
 {
-
+	if (KickL->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("HandLSocket"))) {
+		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
+	}
 	Super::BeginPlay();
 
 
@@ -55,12 +73,14 @@ void AFGDefaultPawn::BeginPlay()
 		return;
 		}
 	}
-	//GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
+	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
 }
 
 void AFGDefaultPawn::Tick(float DeltaSeconds) 
 {
 	Super::Tick(DeltaSeconds);
+
+
 
 	// Process input
 
@@ -182,7 +202,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			// Consume the input we used to get to this move.
 			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
-			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex /*/ 3*/, false);
+			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 3, false);
 			InputStream.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex, false);
 		}
 
@@ -195,6 +215,15 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	{
 		TimeInCurrentMove += DeltaSeconds;		// Modulate by move animation length
 	}
+}
+
+
+void AFGDefaultPawn::OnOverlap(AActor* SelfActor, AActor* OtherActor)
+{
+
+	UE_LOG(LogTemp, Warning, TEXT("i want to crouchForward"));
+	RessourceComp->Health -= 100;
+
 }
 
 void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent)
@@ -263,4 +292,31 @@ void AFGDefaultPawn::BottomButtonPressed()
 void AFGDefaultPawn::BottomButtonReleased()
 {
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::BottomFace);
+}
+
+void AFGDefaultPawn::UseGameCamera()
+{
+	if (AMyStateMachProGameModeBase * GM = Cast<AMyStateMachProGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		if (APlayerController * PC = Cast<APlayerController>(GetController()))
+		{
+			if (AMyCameraActor * Cam = Cast<AMyCameraActor>(GM->MainGameCamera))
+			{
+				if (UGameplayStatics::GetPlayerControllerID(PC) == 0)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Player %i registering with game camera (one)"), UGameplayStatics::GetPlayerControllerID(PC));
+					Cam->PlayerOne = this;
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Player %i registering with game camera (two)"), UGameplayStatics::GetPlayerControllerID(PC));
+					Cam->PlayerTwo = this;
+				}
+				PC->SetViewTarget(GM->MainGameCamera);
+				return;
+			}
+		}
+	}
+	// Try again next frame. Currently, there's no limit to how many times we'll do this.
+	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
 }
