@@ -101,12 +101,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void DoMove(UFGMove* NewMove);
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(/*BlueprintNativeEvent*/)
 		void OnOverlap(AActor* SelfActor, AActor* OtherActor);
 
-
-	UFUNCTION()
-		void TestCollision(class AActor* OtherActor);
 private:
 	//~ This array relates to InputStream. InputStream must not be updated without this stream being updated as well.
 	UPROPERTY(VisibleInstanceOnly)

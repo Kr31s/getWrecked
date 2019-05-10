@@ -3,6 +3,7 @@
 #include "MyStateMachProGameModeBase.h"
 #include "MyStateMachPro.h"
 #include "UserWidget.h"
+#include "Public/MyCameraActor.h"
 #include "Kismet/GameplayStatics.h"
 
 void AMyStateMachProGameModeBase::StartPlay() {
@@ -12,5 +13,18 @@ void AMyStateMachProGameModeBase::StartPlay() {
 
 	//MyMainMenu->AddToViewport();
 
-
+	if (UWorld * World = GetWorld())
+	{
+		MainGameCamera = Cast<AMyCameraActor>(World->SpawnActor(AMyCameraActor::StaticClass(), &FTransform::Identity));
+	}
+	// Create another player
+	if (APlayerController * PC = UGameplayStatics::CreatePlayer(this, -1))
+	{
+		if (APawn * Pawn = PC->GetPawn())
+		{
+			// Move this player forward (hardcoded distance, should be a UPROPERTY) and then turn around.
+			Pawn->SetActorLocation(Pawn->GetActorLocation() + Pawn->GetActorForwardVector() * 250.0f);
+			Pawn->AddActorLocalRotation(FRotator(0.0f, 0.0f, 0.0f));
+		}
+	}
 }

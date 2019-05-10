@@ -6,6 +6,7 @@
 #include "FGMove.h"
 #include "FGMoveLink.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Public/MyCameraActor.h"
 #include "MyStateMachProGameModeBase.h"
 
 
@@ -25,14 +26,14 @@ AFGDefaultPawn::AFGDefaultPawn()
 
 	
 	//PunchL->AttachTo(this->GetMesh(), TEXT("HandLSocket"), EAttachLocation::SnapToTarget, true);//SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));
-	PunchL->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("HandLSocket"));//SetupAttachment(this->GetMesh());
-	PunchR->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("HandRSocket"));//SetupAttachment(this->GetMesh());
-	KickL->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("FootLSocket"));//SetupAttachment(this->GetMesh());
-	KickR->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("FootRSocket"));//SetupAttachment(this->GetMesh());
+	PunchL->SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));//SetupAttachment(this->GetMesh());
+	PunchR->SetupAttachment(this->GetMesh(), TEXT("HandRSocket"));//SetupAttachment(this->GetMesh());
+	KickL->SetupAttachment(this->GetMesh(), TEXT("FootLSocket"));//SetupAttachment(this->GetMesh());
+	KickR->SetupAttachment(this->GetMesh(), TEXT("FootRSocket"));//SetupAttachment(this->GetMesh());
 	
 	//OnActorBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 
-	//PunchL->OnComponentBeginOverlap.__Internal_AddDynamic(this, OnOverlap(this, this));
+	//PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 }
 
 void AFGDefaultPawn::BeginPlay()
@@ -72,7 +73,7 @@ void AFGDefaultPawn::BeginPlay()
 		return;
 		}
 	}
-	//GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
+	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
 }
 
 void AFGDefaultPawn::Tick(float DeltaSeconds) 
@@ -216,9 +217,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	}
 }
 
-void AFGDefaultPawn::TestCollision(class AActor* OtherActor) {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("HEALTH PICKED!")));
-}
 
 void AFGDefaultPawn::OnOverlap(AActor* SelfActor, AActor* OtherActor)
 {
@@ -294,4 +292,31 @@ void AFGDefaultPawn::BottomButtonPressed()
 void AFGDefaultPawn::BottomButtonReleased()
 {
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::BottomFace);
+}
+
+void AFGDefaultPawn::UseGameCamera()
+{
+	if (AMyStateMachProGameModeBase * GM = Cast<AMyStateMachProGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		if (APlayerController * PC = Cast<APlayerController>(GetController()))
+		{
+			if (AMyCameraActor * Cam = Cast<AMyCameraActor>(GM->MainGameCamera))
+			{
+				if (UGameplayStatics::GetPlayerControllerID(PC) == 0)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Player %i registering with game camera (one)"), UGameplayStatics::GetPlayerControllerID(PC));
+					Cam->PlayerOne = this;
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Player %i registering with game camera (two)"), UGameplayStatics::GetPlayerControllerID(PC));
+					Cam->PlayerTwo = this;
+				}
+				PC->SetViewTarget(GM->MainGameCamera);
+				return;
+			}
+		}
+	}
+	// Try again next frame. Currently, there's no limit to how many times we'll do this.
+	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
 }

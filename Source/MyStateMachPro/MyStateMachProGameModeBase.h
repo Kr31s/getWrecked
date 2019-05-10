@@ -19,6 +19,13 @@ public:
 
 	virtual void StartPlay() override;
 
+
+	void SpawnSecondPlayer();
+
+	// This will be spawned when the game starts.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		ACameraActor* MainGameCamera;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 		TSubclassOf<class UUserWidget> wMainMenu;
 	
