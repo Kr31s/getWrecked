@@ -8,9 +8,9 @@
 void AMyStateMachProGameModeBase::StartPlay() {
 
 	Super::StartPlay();
-	MyMainMenu = CreateWidget<UUserWidget>(GetWorld(), wMainMenu);
+	//MyMainMenu = CreateWidget<UUserWidget>(GetWorld(), wMainMenu);
 
-	MyMainMenu->AddToViewport();
+	//MyMainMenu->AddToViewport();
 
 
 }

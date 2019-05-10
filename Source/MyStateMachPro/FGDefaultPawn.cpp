@@ -30,6 +30,9 @@ AFGDefaultPawn::AFGDefaultPawn()
 	KickL->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("FootLSocket"));//SetupAttachment(this->GetMesh());
 	KickR->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("FootRSocket"));//SetupAttachment(this->GetMesh());
 	
+	//OnActorBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+
+	//PunchL->OnComponentBeginOverlap.__Internal_AddDynamic(this, OnOverlap(this, this));
 }
 
 void AFGDefaultPawn::BeginPlay()
@@ -75,6 +78,8 @@ void AFGDefaultPawn::BeginPlay()
 void AFGDefaultPawn::Tick(float DeltaSeconds) 
 {
 	Super::Tick(DeltaSeconds);
+
+
 
 	// Process input
 
@@ -211,9 +216,16 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	}
 }
 
-void AFGDefaultPawn::OnOverlap(AActor* OverlappedActor, AActor* OtherActor)
+void AFGDefaultPawn::TestCollision(class AActor* OtherActor) {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("HEALTH PICKED!")));
+}
+
+void AFGDefaultPawn::OnOverlap(AActor* SelfActor, AActor* OtherActor)
 {
+
+	UE_LOG(LogTemp, Warning, TEXT("i want to crouchForward"));
 	RessourceComp->Health -= 100;
+
 }
 
 void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent)
