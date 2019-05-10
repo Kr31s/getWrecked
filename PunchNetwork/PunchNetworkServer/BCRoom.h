@@ -17,4 +17,6 @@ public:
 
 	BCRoom(BCClient* client, unsigned short roundState, unsigned short timeState);
 	void AddRival(BCClient* client);
+	void RemoveRival(NetAddress& netAddress, char* p_receiveArray);
+	bool FindClient(NetAddress& netAddress);
 };

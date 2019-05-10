@@ -4,6 +4,8 @@
 class BCServer
 {
 public:
+	static BCServer*					theServer;
+
 	bool*								serverRunning	= new bool(true);
 
 	NetSocketUDP						serverSocket;
@@ -21,7 +23,6 @@ public:
 	void SendDataBCM(BCClient* receiver, SendType p_status, char* dataArray, unsigned int lengthArrayToSend);
 	//Only address needed, no controllMessage
 	void SendData(NetAddress& netAddress, SendType p_status, char* dataArray, unsigned int lengthArrayToSend);
-
 
 	void RoomRequest(NetAddress& receiveAddress, char* receiveArray, unsigned short rounds, unsigned short gameTime);
 	void CreateRoom(NetAddress& receiveAddress, char* receiveArray, unsigned short rounds, unsigned short gameTime);

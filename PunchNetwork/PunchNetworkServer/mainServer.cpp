@@ -14,29 +14,6 @@ void ClearReceiveArray(char* receiveArray, long long length)
 	}
 }
 
-void ReplyMessage(unsigned char& gameTime)
-{
-	if (theServer->messageIDList->find(gameTime) == theServer->messageIDList->end())
-		Println("Reply message number unkown");
-
-	theServer->messageIDList->erase(gameTime);
-}
-void CheckMessages()
-{
-	for (int i = 0; i < theServer->messageIDList->size(); ++i)
-	{
-		if (theServer->messageIDList->find(i) == theServer->messageIDList->end())
-		{
-			continue;
-		}
-
-		if (theServer->messageIDList->at(i).m_timeStamp < GetTimeInMilli() + theServer->messageIDList->at(i).m_receiver->m_ping + 20)
-		{
-			theServer->SendDataBCM(theServer->messageIDList->at(i).m_receiver, None, theServer->messageIDList->at(i).m_messageArray, theServer->messageIDList->at(i).m_messageArrayLength);
-			theServer->messageIDList->erase(i);
-		}
-	}
-}
 
 void ServerThread()
 {
@@ -48,36 +25,42 @@ void ServerThread()
 	unsigned char identifier = NULL;
 	unsigned char status = NULL;
 
-	while (theServer->serverRunning)
+
+	while (BCServer::theServer->serverRunning)
 	{
-		receiveAddress = theServer->serverSocket.Receive((char*)receiveArray, sizeof(receiveArray));
+		receiveAddress = BCServer::theServer->serverSocket.Receive((char*)receiveArray, sizeof(receiveArray));
 		if (receiveAddress.GetPortRef() != NULL)
 		{
 			DecodeMessageServer(receiveAddress, receiveArray, rounds, gameTime, identifier, status);
 			ClearReceiveArray(receiveArray, sizeof(receiveArray));
 		}
 	}
+	Println("ServerThread closed");
 }
 void MessageThread()
 {
-	while (theServer->serverRunning)
+	while (BCServer::theServer->serverRunning)
 	{
-		CheckMessages();
+		BCMessage::CheckResendMessages();
 	}
+	Println("MessageThread closed");
 }
 void HeartThread()
 {
 	char heartThreadArray[2] = { 0 };
 	heartThreadArray[0] = 5 << 1;
 
-	while (theServer->serverRunning)
+	while (BCServer::theServer->serverRunning)
 	{
 		for (int i = 0; i < BCClient::totalClientID; ++i)
 		{
-			theServer->SendDataBCM(&theServer->clientIDList->at(i), False, heartThreadArray, 1);
+			BCServer::theServer->SendDataBCM(&BCServer::theServer->clientIDList->at(i), False, heartThreadArray, 1);
 		}
+
+		Println("Sleep 2sec");
+		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	}
-	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+	Println("HeartThread closed");
 }
 
 void NonServerMessage()
@@ -92,20 +75,20 @@ void DecodeMessageServer(NetAddress & receiveAddress, char* receiveArray, unsign
 	status = status >> 7;
 
 	if (identifier == 5)
-		theServer->HeartBeat(receiveAddress, receiveArray);
+		BCServer::theServer->HeartBeat(receiveAddress, receiveArray);
 
 	if (status == 0)
 	{
 		switch (identifier)
 		{
 		case 0:
-			theServer->RoomRequest(receiveAddress, receiveArray, rounds, gameTime);
+			BCServer::theServer->RoomRequest(receiveAddress, receiveArray, rounds, gameTime);
 			break;
 		case 2:
-			theServer->CreateRoom(receiveAddress, receiveArray, rounds, gameTime);
+			BCServer::theServer->CreateRoom(receiveAddress, receiveArray, rounds, gameTime);
 			break;
 		case 3:
-			theServer->LeaveRoom(receiveAddress, receiveArray, rounds, gameTime);
+			BCServer::theServer->LeaveRoom(receiveAddress, receiveArray, rounds, gameTime);
 			break;
 		default:
 			NonServerMessage();
@@ -114,20 +97,27 @@ void DecodeMessageServer(NetAddress & receiveAddress, char* receiveArray, unsign
 	}
 	else
 	{
-		ReplyMessage(identifier);
+		BCMessage::GetReplyMessage(identifier);
 	}
 }
 
 int main()
 {
-	theServer = new BCServer(4405, false);
+	BCServer::theServer = new BCServer(4405, true);
 
 	std::thread t1(ServerThread);
 	std::thread t2(MessageThread);
 	std::thread t3(HeartThread);
 
-	int r;
-	std::cin >> r;
+
+	int i;
+	std::cin >> i;
+
+	BCServer::theServer->serverRunning = false;
+
+	t1.join();
+	t2.join();
+	t3.join();
 
 	return 0;
 }
