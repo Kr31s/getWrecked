@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyStateMachProGameModeBase.h"
-<<<<<<< HEAD
 #include "MyStateMachPro.h"
 #include "UserWidget.h"
 #include "Public/MyCameraActor.h"
@@ -29,6 +28,5 @@ void AMyStateMachProGameModeBase::StartPlay() {
 		}
 	}
 }
-=======
 
->>>>>>> parent of adf3c0f... Animation Graph, GUI HP+Stun Bar
+

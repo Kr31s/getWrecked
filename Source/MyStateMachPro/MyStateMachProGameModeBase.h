@@ -14,7 +14,6 @@ class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
-<<<<<<< HEAD
 		
 public:
 
@@ -32,6 +31,5 @@ public:
 	
 	UPROPERTY()
 		UUserWidget* MyMainMenu;
-=======
->>>>>>> parent of adf3c0f... Animation Graph, GUI HP+Stun Bar
+
 };
