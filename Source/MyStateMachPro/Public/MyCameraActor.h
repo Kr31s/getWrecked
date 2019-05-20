@@ -30,4 +30,13 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float VerticalOffset;
+
+	UPROPERTY(EditAnywhere)
+		float ZDistanceModifier;
+
+	UPROPERTY(EditAnywhere)
+		float InterpModifier;
+
+	UPROPERTY(EditAnywhere)
+		float YawRotaModifier;
 };
