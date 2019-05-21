@@ -22,7 +22,8 @@ AMyCameraActor::AMyCameraActor()
 }
 /*
 void AMyCameraActor::BeginPlay() {
-	//SetActorRotation(FRotator(0.0F,-90.0F,0.0F));
+	//SetActorRotation(FRotator(-13.0F,-90.0F,0.0F));
+	//SetActorLocation(FVector(160.0F,180.0F,232.0F));
 }
 */
 
@@ -33,15 +34,28 @@ void AMyCameraActor::Tick(float DeltaSeconds)
 		FVector P1L = PlayerOne->GetActorLocation();
 		FVector P2L = PlayerTwo->GetActorLocation();
 		FVector MidPoint = (P1L + P2L) * 0.5f;
-		FVector P1Edge = FVector(MidPoint.X - RightCornerYValue, 0, 0);
+		FVector LeftEdge = FVector(MidPoint.X - RightCornerYValue, 0, 0);
+		FVector RightEdge = FVector(MidPoint.X + RightCornerYValue, 0, 0);
+		float playerDistance = PlayerOne->GetDistanceTo(PlayerTwo);
 		MidPoint.Z += VerticalOffset;
 		MidPoint.Y = 180.0F;
 		SetActorLocation(MidPoint);
 		//LeftEdge->
-		if (P1L.X <= P1Edge.X) {
-			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Black, TEXT("Welcome TO THE EDGE"));
-			//PlayerOne->SetActorLocation(FVector(P1Edge.X, P1L.Y, P1L.Z));
+		if (/*P1L.X <= LeftEdge.X*/playerDistance > RightCornerYValue*2) {
+			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Black, TEXT("Welcome TO THE LeftEDGE"));
+			//PlayerOne->SetActorLocation(FVector(LeftEdge.X, P1L.Y, P1L.Z));
+			//PlayerTwo->SetActorLocation(FVector(RightEdge.X, P2L.Y, P2L.Z));
+		}/*
+		else {
 		}
+			if (P2L.X >= RightEdge.X) {
+				
+				GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Cyan, TEXT("Welcome TO THE RightEDGE"));
+				//PlayerOne->SetActorLocation(FVector(RightEdge.X, P1L.Y, P1L.Z));
+				//PlayerTwo->SetActorLocation(FVector(LeftEdge.X, P2L.Y, P2L.Z));
+
+			}
+		 */
 
 		float Pitch = FMath::RadiansToDegrees(FMath::Atan2(-VerticalOffset * 0.5f, SpringArm->TargetArmLength));
 		float ZDistance = FMath::Abs(P1L.Z - P2L.Z)/ ZDistanceModifier;
@@ -64,3 +78,10 @@ void AMyCameraActor::Tick(float DeltaSeconds)
 		SetActorRotation(TargetRota);
 	}
 }
+void AMyCameraActor::EdgeMovementRestriction()
+{
+
+
+
+}
+

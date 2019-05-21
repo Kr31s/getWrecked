@@ -19,6 +19,7 @@ public:
 	AMyCameraActor();
 	virtual void Tick(float DeltaSeconds) override;
 
+	void EdgeMovementRestriction();
 	//virtual void BeginPlay() override;
 
 	UPROPERTY()

@@ -18,9 +18,11 @@ class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 public:
 
 	virtual void StartPlay() override;
-
+	virtual void Tick(float Deltaseconds) override;
 
 	void SpawnSecondPlayer();
+
+
 
 	// This will be spawned when the game starts.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

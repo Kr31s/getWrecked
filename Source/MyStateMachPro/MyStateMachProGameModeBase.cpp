@@ -17,14 +17,22 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	{
 		MainGameCamera = Cast<AMyCameraActor>(World->SpawnActor(AMyCameraActor::StaticClass(), &FTransform::Identity));
 	}
+
+
 	// Create another player
-	if (APlayerController * PC = UGameplayStatics::CreatePlayer(this, -1))
+	if (APlayerController * PC = UGameplayStatics::CreatePlayer(this,-1))
 	{
 		if (APawn * Pawn = PC->GetPawn())
 		{
 			// Move this player forward (hardcoded distance, should be a UPROPERTY) and then turn around.
-			Pawn->SetActorLocation(Pawn->GetActorLocation() + Pawn->GetActorForwardVector() * 250.0f);
-			Pawn->AddActorLocalRotation(FRotator(0.0f, 0.0f, 0.0f));
+			Pawn->SetActorLocation(FVector(230,0.0F,100.0F));
+			//Pawn->SetActorLocation(Pawn->GetActorLocation() + Pawn->GetActorForwardVector() * 250.0f);
+			Pawn->SetActorRotation(FRotator(0.0f, 0.0f,0.0f));
 		}
 	}
 }
+void AMyStateMachProGameModeBase::Tick(float Deltaseconds) {
+	Super::Tick(Deltaseconds);
+}
+
+

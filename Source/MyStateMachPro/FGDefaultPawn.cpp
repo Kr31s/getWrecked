@@ -33,7 +33,6 @@ AFGDefaultPawn::AFGDefaultPawn()
 
 	//OnActorBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 
-	//PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 }
 
 void AFGDefaultPawn::BeginPlay()
@@ -43,6 +42,7 @@ void AFGDefaultPawn::BeginPlay()
 	}
 	Super::BeginPlay();
 
+	PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
@@ -97,7 +97,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			InputDirection = DirectionBackAtom;
 			this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
-			//SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
+			//this->SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
@@ -139,7 +139,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			InputDirection = DirectionForwardAtom;
 			this->AddMovementInput(this->GetActorForwardVector(), 100.0F);
-			//SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
+			//this->SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
@@ -223,7 +223,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 
-void AFGDefaultPawn::OnOverlap(AActor* SelfActor, AActor* OtherActor)
+void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
 	UE_LOG(LogTemp, Warning, TEXT("i want to crouchForward"));
@@ -312,12 +312,15 @@ void AFGDefaultPawn::UseGameCamera()
 					UE_LOG(LogTemp, Warning, TEXT("Player %i registering with game camera (one)"), UGameplayStatics::GetPlayerControllerID(PC));
 					Cam->PlayerOne = this;
 					this->MovementRestrictionComp->Self = this;
+					this->MovementRestrictionComp->Enemy = UGameplayStatics::GetPlayerCharacter(this, 1);;
+
 				}
 				else
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Player %i registering with game camera (two)"), UGameplayStatics::GetPlayerControllerID(PC));
 					Cam->PlayerTwo = this;
-					this->MovementRestrictionComp->Enemy = this;
+					this->MovementRestrictionComp->Self = this;
+					this->MovementRestrictionComp->Enemy = UGameplayStatics::GetPlayerCharacter(this, 0);;
 				}
 				PC->SetViewTarget(GM->MainGameCamera);
 				return;
