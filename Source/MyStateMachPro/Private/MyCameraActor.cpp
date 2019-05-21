@@ -39,8 +39,10 @@ void AMyCameraActor::Tick(float DeltaSeconds)
 		
 		//Camera prints
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::SanitizeFloat(-90.0f + PlayerOne->GetVelocity().X / YawRotaModifier));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Pitch + ZDistance));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::SanitizeFloat(-90.0f + PlayerOne->GetVelocity().X / YawRotaModifier));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Pitch + ZDistance));
+		
+		
 		//SetActorRotation(FRotator(Pitch + ZDistance/*InPitch*/, (- 90.0f)/*InYaw*/, 0.0f/*InRoll*/));
 
 		SetActorRotation(TargetRota);

@@ -13,9 +13,10 @@ UCLASS()
 class MYSTATEMACHPRO_API UMyWidgetBlueprint : public UWidgetBlueprint
 {
 	GENERATED_BODY()
+
 public :
 
-		UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent)
 		bool CreateRoom(const FString& p_Name);
 
 	UFUNCTION(BlueprintImplementableEvent)
