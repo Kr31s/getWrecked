@@ -6,6 +6,9 @@
 #include "GameFramework/DefaultPawn.h"
 #include "SM_State.h"
 #include "Public/RessourceComponent.h"
+#include "PlayerComponents/MovementRestrictionComponent.h"
+#include "PlayerComponents/ActorRotationComponent.h"
+
 #include "FGDefaultPawn.generated.h"
 
 
@@ -54,6 +57,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		URessourceComponent* RessourceComp;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		UMovementRestrictionComponent* MovementRestrictionComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		UActorRotationComponent* PlayerRotationComp;
 
 	UPROPERTY(VisibleAnywhere)
 		UBoxComponent* PunchL;	

@@ -19,11 +19,19 @@ public:
 	AMyCameraActor();
 	virtual void Tick(float DeltaSeconds) override;
 
+	//virtual void BeginPlay() override;
+
 	UPROPERTY()
 		AActor* PlayerOne;
 
 	UPROPERTY()
 		AActor* PlayerTwo;
+
+	UPROPERTY(EditAnywhere)
+		float LeftCornerYValue;
+
+	UPROPERTY(EditAnywhere)
+		float RightCornerYValue;
 
 	UPROPERTY()
 		USpringArmComponent* SpringArm;
