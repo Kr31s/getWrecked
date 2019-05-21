@@ -2,6 +2,12 @@
 
 #pragma once
 
+//#include "AllowWindowsPlatformTypes.h"
+//#include "HideWindowsPlatformTypes.h"
+//
+//#include "../ThirdParty/BWLib/include/Inc_BWMath.h"
+//#include "../ThirdParty/BWLib/include/Inc_BWNetworking.h"
+
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "MyUserWidget.generated.h"
@@ -13,11 +19,11 @@ class MYSTATEMACHPRO_API UMyUserWidget : public UUserWidget
 public:
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool CreateRoom(const FString& p_Name);
+		bool CreateRoom(int TimeValue, int RoundValue, const FString& p_Name);
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool JoinRoom(const FString& p_Name);
+		bool JoinRoom(int TimeValue, int RoundValue, const FString& p_Name);
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool LeaveRoom(const FString& p_Name);
+		bool LeaveRoom();
 };

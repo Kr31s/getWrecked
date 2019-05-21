@@ -4,17 +4,17 @@
 #include "MyUserWidget.h"
 
 
-bool UMyUserWidget::CreateRoom(const FString& p_Name)
+bool UMyUserWidget::CreateRoom(int TimeValue, int RoundValue, const FString& p_Name)
 {
 	return false;
 }
 
-bool UMyUserWidget::JoinRoom(const FString& p_Name)
+bool UMyUserWidget::JoinRoom(int TimeValue, int RoundValue, const FString& p_Name)
 {
 	return false;
 }
 
-bool UMyUserWidget::LeaveRoom(const FString& p_Name)
+bool UMyUserWidget::LeaveRoom()
 {
 	return false;
 }
