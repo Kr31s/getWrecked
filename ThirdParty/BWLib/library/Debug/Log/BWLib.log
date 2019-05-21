@@ -1,0 +1,7 @@
+﻿  BWNet.cpp
+  NetAddress.cpp
+  NetSocketTCP.cpp
+  NetSocketUDP.cpp
+  BWPhysik2D.cpp
+  Generating Code...
+  BWLib.vcxproj -> E:\GitRepositories\BWLib\library\BWLib.lib

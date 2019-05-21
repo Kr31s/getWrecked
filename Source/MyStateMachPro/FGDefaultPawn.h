@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/DefaultPawn.h"
 #include "SM_State.h"
+#include "Public/RessourceComponent.h"
 #include "FGDefaultPawn.generated.h"
 
 
@@ -27,11 +28,17 @@ public:
 
 	FORCEINLINE float GetTimeInMove() const { return TimeInCurrentMove; }
 
+
+
 protected:
 	void LeftButtonPressed();
 	void LeftButtonReleased();
 	void TopButtonPressed();
 	void TopButtonReleased();
+	void RightButtonPressed();
+	void RightButtonReleased();
+	void BottomButtonPressed();
+	void BottomButtonReleased();
 	void ReadXAxis(float Value);
 	void ReadYAxis(float Value);
 
@@ -45,6 +52,17 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UFGMove* CurrentMove;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		URessourceComponent* RessourceComp;
+
+	UPROPERTY(VisibleAnywhere)
+		UBoxComponent* PunchL;	
+	UPROPERTY(VisibleAnywhere)
+		UBoxComponent* PunchR;	
+	UPROPERTY(VisibleAnywhere)
+		UBoxComponent* KickL;	
+	UPROPERTY(VisibleAnywhere)
+		UBoxComponent* KickR;
 	// Input atoms are removed when they pass this age threshold. All moves must be executed in under this time.
 	UPROPERTY(EditAnywhere)
 	float InputExpirationTime;
@@ -82,6 +100,9 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void DoMove(UFGMove* NewMove);
+
+	UFUNCTION(/*BlueprintNativeEvent*/)
+		void OnOverlap(AActor* SelfActor, AActor* OtherActor);
 
 private:
 	//~ This array relates to InputStream. InputStream must not be updated without this stream being updated as well.
