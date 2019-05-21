@@ -17,20 +17,20 @@ AFGDefaultPawn::AFGDefaultPawn()
 	//MovementComponent = CreateDefaultSubobject<UPawnMovementComponent>(ADefaultPawn::MovementComponentName);
 	//MovementComponent->UpdatedComponent = GetCollisionComponent();
 	RessourceComp = CreateDefaultSubobject<URessourceComponent>(TEXT("RComp"));//NewObject<UActorComponent>(this, "RessourceComp");
-	//RessourceComp->RegisterComponent();
-	//AddOwnedComponent(RessourceComp);
+	MovementRestrictionComp = CreateDefaultSubobject<UMovementRestrictionComponent>(TEXT("MovementRestrictionComp"));//NewObject<UActorComponent>(this, "RessourceComp");
+	PlayerRotationComp = CreateDefaultSubobject<UActorRotationComponent>(TEXT("PlayerRotationComp"));//NewObject<UActorComponent>(this, "RessourceComp");
+
 	PunchL = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchL"), true);
 	PunchR = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchR"), true);
 	KickL = CreateDefaultSubobject<UBoxComponent>(TEXT("KickL"), true);
 	KickR = CreateDefaultSubobject<UBoxComponent>(TEXT("KickR"), true);
 
 	
-	//PunchL->AttachTo(this->GetMesh(), TEXT("HandLSocket"), EAttachLocation::SnapToTarget, true);//SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));
-	PunchL->SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));//SetupAttachment(this->GetMesh());
-	PunchR->SetupAttachment(this->GetMesh(), TEXT("HandRSocket"));//SetupAttachment(this->GetMesh());
-	KickL->SetupAttachment(this->GetMesh(), TEXT("FootLSocket"));//SetupAttachment(this->GetMesh());
-	KickR->SetupAttachment(this->GetMesh(), TEXT("FootRSocket"));//SetupAttachment(this->GetMesh());
-	
+	PunchL->SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));
+	PunchR->SetupAttachment(this->GetMesh(), TEXT("HandRSocket"));
+	KickL->SetupAttachment(this->GetMesh(), TEXT("FootLSocket"));
+	KickR->SetupAttachment(this->GetMesh(), TEXT("FootRSocket"));
+
 	//OnActorBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 
 	//PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
@@ -200,10 +200,15 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else if (MoveLinkToFollow.SMR.DataIndex)
 		{
+			try {
+
 			// Consume the input we used to get to this move.
 			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
 			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 3, false);
 			InputStream.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex, false);
+			}
+			catch (...) {
+			}
 		}
 
 		// Set and start the new move.
@@ -306,11 +311,13 @@ void AFGDefaultPawn::UseGameCamera()
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Player %i registering with game camera (one)"), UGameplayStatics::GetPlayerControllerID(PC));
 					Cam->PlayerOne = this;
+					this->MovementRestrictionComp->Self = this;
 				}
 				else
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Player %i registering with game camera (two)"), UGameplayStatics::GetPlayerControllerID(PC));
 					Cam->PlayerTwo = this;
+					this->MovementRestrictionComp->Enemy = this;
 				}
 				PC->SetViewTarget(GM->MainGameCamera);
 				return;
