@@ -3,7 +3,6 @@
 #include "Inc_BWMath.h"
 
 #include <thread>
-#include <string>
 
 void ReceiveThread();
 void SendRequestClient(int messageType, NetSocketUDP socketUDP);
@@ -30,7 +29,6 @@ char* charInput = new char[20];
 
 void main()
 {
-
 	BWNet::InitializeSocketLayer();
 
 	Print("ErrorCode OpenSocket ");
