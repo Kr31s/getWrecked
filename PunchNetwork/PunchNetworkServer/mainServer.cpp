@@ -56,6 +56,21 @@ void HeartThread()
 		{
 			BCServer::theServer->SendDataBCM(&BCServer::theServer->clientIDList->at(i), False, heartThreadArray, 1);
 		}
+	}
+	else
+	{
+		--rounds;
+		--gameTime;
+
+		for (unsigned int roomCounter = 0; roomCounter < roomList[rounds][gameTime].size(); ++roomCounter)
+		{
+			if (!roomList[rounds][gameTime][roomCounter]->m_full)
+			{
+				roomList[rounds][gameTime][roomCounter]->AddRival(Client(receiveAddress, receiveArray));
+				ReceiveArrayAddString(2, roomList[rounds][gameTime][roomCounter]->m_Owner.m_nickname, sizeof(roomList[rounds][gameTime][roomCounter]->m_Owner.m_nickname));
+				receiveArray[1] = crypt((roomList[rounds][gameTime][roomCounter]->m_roomID));
+				SendData(receiveAddress, true, receiveArray, 22);//first id next room adjustments and 20 for opponent name
+				receiveArray[0] = 1 << 1;
 
 		Println("Sleep 2sec");
 		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
