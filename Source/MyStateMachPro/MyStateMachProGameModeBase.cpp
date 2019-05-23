@@ -17,7 +17,9 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	{
 		MainGameCamera = Cast<AMyCameraActor>(World->SpawnActor(AMyCameraActor::StaticClass(), &FTransform::Identity));
 	}
-
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bCanEverTick = true;
+	
 
 	// Create another player
 	if (APlayerController * PC = UGameplayStatics::CreatePlayer(this,-1))
@@ -37,14 +39,16 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	player1->Opponent = UGameplayStatics::GetPlayerCharacter(this, 1);
 	player2->Opponent = UGameplayStatics::GetPlayerCharacter(this, 0);
 	UE_LOG(LogTemp, Warning, TEXT("No initial move."));
-	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, FString::FromInt(GetWorld()->GetNumPlayerControllers()));
+	/*GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, FString::FromInt(GetWorld()->GetNumPlayerControllers()));
 	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("player1"));
 
 	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, FString::FromInt(GetWorld()->GetNumPlayerControllers()));
 	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, TEXT("player2"));
 	// GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, Opponent->GetName());
+	*/
 	player1->isOnLeftSide = true;
 	player2->isOnLeftSide = false;
+	//UGameplayStatics::SetGamePaused(this, true);
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
@@ -57,5 +61,5 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player1->isOnLeftSide = false;
 		player2->isOnLeftSide = true;
 	}
-		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, TEXT("%b"), player1->isOnLeftSide);
+		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, TEXT("GMisTicking"));
 }

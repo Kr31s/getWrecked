@@ -19,7 +19,6 @@ public:
 	AMyCameraActor();
 	virtual void Tick(float DeltaSeconds) override;
 
-	void EdgeMovementRestriction();
 	//virtual void BeginPlay() override;
 
 	UPROPERTY()
@@ -29,10 +28,7 @@ public:
 		AActor* PlayerTwo;
 
 	UPROPERTY(EditAnywhere)
-		float LeftCornerYValue;
-
-	UPROPERTY(EditAnywhere)
-		float RightCornerYValue;
+		float YValueHowCloseToPlayer;
 
 	UPROPERTY()
 		USpringArmComponent* SpringArm;

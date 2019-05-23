@@ -48,6 +48,9 @@ void AFGDefaultPawn::BeginPlay()
 	CanMoveInLeftDirection = true;
 	CanMoveInRightDirection = true;
 	PunchR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	KickL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	KickR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
@@ -237,13 +240,12 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
-		UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
-		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Magenta, FString(this->GetName()));
-		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString(OtherActor->GetName()));
-		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString(Opponent->GetName()));
-		Cast<AFGDefaultPawn>(Opponent)->RessourceComp->Health -= 100;
-		pAsPawn->RessourceComp->Health -= 100;
-		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString::FromInt(Cast<AFGDefaultPawn>(OtherActor)->RessourceComp->Health));
+
+		if(OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
+			pAsPawn->RessourceComp->Health -= 25;
+		}
 	}
 
 }
