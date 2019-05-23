@@ -29,7 +29,7 @@ public:
 
 
 
-	FMessageReceiveThread MessageReceiveThread;
+	FMessageReceiveThread* MessageReceiveThread;
 	//FResendMessageThread ResendMessageThread;
 
 	static NetworkSystem* NetSys;

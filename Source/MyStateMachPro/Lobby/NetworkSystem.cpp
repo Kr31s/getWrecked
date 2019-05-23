@@ -4,7 +4,7 @@ NetworkSystem* NetworkSystem::NetSys = NULL;
 
 bool NetworkSystem::StartingMessageReceiveThread()
 {
-	MessageReceiveThread.InitThread(&socketUDP, m_receiveArray);
+	MessageReceiveThread = FMessageReceiveThread::InitThread(&socketUDP, m_receiveArray);
 
 	return false;
 }

@@ -4,14 +4,23 @@
 #include "MyUserWidget.h"
 #include "NetworkSystem.h"
 
+void UMyUserWidget::BeginDestroy()
+{
+	Super::BeginDestroy();
+	UE_LOG(LogTemp, Warning, TEXT("destructor"));
+	FMessageReceiveThread::threadRuning = false;
+	NetworkSystem::NetSys->MessageReceiveThread->Shutdown();
+}
 
 bool UMyUserWidget::CreateRoom(int TimeValue, int RoundValue, const FString& p_Name)
 {
+	this->SendRequestClient(2, RoundValue, TimeValue, TCHAR_TO_ANSI(*p_Name));
 	return false;
 }
 
 bool UMyUserWidget::JoinRoom(int TimeValue, int RoundValue, const FString& p_Name)
 {
+	this->SendRequestClient(0, RoundValue, TimeValue, TCHAR_TO_ANSI(*p_Name));
 	return false;
 }
 
