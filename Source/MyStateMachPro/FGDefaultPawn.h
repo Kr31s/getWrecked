@@ -6,6 +6,9 @@
 #include "GameFramework/DefaultPawn.h"
 #include "SM_State.h"
 #include "Public/RessourceComponent.h"
+#include "PlayerComponents/MovementRestrictionComponent.h"
+#include "PlayerComponents/ActorRotationComponent.h"
+
 #include "FGDefaultPawn.generated.h"
 
 
@@ -77,6 +80,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		URessourceComponent* RessourceComp;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		UMovementRestrictionComponent* MovementRestrictionComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		UActorRotationComponent* PlayerRotationComp;
 
 	UPROPERTY(VisibleAnywhere)
 		UBoxComponent* PunchL;	
@@ -125,7 +134,7 @@ protected:
 	void DoMove(UFGMove* NewMove);
 
 	UFUNCTION(/*BlueprintNativeEvent*/)
-		void OnOverlap(AActor* SelfActor, AActor* OtherActor);
+		void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
 	//~ This array relates to InputStream. InputStream must not be updated without this stream being updated as well.

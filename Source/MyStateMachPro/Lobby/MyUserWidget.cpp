@@ -52,7 +52,7 @@ bool UMyUserWidget::JoinRoom(int p_timeValue, int p_roundValue, const FString& p
 	return true;
 }
 
-bool UMyUserWidget::LeaveRoom(const FString& p_Name)
+bool UMyUserWidget::LeaveRoom()
 {
 	if (NetworkSystem::NetSys->myRoomID >= 0)
 	{
@@ -89,7 +89,7 @@ void  UMyUserWidget::SendRequestClient(unsigned int messageType, unsigned int ro
 break;
 
 	case 3:
-
+		
 		//her in no room
 		break;
 	default:
@@ -181,3 +181,4 @@ void  UMyUserWidget::SendReceiveMessageClient()
 	NetworkSystem::NetSys->sendArray[0] |= static_cast<char>(1);
 	NetworkSystem::NetSys->socketUDP.Send(NetworkSystem::NetSys->serverAddress, (char*)NetworkSystem::NetSys->sendArray, 1).m_errorCode;
 }
+

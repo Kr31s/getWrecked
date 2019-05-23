@@ -24,7 +24,6 @@ public:
 	void SpawnSecondPlayer();
 
 
-	void SpawnSecondPlayer();
 
 	// This will be spawned when the game starts.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
