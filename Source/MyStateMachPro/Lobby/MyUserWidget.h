@@ -17,6 +17,7 @@ class MYSTATEMACHPRO_API UMyUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+
 public:
 	virtual void BeginDestroy() override;
 
