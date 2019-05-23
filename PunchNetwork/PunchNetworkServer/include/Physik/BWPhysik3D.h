@@ -3,7 +3,7 @@
 //  BWLib
 //
 //  Created by William Ratz on 11.04.19
-//  Copyright © 2019 William Ratz. All rights reserved.
+//  Copyright ï¿½ 2019 William Ratz. All rights reserved.
 //
 
 #ifndef BWPHYSIK3D_H
@@ -71,7 +71,7 @@ public:
 	};
 #pragma endregion
 
-	
+
 };
 
 #endif

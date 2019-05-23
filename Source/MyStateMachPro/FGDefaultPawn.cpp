@@ -11,7 +11,7 @@
 #include "MyStateMachProGameModeBase.h"
 
 
-AFGDefaultPawn::AFGDefaultPawn() 
+AFGDefaultPawn::AFGDefaultPawn()
 {
 	// This is ridiculously long, but we ll use it to make a point.
 	InputExpirationTime = 0.75f;
@@ -26,7 +26,7 @@ AFGDefaultPawn::AFGDefaultPawn()
 	KickL = CreateDefaultSubobject<UBoxComponent>(TEXT("KickL"), true);
 	KickR = CreateDefaultSubobject<UBoxComponent>(TEXT("KickR"), true);
 
-	
+
 	PunchL->SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));
 	PunchR->SetupAttachment(this->GetMesh(), TEXT("HandRSocket"));
 	KickL->SetupAttachment(this->GetMesh(), TEXT("FootLSocket"));
@@ -43,7 +43,7 @@ void AFGDefaultPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	AMyStateMachProGameModeBase* GM = Cast<AMyStateMachProGameModeBase>(UGameplayStatics::GetGameMode(this));
-	
+
 
 	CanMoveInLeftDirection = true;
 	CanMoveInRightDirection = true;
@@ -81,7 +81,7 @@ void AFGDefaultPawn::BeginPlay()
 	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
 }
 
-void AFGDefaultPawn::Tick(float DeltaSeconds) 
+void AFGDefaultPawn::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
@@ -128,8 +128,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			APlayerController* pController = Cast<APlayerController>(GetController());
 
 			InputDirection = DirectionUpAtom;
-			
-			
+
+
 			UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
 			this->Jump();
 			//this->AddMovementInput(this->GetActorUpVector(), 1000.0F);

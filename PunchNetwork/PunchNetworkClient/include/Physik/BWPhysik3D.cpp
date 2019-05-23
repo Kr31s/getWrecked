@@ -26,7 +26,7 @@ Vector3 BWPhysik3D::UM::GetVelocity(Vector3& p_distance, double& p_elapsedTime)
 	return Vector3(p_distance / p_elapsedTime);
 }
 #pragma endregion
- 
+
 #pragma region Kinematics
 Vector3 BWPhysik3D::K::GetElapseTime(Vector3& p_velocity, Vector3& p_acceleration)
 {

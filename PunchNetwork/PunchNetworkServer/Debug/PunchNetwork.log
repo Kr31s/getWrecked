@@ -1,2 +1,14 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(411,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (PunchNetwork.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(411,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (PunchNetwork.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  mainServer.cpp
+E:\Project\getWrecked\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(74): warning C4018: '<': signed/unsigned mismatch
+E:\Project\getWrecked\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(154): warning C4554: '^': check operator precedence for possible error; use parentheses to clarify precedence
+E:\Project\getWrecked\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(154): warning C4804: '<': unsafe use of type 'bool' in operation
+E:\Project\getWrecked\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(188): warning C4554: '^': check operator precedence for possible error; use parentheses to clarify precedence
+E:\Project\getWrecked\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(188): warning C4804: '<': unsafe use of type 'bool' in operation
+E:\Project\getWrecked\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(197): warning C4554: '^': check operator precedence for possible error; use parentheses to clarify precedence
+E:\Project\getWrecked\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(197): warning C4804: '<': unsafe use of type 'bool' in operation
+E:\Project\getWrecked\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(206): warning C4018: '<': signed/unsigned mismatch
+E:\Project\getWrecked\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(234): warning C4018: '<': signed/unsigned mismatch
+E:\Project\getWrecked\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(270): warning C4018: '<': signed/unsigned mismatch
+E:\Project\getWrecked\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(317): warning C4326: return type of 'main' should be 'int' instead of 'void'
 LINK : fatal error LNK1104: cannot open file 'BWLib.lib'
