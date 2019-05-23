@@ -1,7 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
-
 
 #include "AllowWindowsPlatformTypes.h"
 #include "HideWindowsPlatformTypes.h"
@@ -19,25 +17,8 @@ class MYSTATEMACHPRO_API UMyUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-	NetSocketUDP socketUDP;
-	NetAddress serverAddress;
-	NetAddress receiveAddress;
-	bool socketOnline = true;
-
-	unsigned char opponentName[20];
-
-	unsigned char sendArray[51];
-	unsigned char heartBeatArray[51];
-	char receiveArray[51];
-
-	int myRoomID = -1;
-	unsigned char identifier = NULL;
-	unsigned char status = NULL;
-	int input;
-	char* charInput = new char[20];
-
 public:
-
+	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
 		bool CreateRoom(const FString& p_Name);
@@ -55,13 +36,12 @@ public:
 private:
 
 
-	void ReceiveThread();
-
-	void SendRequestClient(int messageType);
+	void SendRequestClient(unsigned int messageType, unsigned int roundSettingsAdjusted, unsigned int timeSettingsAdjusted, char* nickname);
 
 	void ReceiveMessageClient();
 
 	void SendReceiveMessageClient();
 
-	void ClearReceiveArray();
+
+	
 };

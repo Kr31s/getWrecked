@@ -26,11 +26,10 @@ AFGDefaultPawn::AFGDefaultPawn()
 	KickR = CreateDefaultSubobject<UBoxComponent>(TEXT("KickR"), true);
 
 
-	//PunchL->AttachTo(this->GetMesh(), TEXT("HandLSocket"), EAttachLocation::SnapToTarget, true);//SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));
-	PunchL->SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));//SetupAttachment(this->GetMesh());
-	PunchR->SetupAttachment(this->GetMesh(), TEXT("HandRSocket"));//SetupAttachment(this->GetMesh());
-	KickL->SetupAttachment(this->GetMesh(), TEXT("FootLSocket"));//SetupAttachment(this->GetMesh());
-	KickR->SetupAttachment(this->GetMesh(), TEXT("FootRSocket"));//SetupAttachment(this->GetMesh());
+	PunchL->SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));
+	PunchR->SetupAttachment(this->GetMesh(), TEXT("HandRSocket"));
+	KickL->SetupAttachment(this->GetMesh(), TEXT("FootLSocket"));
+	KickR->SetupAttachment(this->GetMesh(), TEXT("FootRSocket"));
 
 	//OnActorBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 	PunchL->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
@@ -48,6 +47,9 @@ void AFGDefaultPawn::BeginPlay()
 	CanMoveInLeftDirection = true;
 	CanMoveInRightDirection = true;
 	PunchR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	KickL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	KickR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
@@ -211,15 +213,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (MoveLinkToFollow.SMR.DataIndex)
 		{
 			// Consume the input we used to get to this move.
-
-			try {
-				check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
-				InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 3, false);
-				InputStream.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex, false);
-
-			}catch (...)
-			{
-
+			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
+			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 3, false);
+			InputStream.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex, false);
+			}
+			catch (...) {
 			}
 		}
 
@@ -239,13 +237,12 @@ void AFGDefaultPawn::OnOverlap(AActor* SelfActor, AActor* OtherActor)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
-		UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
-		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Magenta, FString(this->GetName()));
-		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString(OtherActor->GetName()));
-		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString(Opponent->GetName()));
-		Cast<AFGDefaultPawn>(Opponent)->RessourceComp->Health -= 100;
-		pAsPawn->RessourceComp->Health -= 100;
-		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString::FromInt(Cast<AFGDefaultPawn>(OtherActor)->RessourceComp->Health));
+
+		if(OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
+			pAsPawn->RessourceComp->Health -= 25;
+		}
 	}
 
 }

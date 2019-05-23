@@ -23,7 +23,7 @@ void UMovementRestrictionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	LeftCornerYValue = -965.0F;
-	MaxDistanceFromMiddle = 500.0F;
+	MaxDistanceFromMiddle = 550.0F;
 	YValueForPlayer = 0.0F;
 
 }
@@ -35,36 +35,47 @@ void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick Ti
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if (Self && Enemy)
 	{
-		auto *pAsPawn{ Cast<AFGDefaultPawn>(Self) };
+		auto* pAsPawn{ Cast<AFGDefaultPawn>(Self) };
 		FVector P1L = Self->GetActorLocation();
 		FVector P2L = Enemy->GetActorLocation();
 		float playerDistance = Self->GetDistanceTo(Enemy);
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Green, FString::SanitizeFloat(playerDistance));
-		if(playerDistance >= MaxDistanceFromMiddle)
-		{
-			
-			if (P1L.X < P2L.X) {
-				float LeftEdge = ((P1L.X + P2L.X) * 0.5F) - ((MaxDistanceFromMiddle )/2);
-				pAsPawn->CanMoveInLeftDirection = false;
-				
-				Self->SetActorLocation(FVector(LeftEdge, P1L.Y, P1L.Z));
-				
-			}else
-			{
-				pAsPawn->CanMoveInLeftDirection = true;
-				
-			}
-			if (P1L.X > P2L.X) {
-				float RightEdge = ((P1L.X + P2L.X) * 0.5F) + ((MaxDistanceFromMiddle) / 2);
-				pAsPawn->CanMoveInRightDirection = false;
-				Self->SetActorLocation(FVector(RightEdge, P1L.Y, P1L.Z));
-			}else
-			{
-				pAsPawn->CanMoveInRightDirection = true;
-				
-			}
-		}
 
+
+		if (P1L.X < P2L.X && playerDistance >= MaxDistanceFromMiddle) {
+			float LeftEdge = ((P1L.X + P2L.X) * 0.5F) - ((MaxDistanceFromMiddle) / 2);
+			pAsPawn->CanMoveInLeftDirection = false;
+
+			Self->SetActorLocation(FVector(LeftEdge, P1L.Y, P1L.Z));
+
+		}
+		else
+		{
+			pAsPawn->CanMoveInLeftDirection = true;
+
+		}
+		if (P1L.X > P2L.X && playerDistance >= MaxDistanceFromMiddle) {
+			float RightEdge = ((P1L.X + P2L.X) * 0.5F) + ((MaxDistanceFromMiddle) / 2);
+			pAsPawn->CanMoveInRightDirection = false;
+			Self->SetActorLocation(FVector(RightEdge, P1L.Y, P1L.Z));
+		}
+		else
+		{
+			pAsPawn->CanMoveInRightDirection = true;
+
+		}
+		if (P1L.X < P2L.X)
+		{
+			pAsPawn->isOnLeftSide = true;
+		}else
+		{
+			pAsPawn->isOnLeftSide = false;
+		}
+		
+		if(Self->GetActorLocation().Y != 0.0F)
+		{
+			Self->SetActorLocation(FVector(Self->GetActorLocation().X, 0.0F, Self->GetActorLocation().Z));
+		}
 	}
 	
 	

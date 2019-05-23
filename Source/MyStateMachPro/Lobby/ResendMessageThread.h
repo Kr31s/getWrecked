@@ -8,27 +8,26 @@
 #include "Runnable.h"
 #include "RunnableThread.h"
 
-class MYSTATEMACHPRO_API FMessageReceiveThread : public FRunnable
+class MYSTATEMACHPRO_API FResendMessageThread : public FRunnable
 {
 	NetSocketUDP* m_clientSocket;
 	char* m_receiveArray;
 
 public:
-	static  FMessageReceiveThread* Runnable;
+	static  FResendMessageThread* Runnable;
 
-	static bool threadRuning ;
+	bool threadRuning = true;
 
 	FRunnableThread* Thread;
 
-	FMessageReceiveThread(NetSocketUDP* clientSocket, char* m_receiveArray);
-	virtual ~FMessageReceiveThread();
+	FResendMessageThread();
+	virtual ~FResendMessageThread();
 
 	virtual bool Init();
 	virtual uint32 Run();
 
 	void EnsureCompletion();
 
-	static FMessageReceiveThread* InitThread(NetSocketUDP* clientSocket, char* m_receiveArray);
 	static void Shutdown();
 
 	static bool IsThreadFinished();

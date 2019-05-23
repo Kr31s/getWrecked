@@ -8,7 +8,7 @@
 #include "MyCameraActor.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class MYSTATEMACHPRO_API AMyCameraActor : public ACameraActor
@@ -19,11 +19,16 @@ public:
 	AMyCameraActor();
 	virtual void Tick(float DeltaSeconds) override;
 
+	//virtual void BeginPlay() override;
+
 	UPROPERTY()
 		AActor* PlayerOne;
 
 	UPROPERTY()
 		AActor* PlayerTwo;
+
+	UPROPERTY(EditAnywhere)
+		float YValueHowCloseToPlayer;
 
 	UPROPERTY()
 		USpringArmComponent* SpringArm;
