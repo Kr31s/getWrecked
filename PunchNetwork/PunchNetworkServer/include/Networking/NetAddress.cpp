@@ -1,5 +1,4 @@
 #include "NetAddress.h"
-#include <iostream>
 
 NetAddress::NetAddress()
 {

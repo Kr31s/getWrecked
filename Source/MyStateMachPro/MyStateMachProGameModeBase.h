@@ -8,14 +8,14 @@
 #include "MyStateMachProGameModeBase.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
-		
+
+
 public:
 
 	virtual void StartPlay() override;
@@ -31,7 +31,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 		TSubclassOf<class UUserWidget> wMainMenu;
-	
+
 	UPROPERTY()
 		UUserWidget* MyMainMenu;
 

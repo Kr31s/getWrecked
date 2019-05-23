@@ -63,5 +63,3 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	}
 		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, TEXT("GMisTicking"));
 }
-
-

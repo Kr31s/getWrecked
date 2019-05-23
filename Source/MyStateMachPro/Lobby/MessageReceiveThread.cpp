@@ -1,6 +1,7 @@
 
 #include "MessageReceiveThread.h"
 #include "PlatformProcess.h"
+#include "NetworkSystem.h"
 
 
 FMessageReceiveThread* FMessageReceiveThread::Runnable = NULL;
@@ -19,22 +20,23 @@ FMessageReceiveThread::~FMessageReceiveThread()
 }
 
 //Init
-bool FMessageReceiveThread::Init(NetSocketUDP* p_clientSocket, char* p_receiveArray)
+bool FMessageReceiveThread::Init()
 {
-	m_clientSocket = p_clientSocket;
-	m_receiveArray = p_receiveArray;
+	m_clientSocket = m_clientSocket;
 
 	return true;
 }
 
 //Run
-uint32 FMessageReceiveThread::Run(void(*pt2Function)())
+uint32 FMessageReceiveThread::Run()
 {
+	FPlatformProcess::Sleep(0.03);
+
 	while (threadRuning)
 	{
 		if (m_clientSocket->Receive(m_receiveArray, 50).GetPortRef() != NULL)
 		{
-			pt2Function();
+			NetworkSystem::NetSys->TaskMessageReceiveThread(m_receiveArray);
 		}
 	}
 	return 0;
@@ -45,6 +47,13 @@ void FMessageReceiveThread::EnsureCompletion()
 {
 	Stop();
 	Thread->WaitForCompletion();
+}
+
+void FMessageReceiveThread::InitThread(NetSocketUDP* p_clientSocket, char* p_receiveArray)
+{
+	m_clientSocket = p_clientSocket;
+	m_receiveArray = p_receiveArray;
+
 }
 
 void FMessageReceiveThread::Shutdown()

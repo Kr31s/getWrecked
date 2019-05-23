@@ -23,11 +23,12 @@ public:
 	FMessageReceiveThread();
 	virtual ~FMessageReceiveThread();
 
-	virtual bool Init(NetSocketUDP* clientSocket, char* receiveArray);
-	virtual uint32 Run(void(*pt2Function)());
+	virtual bool Init();
+	virtual uint32 Run();
 
 	void EnsureCompletion();
 
+	void InitThread(NetSocketUDP* clientSocket, char* m_receiveArray);
 	static void Shutdown();
 
 	static bool IsThreadFinished();
