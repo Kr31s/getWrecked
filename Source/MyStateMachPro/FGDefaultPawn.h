@@ -28,7 +28,29 @@ public:
 
 	FORCEINLINE float GetTimeInMove() const { return TimeInCurrentMove; }
 
+	UPROPERTY(EditAnywhere)
+		bool CanMoveInLeftDirection;
 
+	UPROPERTY(EditAnywhere)
+		bool CanMoveInRightDirection;
+
+	UPROPERTY(EditAnywhere)
+		bool isCrouching;
+
+	UPROPERTY(EditAnywhere)
+		bool isBlocking;
+
+	UPROPERTY(EditAnywhere)
+		bool isInAir;
+
+	UPROPERTY(EditAnywhere)
+		bool gotHit;
+
+	UPROPERTY(EditAnywhere)
+		bool isOnLeftSide;
+
+	UPROPERTY()
+	AActor* Opponent;
 
 protected:
 	void LeftButtonPressed();
@@ -48,6 +70,7 @@ protected:
 	uint32 ButtonsDown;
 	uint32 ButtonsDown_Old;
 	float TimeInCurrentMove;
+
 
 	UPROPERTY(EditAnywhere)
 	UFGMove* CurrentMove;

@@ -7,10 +7,11 @@
 #include "FGMoveLink.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Public/MyCameraActor.h"
+#include "Engine/World.h"
 #include "MyStateMachProGameModeBase.h"
 
 
-AFGDefaultPawn::AFGDefaultPawn() 
+AFGDefaultPawn::AFGDefaultPawn()
 {
 	// This is ridiculously long, but we ll use it to make a point.
 	InputExpirationTime = 0.75f;
@@ -24,25 +25,29 @@ AFGDefaultPawn::AFGDefaultPawn()
 	KickL = CreateDefaultSubobject<UBoxComponent>(TEXT("KickL"), true);
 	KickR = CreateDefaultSubobject<UBoxComponent>(TEXT("KickR"), true);
 
-	
+
 	//PunchL->AttachTo(this->GetMesh(), TEXT("HandLSocket"), EAttachLocation::SnapToTarget, true);//SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));
 	PunchL->SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));//SetupAttachment(this->GetMesh());
 	PunchR->SetupAttachment(this->GetMesh(), TEXT("HandRSocket"));//SetupAttachment(this->GetMesh());
 	KickL->SetupAttachment(this->GetMesh(), TEXT("FootLSocket"));//SetupAttachment(this->GetMesh());
 	KickR->SetupAttachment(this->GetMesh(), TEXT("FootRSocket"));//SetupAttachment(this->GetMesh());
-	
-	//OnActorBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 
-	//PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	//OnActorBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	PunchL->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
+	PunchR->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
+	KickL->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
+	KickR->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
 }
 
 void AFGDefaultPawn::BeginPlay()
 {
-	if (KickL->AttachToComponent(this->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("HandLSocket"))) {
-		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
-	}
 	Super::BeginPlay();
+	AMyStateMachProGameModeBase* GM = Cast<AMyStateMachProGameModeBase>(UGameplayStatics::GetGameMode(this));
 
+
+	CanMoveInLeftDirection = true;
+	CanMoveInRightDirection = true;
+	PunchR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
@@ -76,7 +81,7 @@ void AFGDefaultPawn::BeginPlay()
 	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
 }
 
-void AFGDefaultPawn::Tick(float DeltaSeconds) 
+void AFGDefaultPawn::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
@@ -96,8 +101,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionBackAtom;
-			this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
-			//SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
+			if (CanMoveInLeftDirection) {
+				this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
+
+			}
+			//this->SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
@@ -120,8 +128,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			APlayerController* pController = Cast<APlayerController>(GetController());
 
 			InputDirection = DirectionUpAtom;
-			
-			
+
+
 			UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
 			this->Jump();
 			//this->AddMovementInput(this->GetActorUpVector(), 1000.0F);
@@ -138,8 +146,10 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionForwardAtom;
-			this->AddMovementInput(this->GetActorForwardVector(), 100.0F);
-			//SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
+			if (CanMoveInRightDirection) {
+				this->AddMovementInput(this->GetActorForwardVector(), 100.0F);
+			}
+			//this->SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
@@ -209,7 +219,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 			}catch (...)
 			{
-			
+
 			}
 		}
 
@@ -227,9 +237,16 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 void AFGDefaultPawn::OnOverlap(AActor* SelfActor, AActor* OtherActor)
 {
-
-	UE_LOG(LogTemp, Warning, TEXT("i want to crouchForward"));
-	RessourceComp->Health -= 100;
+	if (OtherActor == Opponent) {
+		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
+		UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
+		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Magenta, FString(this->GetName()));
+		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString(OtherActor->GetName()));
+		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString(Opponent->GetName()));
+		Cast<AFGDefaultPawn>(Opponent)->RessourceComp->Health -= 100;
+		pAsPawn->RessourceComp->Health -= 100;
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString::FromInt(Cast<AFGDefaultPawn>(OtherActor)->RessourceComp->Health));
+	}
 
 }
 
@@ -300,6 +317,7 @@ void AFGDefaultPawn::BottomButtonReleased()
 {
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::BottomFace);
 }
+
 
 void AFGDefaultPawn::UseGameCamera()
 {

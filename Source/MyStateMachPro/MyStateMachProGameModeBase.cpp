@@ -27,6 +27,32 @@ void AMyStateMachProGameModeBase::StartPlay() {
 			Pawn->AddActorLocalRotation(FRotator(0.0f, 0.0f, 0.0f));
 		}
 	}
+
+	player1 = Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	player2 = Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 1));
+
+	player1->Opponent = UGameplayStatics::GetPlayerCharacter(this, 1);
+	player2->Opponent = UGameplayStatics::GetPlayerCharacter(this, 0);
+	UE_LOG(LogTemp, Warning, TEXT("No initial move."));
+	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, FString::FromInt(GetWorld()->GetNumPlayerControllers()));
+	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("player1"));
+
+	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, FString::FromInt(GetWorld()->GetNumPlayerControllers()));
+	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, TEXT("player2"));
+	// GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, Opponent->GetName());
+	player1->isOnLeftSide = true;
+	player2->isOnLeftSide = false;
 }
-
-
+void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
+	Super::Tick(DeltaSeconds);
+	if(player1->GetActorLocation().X < player2->GetActorLocation().X)
+	{
+		player1->isOnLeftSide = true;
+		player2->isOnLeftSide = false;
+	}else
+	{
+		player1->isOnLeftSide = false;
+		player2->isOnLeftSide = true;
+	}
+		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, TEXT("%b"), player1->isOnLeftSide);
+}
