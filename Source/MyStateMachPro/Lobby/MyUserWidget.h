@@ -22,10 +22,10 @@ public:
 	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool CreateRoom(const FString& p_Name);
+		bool CreateRoom(int TimeValue, int RoundValue, const FString& p_Name);
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool JoinRoom(const FString& p_Name);
+		bool JoinRoom(int TimeValue, int RoundValue, const FString& p_Name);
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
 		bool LeaveRoom();

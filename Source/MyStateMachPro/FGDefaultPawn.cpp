@@ -18,8 +18,9 @@ AFGDefaultPawn::AFGDefaultPawn()
 	//MovementComponent = CreateDefaultSubobject<UPawnMovementComponent>(ADefaultPawn::MovementComponentName);
 	//MovementComponent->UpdatedComponent = GetCollisionComponent();
 	RessourceComp = CreateDefaultSubobject<URessourceComponent>(TEXT("RComp"));//NewObject<UActorComponent>(this, "RessourceComp");
-	//RessourceComp->RegisterComponent();
-	//AddOwnedComponent(RessourceComp);
+	MovementRestrictionComp = CreateDefaultSubobject<UMovementRestrictionComponent>(TEXT("MovementRestrictionComp"));//NewObject<UActorComponent>(this, "RessourceComp");
+	PlayerRotationComp = CreateDefaultSubobject<UActorRotationComponent>(TEXT("PlayerRotationComp"));//NewObject<UActorComponent>(this, "RessourceComp");
+
 	PunchL = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchL"), true);
 	PunchR = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchR"), true);
 	KickL = CreateDefaultSubobject<UBoxComponent>(TEXT("KickL"), true);
@@ -212,6 +213,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else if (MoveLinkToFollow.SMR.DataIndex)
 		{
+			try {
+
 			// Consume the input we used to get to this move.
 			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
 			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 3, false);
@@ -233,7 +236,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 
-void AFGDefaultPawn::OnOverlap(AActor* SelfActor, AActor* OtherActor)
+void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
@@ -328,11 +331,16 @@ void AFGDefaultPawn::UseGameCamera()
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Player %i registering with game camera (one)"), UGameplayStatics::GetPlayerControllerID(PC));
 					Cam->PlayerOne = this;
+					this->MovementRestrictionComp->Self = this;
+					this->MovementRestrictionComp->Enemy = UGameplayStatics::GetPlayerCharacter(this, 1);;
+
 				}
 				else
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Player %i registering with game camera (two)"), UGameplayStatics::GetPlayerControllerID(PC));
 					Cam->PlayerTwo = this;
+					this->MovementRestrictionComp->Self = this;
+					this->MovementRestrictionComp->Enemy = UGameplayStatics::GetPlayerCharacter(this, 0);;
 				}
 				PC->SetViewTarget(GM->MainGameCamera);
 				return;

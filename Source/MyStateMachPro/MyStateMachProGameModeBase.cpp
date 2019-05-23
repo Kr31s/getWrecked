@@ -19,16 +19,17 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	}
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 
 	// Create another player
-	if (APlayerController * PC = UGameplayStatics::CreatePlayer(this, -1))
+	if (APlayerController * PC = UGameplayStatics::CreatePlayer(this,-1))
 	{
 		if (APawn * Pawn = PC->GetPawn())
 		{
 			// Move this player forward (hardcoded distance, should be a UPROPERTY) and then turn around.
-			Pawn->SetActorLocation(Pawn->GetActorLocation() + Pawn->GetActorForwardVector() * 250.0f);
-			Pawn->AddActorLocalRotation(FRotator(0.0f, 0.0f, 0.0f));
+			Pawn->SetActorLocation(FVector(230,0.0F,100.0F));
+			//Pawn->SetActorLocation(Pawn->GetActorLocation() + Pawn->GetActorForwardVector() * 250.0f);
+			Pawn->SetActorRotation(FRotator(0.0f, 0.0f,0.0f));
 		}
 	}
 

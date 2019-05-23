@@ -8,7 +8,7 @@
 #include "MyCameraActor.generated.h"
 
 /**
- *
+ * 
  */
 UCLASS()
 class MYSTATEMACHPRO_API AMyCameraActor : public ACameraActor

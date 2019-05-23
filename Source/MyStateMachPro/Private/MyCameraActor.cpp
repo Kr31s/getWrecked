@@ -19,6 +19,12 @@ AMyCameraActor::AMyCameraActor()
 	this->GetCameraComponent()->SetFieldOfView(60.0F);
 	PrimaryActorTick.bCanEverTick = true;
 }
+/*
+void AMyCameraActor::BeginPlay() {
+	//SetActorRotation(FRotator(-13.0F,-90.0F,0.0F));
+	//SetActorLocation(FVector(160.0F,180.0F,232.0F));
+}
+*/
 
 void AMyCameraActor::Tick(float DeltaSeconds)
 {
@@ -34,14 +40,16 @@ void AMyCameraActor::Tick(float DeltaSeconds)
 
 		float Pitch = FMath::RadiansToDegrees(FMath::Atan2(-VerticalOffset * 0.5f, SpringArm->TargetArmLength));
 		float ZDistance = FMath::Abs(P1L.Z - P2L.Z)/ ZDistanceModifier;
-
-
+		
+		
 		//Rotation Calculations
 		FRotator Target = UKismetMathLibrary::FindLookAtRotation(P1L, PlayerOne->GetVelocity() + P1L);
 		FRotator TargetRota = FMath::RInterpTo(GetActorRotation(), FRotator(/*Pitch*/ + ZDistance/*InPitch*/, (-90.0f + PlayerOne->GetVelocity().X/ YawRotaModifier)/*InYaw*/, 0.0f/*InRoll*/), DeltaSeconds, InterpModifier);
-
+		
 		//SetActorRotation(FRotator(Pitch + ZDistance/*InPitch*/, (- 90.0f)/*InYaw*/, 0.0f/*InRoll*/));
 
 		SetActorRotation(TargetRota);
 	}
 }
+
+
