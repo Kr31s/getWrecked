@@ -49,6 +49,12 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool gotHit;
 
+	UPROPERTY(EditAnywhere)
+		bool isOnLeftSide;
+
+	UPROPERTY()
+	AActor* Opponent;
+
 protected:
 	void LeftButtonPressed();
 	void LeftButtonReleased();
@@ -67,7 +73,6 @@ protected:
 	uint32 ButtonsDown;
 	uint32 ButtonsDown_Old;
 	float TimeInCurrentMove;
-	AActor* Opponent;
 
 
 	UPROPERTY(EditAnywhere)

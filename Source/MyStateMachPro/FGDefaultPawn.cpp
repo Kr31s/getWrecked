@@ -7,6 +7,7 @@
 #include "FGMoveLink.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Public/MyCameraActor.h"
+#include "Engine/World.h"
 #include "MyStateMachProGameModeBase.h"
 
 
@@ -32,34 +33,21 @@ AFGDefaultPawn::AFGDefaultPawn()
 	KickR->SetupAttachment(this->GetMesh(), TEXT("FootRSocket"));
 
 	//OnActorBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
-	PunchL->SetBoxExtent(FVector(0.7F, 0.7F, 0.7F));
-	PunchR->SetBoxExtent(FVector(0.7F, 0.7F, 0.7F));
-	KickL->SetBoxExtent(FVector(0.7F, 0.7F, 0.7F));
-	KickR->SetBoxExtent(FVector(0.7F, 0.7F, 0.7F));
+	PunchL->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
+	PunchR->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
+	KickL->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
+	KickR->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
 }
 
 void AFGDefaultPawn::BeginPlay()
 {
-	if (Opponent == nullptr){
-		/*
-		 
-		if (this->GetController() == 0)
-		{
-			Opponent = UGameplayStatics::GetPlayerCharacter(this, 1);
-			UE_LOG(LogTemp, Warning, TEXT("No initial move."));
-			GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, this->GetName());
-			GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, Opponent->GetName());
-		}else
-		{
-			Opponent = UGameplayStatics::GetPlayerCharacter(this, 0);
-		}
-			
-		 */
-	}
 	Super::BeginPlay();
+	AMyStateMachProGameModeBase* GM = Cast<AMyStateMachProGameModeBase>(UGameplayStatics::GetGameMode(this));
+	
+
 	CanMoveInLeftDirection = true;
 	CanMoveInRightDirection = true;
-	PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	PunchR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
@@ -247,12 +235,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (Cast<AFGDefaultPawn>(OtherActor) != this) {
-		auto* pAsPawn{ Cast<AFGDefaultPawn>(OtherActor) };
+	if (OtherActor == Opponent) {
+		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
 		UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
-		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Magenta, FString(this->GetName()));
-		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString(OtherActor->GetName()));
-		Cast<AFGDefaultPawn>(OtherActor)->RessourceComp->Health -= 100;
+		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Magenta, FString(this->GetName()));
+		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString(OtherActor->GetName()));
+		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString(Opponent->GetName()));
+		Cast<AFGDefaultPawn>(Opponent)->RessourceComp->Health -= 100;
 		pAsPawn->RessourceComp->Health -= 100;
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString::FromInt(Cast<AFGDefaultPawn>(OtherActor)->RessourceComp->Health));
 	}

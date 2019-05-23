@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "FGDefaultPawn.h"
 #include "MyStateMachProGameModeBase.generated.h"
 
 /**
@@ -18,7 +19,7 @@ class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 public:
 
 	virtual void StartPlay() override;
-	virtual void Tick(float Deltaseconds) override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	void SpawnSecondPlayer();
 
@@ -33,4 +34,10 @@ public:
 	
 	UPROPERTY()
 		UUserWidget* MyMainMenu;
+
+	UPROPERTY()
+		AFGDefaultPawn* player1;
+
+	UPROPERTY()
+		AFGDefaultPawn* player2;
 };
