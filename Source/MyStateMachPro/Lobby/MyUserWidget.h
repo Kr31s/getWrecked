@@ -17,8 +17,9 @@ class MYSTATEMACHPRO_API UMyUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-public:
 
+public:
+	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
 		bool CreateRoom(int TimeValue, int RoundValue, const FString& p_Name);

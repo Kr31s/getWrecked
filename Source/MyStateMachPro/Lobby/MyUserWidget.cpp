@@ -4,25 +4,73 @@
 #include "MyUserWidget.h"
 #include "NetworkSystem.h"
 
-
-bool UMyUserWidget::CreateRoom(int TimeValue, int RoundValue, const FString& p_Name)
+void UMyUserWidget::BeginDestroy()
 {
-	return false;
+	Super::BeginDestroy();
+	FMessageReceiveThread::threadRuning = false;
+	NetworkSystem::NetSys->MessageReceiveThread->Shutdown();
 }
 
-bool UMyUserWidget::JoinRoom(int TimeValue, int RoundValue, const FString& p_Name)
+bool UMyUserWidget::CreateRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
 {
-	return false;
+
+	UE_LOG(LogTemp, Warning, TEXT("CreateRoom"));
+	for (int i = 2; i < 22; ++i)
+	{
+		NetworkSystem::NetSys->sendArray[i] = p_Name[i - 2];
+	}
+	//input round settings
+	NetworkSystem::NetSys->sendArray[0] = 2 << 1;
+	NetworkSystem::NetSys->sendArray[1] = p_roundValue << 5;
+
+	//input time settings
+	NetworkSystem::NetSys->sendArray[1] |= p_timeValue << 2;
+
+	UE_LOG(LogTemp, Warning, TEXT("destructor"));
+	NetworkSystem::NetSys->socketUDP.Send(NetworkSystem::NetSys->serverAddress, (char*)NetworkSystem::NetSys->sendArray, 22).m_errorCode;
+	UE_LOG(LogTemp, Warning, TEXT("destructor2"));
+	return true;
+}
+
+bool UMyUserWidget::JoinRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
+{
+	//charInput Name
+	for (int i = 2; i < 22; ++i)
+	{
+		NetworkSystem::NetSys->sendArray[i] = p_Name[i - 2];
+	}
+	//input round settings
+	NetworkSystem::NetSys->sendArray[0] = 0;
+	NetworkSystem::NetSys->sendArray[1] = p_roundValue << 5;
+
+
+	//input time settings
+	NetworkSystem::NetSys->sendArray[1] |= p_timeValue << 2;
+
+	NetworkSystem::NetSys->socketUDP.Send(NetworkSystem::NetSys->serverAddress, (char*)NetworkSystem::NetSys->sendArray, 22).m_errorCode;
+
+	return true;
 }
 
 bool UMyUserWidget::LeaveRoom()
 {
+	if (NetworkSystem::NetSys->myRoomID >= 0)
+	{
+		NetworkSystem::NetSys->sendArray[0] = 3 << 1;
+		NetworkSystem::NetSys->sendArray[1] = NetworkSystem::NetSys->myRoomID;
+
+		NetworkSystem::NetSys->socketUDP.Send(NetworkSystem::NetSys->serverAddress, (char*)NetworkSystem::NetSys->sendArray, 2).m_errorCode;
+	return true;
+	}
 	return false;
 }
 
 bool  UMyUserWidget::CreateClient()
 {
+	UE_LOG(LogTemp, Warning, TEXT("CreateClient"));
+
 	NetworkSystem::NetSys = new NetworkSystem();
+	UE_LOG(LogTemp, Warning, TEXT("NetworkSystem"));
 
 	return NetworkSystem::NetSys->InitNetSystem();
 }
@@ -34,48 +82,14 @@ void  UMyUserWidget::SendRequestClient(unsigned int messageType, unsigned int ro
 	switch (messageType)
 	{
 	case 0:
-		//charInput Name
-		for (int i = 2; i < 22; ++i)
-		{
-			NetworkSystem::NetSys->sendArray[i] = nickname[i - 2];
-		}
-		//input round settings
-		NetworkSystem::NetSys->sendArray[0] = 0;
-		NetworkSystem::NetSys->sendArray[1] = roundSettingsAdjusted << 5;
-
-
-		//input time settings
-		NetworkSystem::NetSys->sendArray[1] |= timeSettingsAdjusted << 2;
-
-		NetworkSystem::NetSys->socketUDP.Send(NetworkSystem::NetSys->serverAddress, (char*)NetworkSystem::NetSys->sendArray, 22).m_errorCode;
 		break;
 
 	case 2:
 		//charInput Name
-
-		for (int i = 2; i < 22; ++i)
-		{
-			NetworkSystem::NetSys->sendArray[i] = nickname[i - 2];
-		}
-		//input round settings
-		NetworkSystem::NetSys->sendArray[0] = 2 << 1;
-		NetworkSystem::NetSys->sendArray[1] = roundSettingsAdjusted << 5;
-
-		//input time settings
-		NetworkSystem::NetSys->sendArray[1] |= timeSettingsAdjusted << 2;
-
-		NetworkSystem::NetSys->socketUDP.Send(NetworkSystem::NetSys->serverAddress, (char*)NetworkSystem::NetSys->sendArray, 22).m_errorCode;
-		break;
+break;
 
 	case 3:
-		if (NetworkSystem::NetSys->myRoomID >= 0)
-		{
-			NetworkSystem::NetSys->sendArray[0] = 3 << 1;
-			NetworkSystem::NetSys->sendArray[1] = NetworkSystem::NetSys->myRoomID;
-
-			NetworkSystem::NetSys->socketUDP.Send(NetworkSystem::NetSys->serverAddress, (char*)NetworkSystem::NetSys->sendArray, 2).m_errorCode;
-			break;
-		}
+		
 		//her in no room
 		break;
 	default:
