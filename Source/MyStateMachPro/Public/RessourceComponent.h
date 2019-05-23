@@ -16,12 +16,12 @@ public:
 	// Sets default values for this component's properties
 	URessourceComponent();
 
-	UPROPERTY(EditAnywhere)
-		uint32 Health;
-	UPROPERTY(EditAnywhere)
-		uint32 StunMeter;
-	UPROPERTY(EditAnywhere)
-		uint32 PowerMeter;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 Health;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 StunMeter;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 PowerMeter;
 
 
 protected:

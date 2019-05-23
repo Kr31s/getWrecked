@@ -21,6 +21,7 @@ public:
 	virtual void StartPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
+	AMyStateMachProGameModeBase();
 	void SpawnSecondPlayer();
 
 
@@ -31,6 +32,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 		TSubclassOf<class UUserWidget> wMainMenu;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RoundTimer")
+		//uint32 matchTime;
 
 	UPROPERTY()
 		UUserWidget* MyMainMenu;
