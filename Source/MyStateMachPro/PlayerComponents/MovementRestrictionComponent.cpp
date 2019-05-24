@@ -64,13 +64,6 @@ void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick Ti
 			pAsPawn->CanMoveInRightDirection = true;
 
 		}
-		if (P1L.X < P2L.X)
-		{
-			pAsPawn->isOnLeftSide = true;
-		}else
-		{
-			pAsPawn->isOnLeftSide = false;
-		}
 		
 		if(Self->GetActorLocation().Y != 0.0F)
 		{
