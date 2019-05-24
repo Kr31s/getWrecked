@@ -62,7 +62,7 @@ public:
 	uint32 bClearInputOnExit : 1;
 
 	UPROPERTY(EditAnywhere)
-		float DamageValue = 0.025F;
+		float DamageValue = 0.0F;
 };
 
 
