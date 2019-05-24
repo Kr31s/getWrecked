@@ -19,6 +19,8 @@ class MYSTATEMACHPRO_API UMyUserWidget : public UUserWidget
 
 
 public:
+	static UMyUserWidget* myUserWidget;
+
 	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
@@ -34,15 +36,11 @@ public:
 		bool CreateClient();
 
 
-private:
 
-
-	void SendRequestClient(unsigned int messageType, unsigned int roundSettingsAdjusted, unsigned int timeSettingsAdjusted, char* nickname);
-
-	void ReceiveMessageClient();
-
-	void SendReceiveMessageClient();
-
-
+	void CreateRoomMessage(bool status);
+	void JoinRoomMessage(bool status);
+	void RivalJoinMessage();
+	void LeaveRoomMessage(bool status);
+	void RivalLeaveMessage();
 	
 };
