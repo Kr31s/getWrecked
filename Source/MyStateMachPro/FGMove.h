@@ -60,6 +60,9 @@ public:
 	// Clears input buffer when exiting this state.
 	UPROPERTY(EditAnywhere)
 	uint32 bClearInputOnExit : 1;
+
+	UPROPERTY(EditAnywhere)
+		float DamageValue = 0.025F;
 };
 
 

@@ -10,6 +10,7 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+	roundTimer = 99.0F;
 
 }
 
@@ -51,6 +52,8 @@ void AMyStateMachProGameModeBase::StartPlay() {
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
+	roundTimer -= DeltaSeconds;
+
 	if(player1->GetActorLocation().X < player2->GetActorLocation().X)
 	{
 		if(player1->GetCharacterMovement()->IsMovingOnGround())
