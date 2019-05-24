@@ -88,50 +88,80 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-
+	if(GetMovementComponent()->IsMovingOnGround())
+	{
+		if(this->isOnLeftSide)
+		{
+			//this->SetActorRotation(FRotator(0.0F,180.0F,0.0F));
+			this->GetMesh()->SetRelativeScale3D(FVector(1.0F, -1.0F, 1.0F));
+		}else
+		{
+			//this->SetActorRotation(FRotator(0.0F,180.0F,0.0F));
+			//this->SetActorScale3D(FVector(1.0F, 1.0F, 1.0F));
+			this->GetMesh()->SetRelativeScale3D(FVector(1.0F, 1.0F, 1.0F));
+		}
+	}
 
 	// Process input
-
+	if(isStunned)
+	{
+		DisableInput(Cast<APlayerController>(this));
+		return;
+	}else
+	{
+		EnableInput(Cast<APlayerController>(this));
+	}
 	// Add one atom for stick direction
 	const float DirectionThreshold = 0.5f;
 	UFGDirectionalInputAtom* InputDirection = nullptr;
+	//Back Movement
 	if (DirectionInput.X < -DirectionThreshold)
 	{
 		if (DirectionInput.Y < -DirectionThreshold)
 		{
-			InputDirection = DirectionDownBackAtom;;
+			InputDirection = DirectionDownBackAtom;; // Crouch + Back
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
-			InputDirection = DirectionBackAtom;
+			if(this->isOnLeftSide)
+			{
+				InputDirection = DirectionBackAtom; // Back on Leftside
+			}else
+			{
+				InputDirection = DirectionForwardAtom; // Forward on Rightside
+
+			}
+
 			if (CanMoveInLeftDirection) {
 				this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
-
 			}
 			//this->SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
-			InputDirection = DirectionUpBackAtom;
+			InputDirection = DirectionUpBackAtom; // Jump + Back
+			if (this->GetMovementComponent()->IsMovingOnGround())
+			{
+				this->GetMovementComponent()->Velocity = (FVector(-600.0F, 0.0F, 600.0F));
+			}
 		}
-	}
+	} // Neutral Movement
 	else if (DirectionInput.X < DirectionThreshold)
 	{
 		if (DirectionInput.Y < -DirectionThreshold)
 		{
-			InputDirection = DirectionDownAtom;
+			InputDirection = DirectionDownAtom; // Crouch
+
 			UE_LOG(LogTemp, Warning, TEXT("i want to crouch"));
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
-			InputDirection = DirectionNeutralAtom;
+			InputDirection = DirectionNeutralAtom; // Idle
 		}
 		else
 		{
-			APlayerController* pController = Cast<APlayerController>(GetController());
 
-			InputDirection = DirectionUpAtom;
-
+			InputDirection = DirectionUpAtom; // Jump
 
 			UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
 			this->Jump();
@@ -139,16 +169,26 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			//LaunchPawn(FVector(0, 0, 1) * 10000.0f,false,false);
 		}
 	}
-	else
+	else// Forward Movement
 	{
 		if (DirectionInput.Y < -DirectionThreshold)
 		{
-			InputDirection = DirectionDownForwardAtom;
+			InputDirection = DirectionDownForwardAtom; // Crouch + Forward
 			UE_LOG(LogTemp, Warning, TEXT("i want to crouchForward"));
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
-			InputDirection = DirectionForwardAtom;
+			if(this->isOnLeftSide)
+			{
+				InputDirection = DirectionForwardAtom; // Forward on Leftside
+				//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Emerald, TEXT("PressingForward"));
+			}else
+			{
+				InputDirection = DirectionBackAtom; // Back on Rightside
+				//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Emerald, TEXT("PressingBackNowCauseOFRightSide"));
+				
+			}
+
 			if (CanMoveInRightDirection) {
 				this->AddMovementInput(this->GetActorForwardVector(), 100.0F);
 			}
@@ -156,7 +196,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else
 		{
-			InputDirection = DirectionUpForwardAtom;
+			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("JumpDiagonalForward"));
+			InputDirection = DirectionUpForwardAtom; // Jump Forward
+			if(this->GetMovementComponent()->IsMovingOnGround())
+			{
+				this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
+				
+			}
 		}
 	}
 	InputStream.Add(InputDirection);
@@ -203,7 +249,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 	}
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
-	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted)
+	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted && GetCharacterMovement()->IsMovingOnGround())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Switching to state %s"), *MoveLinkToFollow.Link->Move->MoveName.ToString());
 		if (MoveLinkToFollow.Link->bClearInput || MoveLinkToFollow.Link->Move->bClearInputOnEntry || CurrentMove->bClearInputOnExit)
@@ -244,7 +290,11 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 		if(OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
-			pAsPawn->RessourceComp->Health -= 25;
+			
+			pAsPawn->gotHit = true;
+			pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
+			pAsPawn->RessourceComp->IncreaseStunMeter(0.1F);
+			pAsPawn->gotHit = false;
 		}
 	}
 

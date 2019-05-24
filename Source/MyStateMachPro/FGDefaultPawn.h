@@ -37,23 +37,35 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool CanMoveInRightDirection;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isCrouching;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isBlocking;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isInAir;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool gotHit;
 
 	UPROPERTY(EditAnywhere)
 		bool isOnLeftSide;
 
+	UPROPERTY(EditAnywhere)
+		bool isStunned;
+
 	UPROPERTY()
 	AActor* Opponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		URessourceComponent* RessourceComp;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		UMovementRestrictionComponent* MovementRestrictionComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		UActorRotationComponent* PlayerRotationComp;
 
 protected:
 	void LeftButtonPressed();
@@ -77,15 +89,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UFGMove* CurrentMove;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		URessourceComponent* RessourceComp;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		UMovementRestrictionComponent* MovementRestrictionComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		UActorRotationComponent* PlayerRotationComp;
 
 	UPROPERTY(VisibleAnywhere)
 		UBoxComponent* PunchL;	
@@ -143,4 +146,5 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<USM_InputAtom*> InputStream;
+
 };

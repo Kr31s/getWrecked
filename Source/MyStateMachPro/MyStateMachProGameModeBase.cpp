@@ -6,6 +6,14 @@
 #include "Public/MyCameraActor.h"
 #include "Kismet/GameplayStatics.h"
 
+AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	roundTimer = 99.0F;
+
+}
+
 void AMyStateMachProGameModeBase::StartPlay() {
 
 	Super::StartPlay();
@@ -17,8 +25,6 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	{
 		MainGameCamera = Cast<AMyCameraActor>(World->SpawnActor(AMyCameraActor::StaticClass(), &FTransform::Identity));
 	}
-	PrimaryActorTick.bStartWithTickEnabled = true;
-	PrimaryActorTick.bCanEverTick = true;
 	
 
 	// Create another player
@@ -39,27 +45,46 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	player1->Opponent = UGameplayStatics::GetPlayerCharacter(this, 1);
 	player2->Opponent = UGameplayStatics::GetPlayerCharacter(this, 0);
 	UE_LOG(LogTemp, Warning, TEXT("No initial move."));
-	/*GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, FString::FromInt(GetWorld()->GetNumPlayerControllers()));
-	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("player1"));
 
-	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, FString::FromInt(GetWorld()->GetNumPlayerControllers()));
-	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, TEXT("player2"));
-	// GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, Opponent->GetName());
-	*/
 	player1->isOnLeftSide = true;
 	player2->isOnLeftSide = false;
 	//UGameplayStatics::SetGamePaused(this, true);
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
+	roundTimer -= DeltaSeconds;
+
 	if(player1->GetActorLocation().X < player2->GetActorLocation().X)
 	{
-		player1->isOnLeftSide = true;
-		player2->isOnLeftSide = false;
+		if(player1->GetCharacterMovement()->IsMovingOnGround())
+		{
+			player1->isOnLeftSide = true;
+		}
+		if (player2->GetCharacterMovement()->IsMovingOnGround())
+		{
+			player2->isOnLeftSide = false;
+		}
 	}else
 	{
-		player1->isOnLeftSide = false;
-		player2->isOnLeftSide = true;
+		if (player1->GetCharacterMovement()->IsMovingOnGround())
+		{
+			player1->isOnLeftSide = false;
+		}
+		if (player2->GetCharacterMovement()->IsMovingOnGround())
+		{
+			player2->isOnLeftSide = true;
+		}
 	}
-		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Yellow, TEXT("GMisTicking"));
+	if(player1->RessourceComp->Health <= 0.0F)
+	{
+		player1->K2_DestroyActor();
+		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
+		UGameplayStatics::SetGamePaused(this, true);
+	}
+	if(player2->RessourceComp->Health <= 0.0F)
+	{
+		player2->K2_DestroyActor();
+		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
+		UGameplayStatics::SetGamePaused(this, true);
+	}
 }
