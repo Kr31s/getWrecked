@@ -21,7 +21,7 @@ public:
 	void SetHealth(float health) { this->Health = health; }
  
 	const float GetStunMeter() { return StunMeter; }
-	void SetStunMeter(float StunMeter) { this->StunMeter = StunMeter; }
+	void SetStunMeter(float stunMeter) { this->StunMeter = stunMeter; }
 
 /*
 	const float GetPowerMeter() { return PowerMeter; }

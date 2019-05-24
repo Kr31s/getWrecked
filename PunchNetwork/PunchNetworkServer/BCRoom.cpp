@@ -6,7 +6,7 @@
 
 unsigned int BCRoom::totalRoomID = 0;
 
-BCRoom::BCRoom(BCClient* p_client, unsigned short p_roundState, unsigned short p_timeState)
+BCRoom::BCRoom(BCClient* p_client, unsigned char p_roundState, unsigned char p_timeState)
 {
 	m_Owner = p_client;
 	m_roundState = p_roundState;;

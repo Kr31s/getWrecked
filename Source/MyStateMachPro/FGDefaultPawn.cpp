@@ -259,15 +259,15 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else if (MoveLinkToFollow.SMR.DataIndex)
 		{
-			try {
+			//try {
 
 			// Consume the input we used to get to this move.
 			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
 			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 3, false);
 			InputStream.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex, false);
-			}
-			catch (...) {
-			}
+			//}
+			//catch (...) {
+			//}
 		}
 
 		// Set and start the new move.
