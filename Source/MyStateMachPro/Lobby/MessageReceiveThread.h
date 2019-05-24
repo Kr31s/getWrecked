@@ -16,7 +16,7 @@ class MYSTATEMACHPRO_API FMessageReceiveThread : public FRunnable
 public:
 	static  FMessageReceiveThread* Runnable;
 
-	static bool threadRuning ;
+	static bool threadRuning;
 
 	FRunnableThread* Thread;
 
@@ -25,13 +25,10 @@ public:
 
 	virtual bool Init();
 	virtual uint32 Run();
+	virtual void Stop();
 
 	void EnsureCompletion();
 
 	static FMessageReceiveThread* InitThread(NetSocketUDP* clientSocket, char* m_receiveArray);
 	static void Shutdown();
-
-	static bool IsThreadFinished();
-
-private:
 };

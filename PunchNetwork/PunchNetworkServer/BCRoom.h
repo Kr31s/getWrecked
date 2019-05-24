@@ -15,7 +15,7 @@ public:
 	BCClient* m_Owner = nullptr;
 	BCClient* m_Member = nullptr;
 
-	BCRoom(BCClient* client, unsigned short roundState, unsigned short timeState);
+	BCRoom(BCClient* client, unsigned char roundState, unsigned char timeState);
 	void AddRival(BCClient* client);
 	void RemoveRival(NetAddress& netAddress, char* p_receiveArray);
 	bool FindClient(NetAddress& netAddress);

@@ -47,6 +47,8 @@ public:
 
 	bool InitNetSystem();
 
+	void SendReceiveMessageClient();
+
 	void ClearReceiveArray();
 };
 

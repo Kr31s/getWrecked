@@ -2,6 +2,8 @@
 #include "BCRoom.h"
 #include "BCClient.h"
 #include "BCMessage.h"
+#include "BCMessage.h"
+#include <bitset>
 
 BCServer* BCServer::theServer = nullptr;
 
@@ -84,7 +86,7 @@ void BCServer::SendData(NetAddress& netAddress, SendType p_status, char* dataArr
 #endif
 }
 
-void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned short p_rounds, unsigned short p_gameTime)
+void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char p_rounds, unsigned char p_gameTime)
 {
 	Print("Received \"search for room\" request from: ");
 	for (int i = 0; (i < 20) && (p_receiveArray[i + 2] != -52); i++)
@@ -167,7 +169,7 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 	Println("Room request failed");
 	return;
 }
-void BCServer::CreateRoom(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned short p_rounds, unsigned short p_gameTime)
+void BCServer::CreateRoom(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char p_rounds, unsigned char p_gameTime)
 {
 	Print("Received \"create room\" request from: ");
 	for (int i = 0; (i < 20) && ((int)p_receiveArray[i + 2] != 0); i++)
@@ -206,7 +208,7 @@ void BCServer::CreateRoom(NetAddress& p_receiveAddress, char* p_receiveArray, un
 	Print("Room created with ID ");
 	Println((int)p_receiveArray[1]);
 }
-void BCServer::LeaveRoom(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned short p_rounds, unsigned short p_gameTime)
+void BCServer::LeaveRoom(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char p_rounds, unsigned char p_gameTime)
 {
 	unsigned int a = (int)p_receiveArray[1];
 
@@ -215,6 +217,8 @@ void BCServer::LeaveRoom(NetAddress& p_receiveAddress, char* p_receiveArray, uns
 
 void BCServer::HeartBeat(NetAddress& receiveAddress, char* receiveArray)
 {
+	Println("Hearthbeat received");
+
 	clientIDList->at(receiveArray[1]).m_ping = messageIDList->at(receiveArray[0] >> 1).m_timeStamp - GetTimeInMilli();
 	messageIDList->erase(receiveArray[0] >> 1);
 }
