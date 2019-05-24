@@ -7,7 +7,7 @@
 #include "RessourceComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) , BlueprintType, Blueprintable)
 class MYSTATEMACHPRO_API URessourceComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -16,13 +16,41 @@ public:
 	// Sets default values for this component's properties
 	URessourceComponent();
 
+
+	const float GetHealth() { return Health; }
+	void SetHealth(float health) { this->Health = health; }
+ 
+	const float GetStunMeter() { return StunMeter; }
+	void SetStunMeter(float StunMeter) { this->StunMeter = StunMeter; }
+
+/*
+	const float GetPowerMeter() { return PowerMeter; }
+	void SetPowerMeter(int32 powerMeter) { this->PowerMeter = powerMeter; }
+ */
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 Health;
+		float Health;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 StunMeter;
+		float StunMeter;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 PowerMeter;
 
+	UFUNCTION(BlueprintCallable)
+		void ReduceHealth(float damageValue);
+
+	UFUNCTION(BlueprintCallable)
+		void IncreaseStunMeter(float value);
+
+	UFUNCTION(BlueprintCallable)
+		void IncreasePowerMeter(AActor* actor, int32 value);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSignature,AActor*, target, float, newHealth);
+	UPROPERTY(BlueprintAssignable)
+		FOnHealthChangedSignature OnHealthChanged;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStunMeterChangedSignature, AActor*, target, float, newStunMeter);
+	UPROPERTY(BlueprintAssignable)
+		FOnStunMeterChangedSignature OnStunMeterChanged;
 
 protected:
 	// Called when the game starts

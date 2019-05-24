@@ -52,6 +52,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool isOnLeftSide;
 
+	UPROPERTY(EditAnywhere)
+		bool isStunned;
+
 	UPROPERTY()
 	AActor* Opponent;
 
@@ -143,4 +146,5 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<USM_InputAtom*> InputStream;
+
 };

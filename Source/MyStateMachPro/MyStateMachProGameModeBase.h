@@ -44,4 +44,7 @@ public:
 
 	UPROPERTY()
 		AFGDefaultPawn* player2;
+
+	UPROPERTY(EditAnywhere)
+		float roundTimer;
 };
