@@ -270,8 +270,16 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
 
+		if (OtherActor->ActorHasTag("Projectile"))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Emerald, TEXT("Projectile Hit a thing"));
+			pAsPawn->RessourceComp->ReduceHealth(0.1F);
+			pAsPawn->RessourceComp->IncreaseStunMeter(0.1F);
+
+		}
 		if(OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
 		{
+
 			if(this->canApplyDamage)
 			{
 			UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
@@ -283,6 +291,7 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 			}
 		}
 	}
+
 
 }
 
