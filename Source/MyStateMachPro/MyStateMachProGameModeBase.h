@@ -47,4 +47,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float roundTimer;
+
+	UPROPERTY(EditAnywhere)
+		float startTimer;
 };

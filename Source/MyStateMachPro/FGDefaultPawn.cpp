@@ -88,19 +88,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if(GetMovementComponent()->IsMovingOnGround())
-	{
-		if(this->isOnLeftSide)
-		{
-			//this->SetActorRotation(FRotator(0.0F,180.0F,0.0F));
-			this->GetMesh()->SetRelativeScale3D(FVector(1.0F, -1.0F, 1.0F));
-		}else
-		{
-			//this->SetActorRotation(FRotator(0.0F,180.0F,0.0F));
-			//this->SetActorScale3D(FVector(1.0F, 1.0F, 1.0F));
-			this->GetMesh()->SetRelativeScale3D(FVector(1.0F, 1.0F, 1.0F));
-		}
-	}
+	this->SetRotationOfPlayer();
 
 	// Process input
 	if(isStunned)
@@ -135,7 +123,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			if (CanMoveInLeftDirection) {
 				this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
 			}
-			//this->SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
@@ -165,8 +152,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 			UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
 			this->Jump();
-			//this->AddMovementInput(this->GetActorUpVector(), 1000.0F);
-			//LaunchPawn(FVector(0, 0, 1) * 10000.0f,false,false);
 		}
 	}
 	else// Forward Movement
@@ -181,22 +166,18 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			if(this->isOnLeftSide)
 			{
 				InputDirection = DirectionForwardAtom; // Forward on Leftside
-				//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Emerald, TEXT("PressingForward"));
 			}else
 			{
 				InputDirection = DirectionBackAtom; // Back on Rightside
-				//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Emerald, TEXT("PressingBackNowCauseOFRightSide"));
 				
 			}
 
 			if (CanMoveInRightDirection) {
 				this->AddMovementInput(this->GetActorForwardVector(), 100.0F);
 			}
-			//this->SetActorLocation(GetActorLocation() + FVector(DirectionInput.X, 0, 0));
 		}
 		else
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("JumpDiagonalForward"));
 			InputDirection = DirectionUpForwardAtom; // Jump Forward
 			if(this->GetMovementComponent()->IsMovingOnGround())
 			{
@@ -270,6 +251,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			//}
 		}
 
+		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("In A Move U Can Deal Damage"));
+
 		// Set and start the new move.
 		CurrentMove = MoveLinkToFollow.Link->Move;
 		TimeInCurrentMove = 0.0f;
@@ -289,15 +272,33 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 
 		if(OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
 		{
+			if(this->canApplyDamage)
+			{
 			UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
 			
 			pAsPawn->gotHit = true;
 			pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
 			pAsPawn->RessourceComp->IncreaseStunMeter(0.1F);
 			pAsPawn->gotHit = false;
+			}
 		}
 	}
 
+}
+
+void AFGDefaultPawn::SetRotationOfPlayer()
+{
+	if (GetMovementComponent()->IsMovingOnGround())
+	{
+		if (this->isOnLeftSide)
+		{
+			this->GetMesh()->SetRelativeScale3D(FVector(1.0F, -1.0F, 1.0F));
+		}
+		else
+		{
+			this->GetMesh()->SetRelativeScale3D(FVector(1.0F, 1.0F, 1.0F));
+		}
+	}
 }
 
 void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent)
@@ -349,7 +350,6 @@ void AFGDefaultPawn::TopButtonReleased()
 
 void AFGDefaultPawn::RightButtonPressed()
 {
-	UE_LOG(LogTemp, Warning, TEXT("RightButtonPressed"));
 	ButtonsDown |= (1 << (int32)EFGInputButtons::RightFace);
 }
 
@@ -359,7 +359,6 @@ void AFGDefaultPawn::RightButtonReleased()
 }
 void AFGDefaultPawn::BottomButtonPressed()
 {
-	UE_LOG(LogTemp, Warning, TEXT("BottomButtonPressed"));
 	ButtonsDown |= (1 << (int32)EFGInputButtons::BottomFace);
 }
 

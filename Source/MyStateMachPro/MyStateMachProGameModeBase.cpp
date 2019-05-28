@@ -11,6 +11,7 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	roundTimer = 99.0F;
+	//startTimer = 3.0F;
 
 }
 
@@ -48,12 +49,21 @@ void AMyStateMachProGameModeBase::StartPlay() {
 
 	player1->isOnLeftSide = true;
 	player2->isOnLeftSide = false;
-	//UGameplayStatics::SetGamePaused(this, true);
+	startTimer = 3.0F;
+
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
+	if(startTimer >= 0){
+		startTimer -= DeltaSeconds;
+		player1->isStunned = true;
+		player2->isStunned = true;
+		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Magenta, FString::SanitizeFloat(startTimer));
+		return;
+	}
+	player1->isStunned = false;
+	player2->isStunned = false;
 	roundTimer -= DeltaSeconds;
-
 	if(player1->GetActorLocation().X < player2->GetActorLocation().X)
 	{
 		if(player1->GetCharacterMovement()->IsMovingOnGround())
@@ -77,14 +87,26 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	}
 	if(player1->RessourceComp->Health <= 0.0F)
 	{
-		player1->K2_DestroyActor();
+		//player1->K2_DestroyActor();
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
-		UGameplayStatics::SetGamePaused(this, true);
+		//UGameplayStatics::SetGamePaused(this, true);
+		player1->RessourceComp->SetHealth(1.0F);
+		player2->RessourceComp->SetHealth(1.0F);
+		player1->RessourceComp->SetStunMeter(0.0F);
+		player2->RessourceComp->SetStunMeter(0.0F);
+		player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
+		player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
 	}
 	if(player2->RessourceComp->Health <= 0.0F)
 	{
-		player2->K2_DestroyActor();
+		//player2->K2_DestroyActor();
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
-		UGameplayStatics::SetGamePaused(this, true);
+		//UGameplayStatics::SetGamePaused(this, true);
+		player1->RessourceComp->SetHealth(1.0F);
+		player2->RessourceComp->SetHealth(1.0F);
+		player1->RessourceComp->SetStunMeter(0.0F);
+		player2->RessourceComp->SetStunMeter(0.0F);
+		player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
+		player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
 	}
 }
