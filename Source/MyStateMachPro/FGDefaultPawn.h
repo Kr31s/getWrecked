@@ -49,6 +49,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool gotHit;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool canApplyDamage;
+
 	UPROPERTY(EditAnywhere)
 		bool isOnLeftSide;
 
@@ -138,6 +141,9 @@ protected:
 
 	UFUNCTION(/*BlueprintNativeEvent*/)
 		void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void SetRotationOfPlayer();
 
 private:
 	//~ This array relates to InputStream. InputStream must not be updated without this stream being updated as well.
