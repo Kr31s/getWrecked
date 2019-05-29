@@ -77,26 +77,26 @@ bool  UMyUserWidget::CreateClient()
 	return NetworkSystem::NetSys->InitNetSystem();
 }
 
-void  UMyUserWidget::CreateRoomMessage(bool status)
+void  UMyUserWidget::CreateRoomMessage_Implementation(bool status)
 {
-	FOutputDeviceNull ar;
+	/*FOutputDeviceNull ar;
 	const FString command = FString::Printf(TEXT("ReceiveMessage %d"), &status);
-	this->CallFunctionByNameWithArguments(*command, ar, NULL, true);
+	this->CallFunctionByNameWithArguments(*command, ar, NULL, true);*/
 }
 
-void  UMyUserWidget::JoinRoomMessage(bool status)
+void  UMyUserWidget::JoinRoomMessage_Implementation(bool status)
 {
 
 }
-void  UMyUserWidget::RivalJoinMessage()
+void  UMyUserWidget::RivalJoinMessage_Implementation()
 {
 
 }
-void  UMyUserWidget::LeaveRoomMessage(bool status)
+void  UMyUserWidget::LeaveRoomMessage_Implementation(bool status)
 {
 
 }
-void  UMyUserWidget::RivalLeaveMessage()
+void  UMyUserWidget::RivalLeaveMessage_Implementation()
 {
 
 }
