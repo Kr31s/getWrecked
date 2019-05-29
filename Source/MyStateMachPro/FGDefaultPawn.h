@@ -58,7 +58,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool isStunned;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	AActor* Opponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

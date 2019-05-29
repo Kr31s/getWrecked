@@ -138,12 +138,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		if (DirectionInput.Y < -DirectionThreshold)
 		{
 			InputDirection = DirectionDownAtom; // Crouch
-
+			isCrouching = true;
 			UE_LOG(LogTemp, Warning, TEXT("i want to crouch"));
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionNeutralAtom; // Idle
+			isCrouching = false;
 		}
 		else
 		{
@@ -279,7 +280,7 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 			pAsPawn->gotHit = true;
 			pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
 			pAsPawn->RessourceComp->IncreaseStunMeter(0.1F);
-			pAsPawn->gotHit = false;
+			//pAsPawn->gotHit = false;
 			}
 		}
 	}
