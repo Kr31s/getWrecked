@@ -42,7 +42,9 @@ void NetworkSystem::TaskMessageReceiveThread(char* receivearray)
 		{
 			//failed room join
 		}
-		UMyUserWidget::myUserWidget->JoinRoomMessage(status);
+		
+
+		UMyUserWidget::myUserWidget->JoinRoomMessage((bool)status);
 		break;
 
 	case 1:
@@ -65,7 +67,10 @@ void NetworkSystem::TaskMessageReceiveThread(char* receivearray)
 		{
 			//failed room creation
 		}
-		UMyUserWidget::myUserWidget->CreateRoomMessage(status);
+		if (UMyUserWidget::myUserWidget != NULL) {
+
+			UMyUserWidget::myUserWidget->CreateRoomMessage((bool)status);
+		}
 		break;
 
 	case 3:
@@ -79,7 +84,7 @@ void NetworkSystem::TaskMessageReceiveThread(char* receivearray)
 			//you in no room
 
 		}
-		UMyUserWidget::myUserWidget->LeaveRoomMessage(status);
+		UMyUserWidget::myUserWidget->LeaveRoomMessage((bool)status);
 		break;
 
 	case 4:

@@ -37,10 +37,17 @@ public:
 
 
 
+	
+
+		UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ZZZ")
 	void CreateRoomMessage(bool status);
+		UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ZZZ")
 	void JoinRoomMessage(bool status);
+		UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ZZZ")
 	void RivalJoinMessage();
+		UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ZZZ")
 	void LeaveRoomMessage(bool status);
+		UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ZZZ")
 	void RivalLeaveMessage();
 	
 };

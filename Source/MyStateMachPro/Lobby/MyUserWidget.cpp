@@ -16,6 +16,8 @@ void UMyUserWidget::BeginDestroy()
 
 bool UMyUserWidget::CreateRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
 {
+	UMyUserWidget::myUserWidget = this;
+
 	UE_LOG(LogTemp, Warning, TEXT("CreateRoom"));
 	char* result = TCHAR_TO_ANSI(*p_Name);
 	for (int i = 2; i < 22; ++i)
@@ -32,6 +34,8 @@ bool UMyUserWidget::CreateRoom(int p_timeValue, int p_roundValue, const FString&
 	NetworkSystem::NetSys->socketUDP.Send(NetworkSystem::NetSys->serverAddress, (char*)NetworkSystem::NetSys->sendArray, 22).m_errorCode;
 	return true;
 }
+
+
 
 bool UMyUserWidget::JoinRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
 {
@@ -77,26 +81,26 @@ bool  UMyUserWidget::CreateClient()
 	return NetworkSystem::NetSys->InitNetSystem();
 }
 
-void  UMyUserWidget::CreateRoomMessage(bool status)
+void  UMyUserWidget::CreateRoomMessage_Implementation(bool status)
 {
-	FOutputDeviceNull ar;
-	const FString command = FString::Printf(TEXT("ReceiveMessage %d"), &status);
-	this->CallFunctionByNameWithArguments(*command, ar, NULL, true);
+	int a = 5;
+	int b = 5;
+	UE_LOG(LogTemp, Warning, TEXT("Coolio"));
 }
 
-void  UMyUserWidget::JoinRoomMessage(bool status)
-{
-
-}
-void  UMyUserWidget::RivalJoinMessage()
+void  UMyUserWidget::JoinRoomMessage_Implementation(bool status)
 {
 
 }
-void  UMyUserWidget::LeaveRoomMessage(bool status)
+void  UMyUserWidget::RivalJoinMessage_Implementation()
 {
 
 }
-void  UMyUserWidget::RivalLeaveMessage()
+void  UMyUserWidget::LeaveRoomMessage_Implementation(bool status)
+{
+
+}
+void  UMyUserWidget::RivalLeaveMessage_Implementation()
 {
 
 }

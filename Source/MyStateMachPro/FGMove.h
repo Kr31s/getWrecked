@@ -75,7 +75,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		float DamageValue = 0.0F;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		EMoveType Movetype;
 
 };
