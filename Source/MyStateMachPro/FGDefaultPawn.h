@@ -70,6 +70,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UActorRotationComponent* PlayerRotationComp;
 
+	UPROPERTY(EditAnywhere)
+		UParticleSystem* gotHitFire;
+
 	UFUNCTION(BlueprintCallable)
 		UFGMove* GetCurrentMove();
 

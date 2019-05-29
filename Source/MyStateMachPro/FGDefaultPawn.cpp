@@ -281,6 +281,9 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 			pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
 			pAsPawn->RessourceComp->IncreaseStunMeter(0.1F);
 			//pAsPawn->gotHit = false;
+
+				//SweepResult.Location
+				
 			}
 		}
 	}
