@@ -81,12 +81,12 @@ bool  UMyUserWidget::CreateClient()
 	return NetworkSystem::NetSys->InitNetSystem();
 }
 
-void  UMyUserWidget::CreateRoomMessage_Implementation(bool status)
-{
-	int a = 5;
-	int b = 5;
-	UE_LOG(LogTemp, Warning, TEXT("Coolio"));
-}
+//void  UMyUserWidget::CreateRoomMessage_Implementation(bool status)
+//{
+//	int a = 5;
+//	int b = 5;
+//	UE_LOG(LogTemp, Warning, TEXT("Coolio"));
+//}
 
 void  UMyUserWidget::JoinRoomMessage_Implementation(bool status)
 {
