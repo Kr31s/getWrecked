@@ -34,12 +34,11 @@ bool FMessageReceiveThread::Init()
 //Run
 uint32 FMessageReceiveThread::Run()
 {
-
 	while (FMessageReceiveThread::threadRuning)
 	{
 		if (m_clientSocket->Receive(m_receiveArray, 50).GetPortRef() != NULL)
 		{
-
+			UE_LOG(LogTemp, Warning, TEXT("Received Data"));
 			NetworkSystem::NetSys->TaskMessageReceiveThread(m_receiveArray);
 		}
 	}
