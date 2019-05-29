@@ -272,7 +272,6 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 
 		if(OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
 		{
-
 			if(this->canApplyDamage)
 			{
 			UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
@@ -284,7 +283,6 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 			}
 		}
 	}
-
 
 }
 UFGMove* AFGDefaultPawn::GetCurrentMove()
