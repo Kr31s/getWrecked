@@ -70,6 +70,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UActorRotationComponent* PlayerRotationComp;
 
+	UFUNCTION(BlueprintCallable)
+		UFGMove* GetCurrentMove();
+
 protected:
 	void LeftButtonPressed();
 	void LeftButtonReleased();
@@ -139,7 +142,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void DoMove(UFGMove* NewMove);
 
-	UFUNCTION(/*BlueprintNativeEvent*/)
+	UFUNCTION()
 		void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
