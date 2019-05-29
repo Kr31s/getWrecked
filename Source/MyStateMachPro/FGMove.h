@@ -13,6 +13,17 @@
 class UFGMoveLink;
 class AFGDefaultPawn;
 
+UENUM(Meta = (Bitflags))
+enum class EMoveType : uint8
+{
+	HK,
+	HP,
+	LK,
+	LP,
+	none
+
+};
+
 USTRUCT()
 struct  FFGMoveLinkToFollow {
 	GENERATED_BODY()
@@ -63,6 +74,12 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float DamageValue = 0.0F;
+
+	UPROPERTY(EditAnywhere)
+		EMoveType Movetype;
+
 };
+
+
 
 
