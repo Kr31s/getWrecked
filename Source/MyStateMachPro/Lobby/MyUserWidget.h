@@ -39,7 +39,7 @@ public:
 
 	
 
-		UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ZZZ")
+		UFUNCTION(BlueprintImplementableEvent, Category = "ZZZ")
 	void CreateRoomMessage(bool status);
 		UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ZZZ")
 	void JoinRoomMessage(bool status);
