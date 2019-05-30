@@ -252,7 +252,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			//}
 		}
 
-		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("In A Move U Can Deal Damage"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("In A Move U Can Deal Damage"));
 
 		// Set and start the new move.
 		CurrentMove = MoveLinkToFollow.Link->Move;
