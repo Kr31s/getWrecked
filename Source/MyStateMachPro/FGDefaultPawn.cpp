@@ -91,7 +91,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	this->SetRotationOfPlayer();
 
 	// Process input
-	if(isStunned)
+	if(isStunned || gotHit)
 	{
 		DisableInput(Cast<APlayerController>(this));
 		return;
