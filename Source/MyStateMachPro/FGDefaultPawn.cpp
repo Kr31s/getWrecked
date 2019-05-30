@@ -281,8 +281,8 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 			pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
 			pAsPawn->RessourceComp->IncreaseStunMeter(0.1F);
 			//pAsPawn->gotHit = false;
-
-				//SweepResult.Location
+			FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), gotHitFire, FVector(EmitterSpawnLocation2.X,0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F,0.3F,0.3F), true);
 				
 			}
 		}
