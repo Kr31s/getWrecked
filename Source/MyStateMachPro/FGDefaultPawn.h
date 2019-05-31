@@ -35,6 +35,9 @@ public:
 		bool CanMoveInLeftDirection;
 
 	UPROPERTY(EditAnywhere)
+		float stunTimer;
+
+	UPROPERTY(EditAnywhere)
 		bool CanMoveInRightDirection;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -69,6 +72,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UActorRotationComponent* PlayerRotationComp;
+
+	UPROPERTY(EditAnywhere)
+		UParticleSystem* gotHitFire;
 
 	UFUNCTION(BlueprintCallable)
 		UFGMove* GetCurrentMove();

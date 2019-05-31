@@ -15,6 +15,8 @@ AFGDefaultPawn::AFGDefaultPawn()
 {
 	// This is ridiculously long, but we ll use it to make a point.
 	InputExpirationTime = 0.75f;
+	stunTimer = 0.0F;
+
 	//MovementComponent = CreateDefaultSubobject<UPawnMovementComponent>(ADefaultPawn::MovementComponentName);
 	//MovementComponent->UpdatedComponent = GetCollisionComponent();
 	RessourceComp = CreateDefaultSubobject<URessourceComponent>(TEXT("RComp"));//NewObject<UActorComponent>(this, "RessourceComp");
@@ -91,9 +93,15 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	this->SetRotationOfPlayer();
 
 	// Process input
-	if(isStunned)
+	if(isStunned || gotHit)
 	{
 		DisableInput(Cast<APlayerController>(this));
+		stunTimer += DeltaSeconds;
+		if(stunTimer>= 2.0F)
+		{
+			gotHit = false;
+			stunTimer = 0.0F;
+		}
 		return;
 	}else
 	{
@@ -252,7 +260,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			//}
 		}
 
-		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("In A Move U Can Deal Damage"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("In A Move U Can Deal Damage"));
 
 		// Set and start the new move.
 		CurrentMove = MoveLinkToFollow.Link->Move;
@@ -281,6 +289,9 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 			pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
 			pAsPawn->RessourceComp->IncreaseStunMeter(0.1F);
 			//pAsPawn->gotHit = false;
+			FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), gotHitFire, FVector(EmitterSpawnLocation2.X,0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F,0.3F,0.3F), true);
+				
 			}
 		}
 	}
