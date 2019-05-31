@@ -40,6 +40,7 @@ void BCRoom::AddRival(BCClient* p_client)
 void BCRoom::RemoveRival(NetAddress& netAddress, char* p_receiveArray)
 {
 	p_receiveArray[0] = 3 << 1;
+	this;
 
 	if (m_Owner->m_netaddress == netAddress)
 	{

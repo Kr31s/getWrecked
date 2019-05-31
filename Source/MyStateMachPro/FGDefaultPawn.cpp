@@ -15,6 +15,8 @@ AFGDefaultPawn::AFGDefaultPawn()
 {
 	// This is ridiculously long, but we ll use it to make a point.
 	InputExpirationTime = 0.75f;
+	stunTimer = 0.0F;
+
 	//MovementComponent = CreateDefaultSubobject<UPawnMovementComponent>(ADefaultPawn::MovementComponentName);
 	//MovementComponent->UpdatedComponent = GetCollisionComponent();
 	RessourceComp = CreateDefaultSubobject<URessourceComponent>(TEXT("RComp"));//NewObject<UActorComponent>(this, "RessourceComp");
@@ -94,6 +96,12 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	if(isStunned || gotHit)
 	{
 		DisableInput(Cast<APlayerController>(this));
+		stunTimer += DeltaSeconds;
+		if(stunTimer>= 2.0F)
+		{
+			gotHit = false;
+			stunTimer = 0.0F;
+		}
 		return;
 	}else
 	{
