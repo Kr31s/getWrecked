@@ -26,6 +26,9 @@ void NetworkSystem::TaskMessageReceiveThread(char* receivearray)
 	status = m_receiveArray[0] << 7;
 	status = status >> 7;
 
+	UE_LOG(LogTemp, Warning, TEXT("d%"), (int)identifier);
+
+
 	switch (identifier)
 	{
 	case 0:
