@@ -35,6 +35,9 @@ public:
 		bool CanMoveInLeftDirection;
 
 	UPROPERTY(EditAnywhere)
+		float stunTimer;
+
+	UPROPERTY(EditAnywhere)
 		bool CanMoveInRightDirection;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
