@@ -39,6 +39,7 @@ bool UMyUserWidget::CreateRoom(int p_timeValue, int p_roundValue, const FString&
 
 bool UMyUserWidget::JoinRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
 {
+	UMyUserWidget::myUserWidget = this;
 	UE_LOG(LogTemp, Warning, TEXT("JoinRoom"));
 	//charInput Name
 	char* result = TCHAR_TO_ANSI(*p_Name);
@@ -79,28 +80,4 @@ bool  UMyUserWidget::CreateClient()
 	NetworkSystem::NetSys = new NetworkSystem();
 
 	return NetworkSystem::NetSys->InitNetSystem();
-}
-
-//void  UMyUserWidget::CreateRoomMessage_Implementation(bool status)
-//{
-//	int a = 5;
-//	int b = 5;
-//	UE_LOG(LogTemp, Warning, TEXT("Coolio"));
-//}
-
-void  UMyUserWidget::JoinRoomMessage_Implementation(bool status)
-{
-
-}
-void  UMyUserWidget::RivalJoinMessage_Implementation()
-{
-
-}
-void  UMyUserWidget::LeaveRoomMessage_Implementation(bool status)
-{
-
-}
-void  UMyUserWidget::RivalLeaveMessage_Implementation()
-{
-
 }

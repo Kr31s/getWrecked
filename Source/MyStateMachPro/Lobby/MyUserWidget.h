@@ -24,10 +24,10 @@ public:
 	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool CreateRoom(int TimeValue, int RoundValue, const FString& p_Name);
+		bool CreateRoom(int timeValue, int roundValue, const FString& name);
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool JoinRoom(int TimeValue, int RoundValue, const FString& p_Name);
+		bool JoinRoom(int timeValue, int roundValue, const FString& name);
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
 		bool LeaveRoom();
@@ -39,15 +39,15 @@ public:
 
 	
 
-		UFUNCTION(BlueprintImplementableEvent, Category = "ZZZ")
+		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
 	void CreateRoomMessage(bool status);
-		UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ZZZ")
-	void JoinRoomMessage(bool status);
-		UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ZZZ")
-	void RivalJoinMessage();
-		UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ZZZ")
+		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
+	void JoinRoomMessage(bool status, const FString& name);
+		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
+	void RivalJoinMessage(const FString& name);
+		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
 	void LeaveRoomMessage(bool status);
-		UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ZZZ")
+		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
 	void RivalLeaveMessage();
 	
 };

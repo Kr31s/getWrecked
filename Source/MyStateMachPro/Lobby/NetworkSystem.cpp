@@ -44,7 +44,7 @@ void NetworkSystem::TaskMessageReceiveThread(char* receivearray)
 		}
 		
 
-		UMyUserWidget::myUserWidget->JoinRoomMessage((bool)status);
+		UMyUserWidget::myUserWidget->JoinRoomMessage((bool)status, FString(UTF8_TO_TCHAR(opponentName)));
 		break;
 
 	case 1:
@@ -53,8 +53,9 @@ void NetworkSystem::TaskMessageReceiveThread(char* receivearray)
 		{
 			opponentName[i] = m_receiveArray[i + 1];
 		}
+		UMyUserWidget::myUserWidget->RivalJoinMessage(FString(UTF8_TO_TCHAR(opponentName)));
+		UE_LOG(LogTemp, Warning, TEXT("RivalJoinMessage"));
 		SendReceiveMessageClient();
-		UMyUserWidget::myUserWidget->RivalJoinMessage();
 
 		break;
 
