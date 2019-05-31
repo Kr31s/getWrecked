@@ -7,6 +7,7 @@ class BCMessage
 public:
 	static unsigned int totalMessageID;
 	unsigned short m_messageID;
+	bool m_replyed = false;
 
 	BCClient* m_receiver;
 	long long m_timeStamp;

@@ -75,7 +75,10 @@ void DecodeMessageServer(NetAddress & receiveAddress, char* receiveArray, unsign
 	status = status >> 7;
 
 	if (identifier == 5)
+	{
 		BCServer::theServer->HeartBeat(receiveAddress, receiveArray);
+		return;
+	}
 
 	if (status == 0)
 	{
