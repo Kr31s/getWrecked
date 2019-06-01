@@ -20,7 +20,6 @@ BCRoom::BCRoom(BCClient* p_client, unsigned char p_roundState, unsigned char p_t
 			m_roomID = i;
 			BCServer::theServer->roomIDList->insert({ i, *this });
 			BCServer::theServer->roomList[p_roundState * 3 + p_timeState].push_back(&BCServer::theServer->roomIDList->at(i));
-
 			if (i == BCRoom::totalRoomID)
 			{
 				++BCRoom::totalRoomID;
@@ -40,7 +39,6 @@ void BCRoom::AddRival(BCClient* p_client)
 void BCRoom::RemoveRival(NetAddress& netAddress, char* p_receiveArray)
 {
 	p_receiveArray[0] = 3 << 1;
-	this;
 
 	if (m_Owner->m_netaddress == netAddress)
 	{
@@ -122,6 +120,18 @@ bool BCRoom::FindClient(NetAddress& p_netAddress)
 	Println((p_netAddress == m_Owner->m_netaddress));
 
 	if(((m_Owner == nullptr) ? false : p_netAddress == m_Owner->m_netaddress) || ((m_Member == nullptr) ? false : p_netAddress == m_Member->m_netaddress))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool BCRoom::IsOwner(NetAddress& p_netAddress)
+{
+	if (p_netAddress == m_Owner->m_netaddress)
 	{
 		return true;
 	}

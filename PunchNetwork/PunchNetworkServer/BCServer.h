@@ -14,7 +14,7 @@ public:
 	std::map<unsigned int, BCClient>*	clientIDList	= new std::map<unsigned int, BCClient>();
 	std::map<unsigned int, BCMessage>*	messageIDList	= new std::map<unsigned int, BCMessage>();
 
-	std::vector<BCRoom*>*				roomList		= new std::vector<BCRoom*>[3 * 3]; //roomList[i * sizeof(j) + j] insane
+	std::vector<BCRoom*>				roomList[3 * 3]; //roomList[i * sizeof(j) + j] insane
 
 	BCServer(unsigned short port, bool enableNonBlocking);
 	~BCServer();
@@ -27,6 +27,7 @@ public:
 	void RoomRequest(NetAddress& receiveAddress, char* receiveArray, unsigned char rounds, unsigned char gameTime);
 	void CreateRoom(NetAddress& receiveAddress, char* receiveArray, unsigned char rounds, unsigned char gameTime);
 	void LeaveRoom(NetAddress& receiveAddress, char* receiveArray, unsigned char rounds, unsigned char gameTime);
+	void LobbyValueChange(NetAddress& receiveAddress, char* p_receiveArray);
 	void HeartBeat(NetAddress& receiveAddress, char* receiveArray);
 };
 

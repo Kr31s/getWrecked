@@ -15,7 +15,7 @@ public:
 	char m_nickname[20];
 	unsigned short m_clientID;
 	unsigned int leftHeartBeats = 0;
-	long long m_ping = 1500;
+	unsigned char m_ping = 1500;
 
 	BCClient(NetAddress netaddress, char* nickname);
 	void resetHeartBeats();

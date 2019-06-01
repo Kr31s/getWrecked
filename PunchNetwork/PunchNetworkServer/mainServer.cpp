@@ -41,7 +41,7 @@ void MessageThread()
 {
 	while (BCServer::theServer->serverRunning)
 	{
-		BCMessage::CheckResendMessages();
+		//BCMessage::CheckResendMessages();
 	}
 	Println("MessageThread closed");
 }
@@ -56,8 +56,8 @@ void HeartThread()
 		{
 			BCServer::theServer->SendDataBCM(&BCServer::theServer->clientIDList->at(i), False, heartThreadArray, 1);
 		}
-	
-		Println("Sleep 2sec");
+
+		//Println("Sleep 2sec");
 		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	}
 	Println("HeartThread closed");
@@ -68,17 +68,14 @@ void NonServerMessage()
 
 }
 
-void DecodeMessageServer(NetAddress & receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime, unsigned char& identifier, unsigned char& status)
+void DecodeMessageServer(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime, unsigned char& identifier, unsigned char& status)
 {
 	identifier = receiveArray[0] >> 1;
 	status = receiveArray[0] << 7;
 	status = status >> 7;
 
 	if (identifier == 5)
-	{
 		BCServer::theServer->HeartBeat(receiveAddress, receiveArray);
-		return;
-	}
 
 	if (status == 0)
 	{
@@ -92,6 +89,9 @@ void DecodeMessageServer(NetAddress & receiveAddress, char* receiveArray, unsign
 			break;
 		case 3:
 			BCServer::theServer->LeaveRoom(receiveAddress, receiveArray, rounds, gameTime);
+			break;
+		case 6:
+			BCServer::theServer->LobbyValueChange(receiveAddress, receiveArray);
 			break;
 		default:
 			NonServerMessage();

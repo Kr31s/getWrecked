@@ -39,7 +39,6 @@ void BCClient::resetHeartBeats()
 
 void BCClient::lostHeartBeat()
 {
-	BCServer::theServer->roomIDList;
 	++leftHeartBeats;
 	if(leftHeartBeats >= maxLeftHeartBeats)
 	{

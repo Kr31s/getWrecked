@@ -16,17 +16,16 @@ public:
 	NetSocketUDP socketUDP;
 	NetAddress serverAddress;
 
-
 	char m_receiveArray[51];
 	unsigned char sendArray[51];
 	unsigned char heartBeatArray[51];
-
 
 	unsigned char opponentName[20];
 	int myRoomID = -1;
 	unsigned char identifier = NULL;
 	unsigned char status = NULL;
 
+	bool roomOwner;
 
 
 	FMessageReceiveThread* MessageReceiveThread;

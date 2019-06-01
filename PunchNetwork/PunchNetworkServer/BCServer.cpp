@@ -28,7 +28,7 @@ BCServer::~BCServer()
 	delete(roomIDList);
 	delete(clientIDList);
 	delete(messageIDList);
-	delete[](roomList);
+	delete[](BCServer::theServer->roomList);
 	delete(serverRunning);
 }
 
@@ -60,7 +60,7 @@ void BCServer::SendDataBCM(BCClient * receiver, SendType p_status, char* dataArr
 #endif
 }
 
-void BCServer::SendData(NetAddress& netAddress, SendType p_status, char* dataArray, unsigned int lengthArrayToSend)
+void BCServer::SendData(NetAddress & netAddress, SendType p_status, char* dataArray, unsigned int lengthArrayToSend)
 {
 	switch (p_status)
 	{
@@ -86,7 +86,7 @@ void BCServer::SendData(NetAddress& netAddress, SendType p_status, char* dataArr
 #endif
 }
 
-void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char p_rounds, unsigned char p_gameTime)
+void BCServer::RoomRequest(NetAddress & p_receiveAddress, char* p_receiveArray, unsigned char p_rounds, unsigned char p_gameTime)
 {
 	Print("Received \"search for room\" request from: ");
 	for (int i = 0; (i < 20) && (p_receiveArray[i + 2] != -52); i++)
@@ -100,19 +100,19 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 		for (p_rounds = 0; p_rounds < 3; ++p_rounds)
 		{
 
-			for (unsigned int roomCounter = 0; roomCounter < roomList[p_rounds * 3 + p_gameTime].size(); ++roomCounter)
+			for (unsigned int roomCounter = 0; roomCounter < BCServer::theServer->BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].size(); ++roomCounter)
 			{
-				if (roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->FindClient(p_receiveAddress))
+				if (BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->FindClient(p_receiveAddress))
 				{
-					if (p_receiveAddress == roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_netaddress)
+					if (p_receiveAddress == BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_netaddress)
 					{
-						CharArrayAddChar(p_receiveArray, 2, roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Member->m_nickname, sizeof(roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Member->m_nickname));
+						CharArrayAddChar(p_receiveArray, 2, BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Member->m_nickname, sizeof(BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Member->m_nickname));
 					}
 					else
 					{
-						CharArrayAddChar(p_receiveArray, 2, roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_nickname, sizeof(roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_nickname));
+						CharArrayAddChar(p_receiveArray, 2, BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_nickname, sizeof(BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_nickname));
 					}
-					p_receiveArray[1] = roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
+					p_receiveArray[1] = BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
 					SendData(p_receiveAddress, True, p_receiveArray, 22);
 					Print("Player allready in a room (ID: " << (int)p_receiveArray[1] << ")");
 					return;
@@ -141,25 +141,25 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 		--p_gameTime;
 
 		//find room for player
-		for (unsigned int roomCounter = 0; roomCounter < roomList[p_rounds * 3 + p_gameTime].size(); ++roomCounter)
+		for (unsigned int roomCounter = 0; roomCounter < BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].size(); ++roomCounter)
 		{
-			if (!roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_full)
+			if (!BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_full)
 			{
 				p_receiveArray[0] = 0;
-				p_receiveArray[1] = roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
+				p_receiveArray[1] = BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
 
-				roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->AddRival(new BCClient(p_receiveAddress, p_receiveArray));
+				BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->AddRival(new BCClient(p_receiveAddress, p_receiveArray));
 
-				CharArrayAddChar(p_receiveArray, 2, roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_nickname, 20);
-				SendData(roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Member->m_netaddress, True, p_receiveArray, 22);
+				CharArrayAddChar(p_receiveArray, 2, BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_nickname, 20);
+				SendData(BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Member->m_netaddress, True, p_receiveArray, 22);
 
 
 				p_receiveArray[0] = 1 << 1;
-				CharArrayAddChar(p_receiveArray, 1, roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Member->m_nickname, 20);
-				SendDataBCM(roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner, True, p_receiveArray, 22);
+				CharArrayAddChar(p_receiveArray, 1, BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Member->m_nickname, 20);
+				SendDataBCM(BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner, True, p_receiveArray, 22);
 
 				Print("Player joined room with ID ");
-				Println(roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID);
+				Println(BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID);
 				return;
 			}
 		}
@@ -169,7 +169,7 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 	Println("Room request failed");
 	return;
 }
-void BCServer::CreateRoom(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char p_rounds, unsigned char p_gameTime)
+void BCServer::CreateRoom(NetAddress & p_receiveAddress, char* p_receiveArray, unsigned char p_rounds, unsigned char p_gameTime)
 {
 	Print("Received \"create room\" request from: ");
 	for (int i = 0; (i < 20) && ((int)p_receiveArray[i + 2] != 0); i++)
@@ -181,11 +181,11 @@ void BCServer::CreateRoom(NetAddress& p_receiveAddress, char* p_receiveArray, un
 	{
 		for (p_rounds = 0; p_rounds < 3; ++p_rounds)
 		{
-			for (unsigned int roomCounter = 0; roomCounter < roomList[p_rounds * 3 + p_gameTime].size(); ++roomCounter)
+			for (unsigned int roomCounter = 0; roomCounter < BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].size(); ++roomCounter)
 			{
-				if (roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->FindClient(p_receiveAddress))
+				if (BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->FindClient(p_receiveAddress))
 				{
-					p_receiveArray[1] = roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
+					p_receiveArray[1] = BCServer::theServer->roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
 					SendData(p_receiveAddress, True, p_receiveArray, 2);
 					Print("Room found with ID ");
 					Println((int)p_receiveArray[1]);
@@ -208,17 +208,50 @@ void BCServer::CreateRoom(NetAddress& p_receiveAddress, char* p_receiveArray, un
 	Print("Room created with ID ");
 	Println((int)p_receiveArray[1]);
 }
-void BCServer::LeaveRoom(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char p_rounds, unsigned char p_gameTime)
+void BCServer::LeaveRoom(NetAddress & p_receiveAddress, char* p_receiveArray, unsigned char p_rounds, unsigned char p_gameTime)
 {
 	unsigned int a = (int)p_receiveArray[1];
 
 	roomIDList->at(a).RemoveRival(p_receiveAddress, p_receiveArray);
 }
 
-void BCServer::HeartBeat(NetAddress& receiveAddress, char* receiveArray)
+void BCServer::LobbyValueChange(NetAddress & receiveAddress, char* p_receiveArray)
+{
+	if (BCServer::theServer->roomIDList->at(p_receiveArray[1]).FindClient(receiveAddress))
+	{
+		//net address is in room
+		if (BCServer::theServer->roomIDList->at(p_receiveArray[1]).IsOwner(receiveAddress))
+		{
+			Println("Value change Owner");
+
+			if (BCServer::theServer->roomIDList->at(p_receiveArray[1]).m_Member == nullptr)
+				return;
+
+			p_receiveArray[3] = p_receiveArray[1];
+			p_receiveArray[1] = p_receiveArray[2];
+			p_receiveArray[0] = 7 << 1;
+			SendDataBCM(BCServer::theServer->roomIDList->at(p_receiveArray[3]).m_Member, SendType::True, p_receiveArray, 2);
+		}
+		else
+		{
+			Println("Value change Member");
+
+
+			if (BCServer::theServer->roomIDList->at(p_receiveArray[1]).m_Owner == nullptr)
+				return;
+
+			p_receiveArray[3] = p_receiveArray[1];
+			p_receiveArray[1] = p_receiveArray[2];
+			p_receiveArray[0] = 7 << 1;
+			SendDataBCM(BCServer::theServer->roomIDList->at(p_receiveArray[3]).m_Owner, SendType::True, p_receiveArray, 2);
+		}
+	}
+}
+
+void BCServer::HeartBeat(NetAddress & receiveAddress, char* receiveArray)
 {
 	Println("Hearthbeat received");
 
 	clientIDList->at(receiveArray[1]).m_ping = messageIDList->at(receiveArray[0] >> 1).m_timeStamp - GetTimeInMilli();
-	messageIDList->erase(receiveArray[0] >> 1);
+	BCServer::theServer->messageIDList->at(receiveArray[0] >> 1).finished = true;
 }

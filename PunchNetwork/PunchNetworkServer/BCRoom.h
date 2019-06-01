@@ -19,4 +19,5 @@ public:
 	void AddRival(BCClient* client);
 	void RemoveRival(NetAddress& netAddress, char* p_receiveArray);
 	bool FindClient(NetAddress& netAddress);
+	bool IsOwner(NetAddress& netAddress);
 };

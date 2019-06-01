@@ -4,6 +4,7 @@
 #include "MyUserWidget.h"
 #include "NetworkSystem.h"
 #include "OutputDeviceNull.h"
+#include <RessourceData.cpp>
 
 UMyUserWidget* UMyUserWidget::myUserWidget = NULL;
 
@@ -65,7 +66,7 @@ bool UMyUserWidget::LeaveRoom()
 		NetworkSystem::NetSys->sendArray[0] = 3 << 1;
 		NetworkSystem::NetSys->sendArray[1] = NetworkSystem::NetSys->myRoomID;
 
-		NetworkSystem::NetSys->socketUDP.Send(NetworkSystem::NetSys->serverAddress, (char*)NetworkSystem::NetSys->sendArray, 2).m_errorCode;
+		NetworkSystem::NetSys->socketUDP.Send(NetworkSystem::NetSys->serverAddress, (char*)NetworkSystem::NetSys->sendArray, 2);
 		return true;
 	}
 	return false;
@@ -80,4 +81,15 @@ bool  UMyUserWidget::CreateClient()
 	NetworkSystem::NetSys = new NetworkSystem();
 
 	return NetworkSystem::NetSys->InitNetSystem();
+}
+
+void UMyUserWidget::MyLobbyValuesChanged(int slot1Pos, int slot2Pos, bool ready)
+{
+	NetworkSystem::NetSys->sendArray[0] = 6 << 1;
+	NetworkSystem::NetSys->sendArray[1] = NetworkSystem::NetSys->myRoomID;
+	NetworkSystem::NetSys->sendArray[2] = slot1Pos;
+	NetworkSystem::NetSys->sendArray[2] |= slot2Pos << 2;
+	NetworkSystem::NetSys->sendArray[2] |= ready << 4;
+	
+	NetworkSystem::NetSys->socketUDP.Send(NetworkSystem::NetSys->serverAddress, (char*)NetworkSystem::NetSys->sendArray, 3);
 }

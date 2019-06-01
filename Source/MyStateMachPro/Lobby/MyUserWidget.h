@@ -35,6 +35,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
 		bool CreateClient();
 
+	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
+		void MyLobbyValuesChanged(int slot1Pos, int slot2Pos, bool ready);
+
 
 
 	
@@ -49,5 +52,8 @@ public:
 	void LeaveRoomMessage(bool status);
 		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
 	void RivalLeaveMessage();
+
+		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
+	void UpdateLobbyValues(bool owner, int slot1Pos, int slot2Pos, bool ready);
 	
 };

@@ -40,14 +40,15 @@ void BCMessage::CheckResendMessages()
 			continue;
 		}
 
-		if (BCServer::theServer->messageIDList->at(i).m_replyed)
+		if(BCServer::theServer->messageIDList->at(i).finished)
 		{
 			BCServer::theServer->messageIDList->erase(i);
 			continue;
 		}
 
-		if ((GetTimeInMilli() - BCServer::theServer->messageIDList->at(i).m_timeStamp) > (BCServer::theServer->messageIDList->at(i).m_receiver->m_ping + 20ll))
+		if ((GetTimeInMilli() - BCServer::theServer->messageIDList->at(i).m_timeStamp) > (BCServer::theServer->messageIDList->at(i).m_receiver->m_ping + 20))
 		{
+			Println("HearthAtk");
 			BCServer::theServer->messageIDList->at(i).m_receiver->lostHeartBeat();
 			BCServer::theServer->SendDataBCM(BCServer::theServer->messageIDList->at(i).m_receiver, None, BCServer::theServer->messageIDList->at(i).m_messageArray, BCServer::theServer->messageIDList->at(i).m_messageArrayLength);
 			BCServer::theServer->messageIDList->erase(i);
@@ -64,6 +65,7 @@ void BCMessage::GetReplyMessage(unsigned char& messageID)
 	}
 	BCServer::theServer->messageIDList->at(messageID).m_receiver->resetHeartBeats();
 	BCServer::theServer->messageIDList->at(messageID).m_receiver->m_ping = (GetTimeInMilli() - BCServer::theServer->messageIDList->at(messageID).m_timeStamp);
-	BCServer::theServer->messageIDList->at(messageID).m_replyed = true;
+	Println("New Ping: " << (int)BCServer::theServer->messageIDList->at(messageID).m_receiver->m_ping);
+	BCServer::theServer->messageIDList->at(messageID).finished = true;
 	Println("Reply message received");
 }

@@ -1,20 +1,6 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(411,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (PunchNetwork.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  BCClient.cpp
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.cpp(19): warning C4018: '<=': signed/unsigned mismatch
-  BCMessage.cpp
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(13): warning C4018: '<': signed/unsigned mismatch
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(18): warning C4018: '<=': signed/unsigned mismatch
-  BCRoom.cpp
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCRoom.cpp(16): warning C4018: '<=': signed/unsigned mismatch
-  BCServer.cpp
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(37): warning C4244: '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(56): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(82): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(115): warning C4244: '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(149): warning C4244: '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(188): warning C4244: '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(205): warning C4244: '=': conversion from 'unsigned short' to 'char', possible loss of data
   mainServer.cpp
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(55): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-  PunchNetwork.vcxproj -> E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe
+E:\GitRepositories\new\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(18): warning C4305: 'initializing': truncation from 'int' to 'unsigned char'
+E:\GitRepositories\new\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(18): warning C4309: 'initializing': truncation of constant value
+E:\GitRepositories\new\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(55): warning C4018: '<': signed/unsigned mismatch
+  PunchNetwork.vcxproj -> E:\GitRepositories\new\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe
