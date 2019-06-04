@@ -204,7 +204,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	}
 	else
 	{
-		InputStream = RecievedInputStream(10);
+		//InputStream = RecievedInputStream(10);
 	}
 
 	// Add one atom for each buttons state.
@@ -426,11 +426,11 @@ void AFGDefaultPawn::BumperRightReleased()
 
 }
 
-TArray<USM_InputAtom*> AFGDefaultPawn::ReadInputstream(unsigned short input)
-{	
+//TArray<USM_InputAtom*> AFGDefaultPawn::ReadInputstream()
+//{	
 //	InputStream =
 //		return InputStream;
-}
+//}
 
 
 void AFGDefaultPawn::UseGameCamera()
@@ -464,11 +464,13 @@ void AFGDefaultPawn::UseGameCamera()
 	// Try again next frame. Currently, there's no limit to how many times we'll do this.
 	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
 
-
+/*
+ *
 	TArray<USM_InputAtom>* ReadInputstream(unsigned short input)
 	{
 
-		return input;
+		//return input;
 	}
+ */
 
 }

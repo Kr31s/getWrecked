@@ -19,8 +19,8 @@ UHBParentComp::UHBParentComp()
 void UHBParentComp::BeginPlay()
 {
 	Super::BeginPlay();
-	player = Cast<AFGDefaultPawn>(GetOwner());
-	this->Deactivate();
+	//player = Cast<AFGDefaultPawn>(GetOwner());
+	//this->Deactivate();
 	// ...
 	
 }
@@ -30,13 +30,13 @@ void UHBParentComp::BeginPlay()
 void UHBParentComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if(player->GetCurrentMove() == Move)
+	/*if(player->GetCurrentMove() == Move)
 	{
 		this->Activate();
 	}else
 	{
 		this->Deactivate();
-	}
+	}*/
 	// ...
 }
 
