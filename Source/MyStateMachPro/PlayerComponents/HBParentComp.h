@@ -21,10 +21,10 @@ public:
 		UFGMove* Move;
 
 	UPROPERTY()
-		AActor* parent;
+		AFGDefaultPawn* player;
 
 	UPROPERTY()
-		AFGDefaultPawn* player;
+		TArray<USceneComponent*> TIDChildren;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

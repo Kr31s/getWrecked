@@ -3,6 +3,7 @@
 
 #include "HBParentComp.h"
 #include "FGDefaultPawn.h"
+#include "HitBoxIDComp.h"
 
 
 // Sets default values for this component's properties
@@ -12,6 +13,7 @@ UHBParentComp::UHBParentComp()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	// ...
+
 }
 
 
@@ -20,7 +22,18 @@ void UHBParentComp::BeginPlay()
 {
 	Super::BeginPlay();
 	player = Cast<AFGDefaultPawn>(GetOwner());
+
+	this->GetChildrenComponents(false, TIDChildren);
+	
+	for (int i = 0; i < 3; ++i)
+	{
+
+		Cast<UHitBoxIDComp>(TIDChildren[i])->MoveID = i;
+	}
 	this->Deactivate();
+
+		
+	
 	// ...
 	
 }

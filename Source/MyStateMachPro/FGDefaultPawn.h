@@ -85,8 +85,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 		UFGMove* GetCurrentMove();
 
-	UFUNCTION()
-		TArray<USM_InputAtom>* ReadInputstream(unsigned short input);
+	//UFUNCTION()
+	//	void ReadInputstream();
 
 protected:
 	void LeftButtonPressed();
@@ -179,6 +179,6 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<USM_InputAtom*> InputStream;
 
-	UPROPERTY(VisibleInstanceOnly)
-	TArray<USM_InputAtom*> RecievedInputStream;
+	//UPROPERTY(VisibleInstanceOnly)
+	//TArray<USM_InputAtom*> RecievedInputStream;
 };

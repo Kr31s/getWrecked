@@ -198,14 +198,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			}
 		}
 	}
-	if (this == Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0)))
-	{
 		InputStream.Add(InputDirection);
-	}
-	else
-	{
-		InputStream = RecievedInputStream(10);
-	}
+	//if (this == Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0))){	}
+	//else{	//InputStream = RecievedInputStream(10);}
 
 	// Add one atom for each buttons state.
 	for (int32 i = 0; i < (int32)EFGInputButtons::Count; ++i)
@@ -426,11 +421,11 @@ void AFGDefaultPawn::BumperRightReleased()
 
 }
 
-TArray<USM_InputAtom*> AFGDefaultPawn::ReadInputstream(unsigned short input)
-{	
+//TArray<USM_InputAtom*> AFGDefaultPawn::ReadInputstream()
+//{	
 //	InputStream =
 //		return InputStream;
-}
+//}
 
 
 void AFGDefaultPawn::UseGameCamera()
@@ -464,11 +459,13 @@ void AFGDefaultPawn::UseGameCamera()
 	// Try again next frame. Currently, there's no limit to how many times we'll do this.
 	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
 
-
+/*
+ *
 	TArray<USM_InputAtom>* ReadInputstream(unsigned short input)
 	{
 
-		return input;
+		//return input;
 	}
+ */
 
 }
