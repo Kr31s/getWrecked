@@ -78,9 +78,9 @@ void AFGDefaultPawn::BeginPlay()
 	{
 		if (!ButtonAtoms.IsValidIndex(i) || !ButtonAtoms[i])
 		{
-		UE_LOG(LogTemp, Warning, TEXT("Not enough button input atoms, or a NULL entry was found in the "));
-		Destroy();
-		return;
+			UE_LOG(LogTemp, Warning, TEXT("Not enough button input atoms, or a NULL entry was found in the "));
+			Destroy();
+			return;
 		}
 	}
 	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
@@ -93,17 +93,18 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	this->SetRotationOfPlayer();
 
 	// Process input
-	if(isStunned || gotHit)
+	if (isStunned || gotHit)
 	{
 		DisableInput(Cast<APlayerController>(this));
 		stunTimer += DeltaSeconds;
-		if(stunTimer>= 2.0F)
+		if (stunTimer >= 2.0F)
 		{
 			gotHit = false;
 			stunTimer = 0.0F;
 		}
 		return;
-	}else
+	}
+	else
 	{
 		EnableInput(Cast<APlayerController>(this));
 	}
@@ -119,10 +120,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
-			if(this->isOnLeftSide)
+			if (this->isOnLeftSide)
 			{
 				InputDirection = DirectionBackAtom; // Back on Leftside
-			}else
+			}
+			else
 			{
 				InputDirection = DirectionForwardAtom; // Forward on Rightside
 
@@ -172,13 +174,14 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
-			if(this->isOnLeftSide)
+			if (this->isOnLeftSide)
 			{
 				InputDirection = DirectionForwardAtom; // Forward on Leftside
-			}else
+			}
+			else
 			{
 				InputDirection = DirectionBackAtom; // Back on Rightside
-				
+
 			}
 
 			if (CanMoveInRightDirection) {
@@ -188,14 +191,21 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else
 		{
 			InputDirection = DirectionUpForwardAtom; // Jump Forward
-			if(this->GetMovementComponent()->IsMovingOnGround())
+			if (this->GetMovementComponent()->IsMovingOnGround())
 			{
 				this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
-				
+
 			}
 		}
 	}
-	InputStream.Add(InputDirection);
+	if (this == Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0)))
+	{
+		InputStream.Add(InputDirection);
+	}
+	else
+	{
+		InputStream = RecievedInputStream(10);
+	}
 
 	// Add one atom for each buttons state.
 	for (int32 i = 0; i < (int32)EFGInputButtons::Count; ++i)
@@ -274,24 +284,24 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 
-void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AFGDefaultPawn::OnOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
 
-		if(OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
+		if (OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
 		{
-			if(this->canApplyDamage)
+			if (this->canApplyDamage)
 			{
-			UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
-			
-			pAsPawn->gotHit = true;
-			pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
-			pAsPawn->RessourceComp->IncreaseStunMeter(0.05F);
-			//pAsPawn->gotHit = false;
-			FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), gotHitFire, FVector(EmitterSpawnLocation2.X,0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F,0.3F,0.3F), true);
-				
+				UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
+
+				pAsPawn->gotHit = true;
+				pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
+				pAsPawn->RessourceComp->IncreaseStunMeter(0.05F);
+				//pAsPawn->gotHit = false;
+				FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
+
 			}
 		}
 	}
@@ -317,7 +327,7 @@ void AFGDefaultPawn::SetRotationOfPlayer()
 	}
 }
 
-void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent)
+void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent * InInputComponent)
 {
 	Super::SetupPlayerInputComponent(InInputComponent);
 
@@ -383,6 +393,45 @@ void AFGDefaultPawn::BottomButtonReleased()
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::BottomFace);
 }
 
+void AFGDefaultPawn::TriggerLeftPressed()
+{
+
+}
+void AFGDefaultPawn::TriggerLeftReleased()
+{
+
+}
+void AFGDefaultPawn::TriggerRightPressed()
+{
+
+}
+void AFGDefaultPawn::TriggerRightReleased()
+{
+
+}
+void AFGDefaultPawn::BumperLeftPressed()
+{
+
+}
+void AFGDefaultPawn::BumperLeftReleased()
+{
+
+}
+void AFGDefaultPawn::BumperRightPressed()
+{
+
+}
+void AFGDefaultPawn::BumperRightReleased()
+{
+
+}
+
+TArray<USM_InputAtom*> AFGDefaultPawn::ReadInputstream(unsigned short input)
+{	
+//	InputStream =
+//		return InputStream;
+}
+
 
 void AFGDefaultPawn::UseGameCamera()
 {
@@ -414,4 +463,12 @@ void AFGDefaultPawn::UseGameCamera()
 	}
 	// Try again next frame. Currently, there's no limit to how many times we'll do this.
 	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
+
+
+	TArray<USM_InputAtom>* ReadInputstream(unsigned short input)
+	{
+
+		return input;
+	}
+
 }
