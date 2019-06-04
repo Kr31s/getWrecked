@@ -38,6 +38,9 @@ public:
 		float stunTimer;
 
 	UPROPERTY(EditAnywhere)
+		int Id;
+
+	UPROPERTY(EditAnywhere)
 		bool CanMoveInRightDirection;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -45,6 +48,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isBlocking;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool bIsBlocking;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isInAir;
@@ -79,6 +85,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		UFGMove* GetCurrentMove();
 
+	UFUNCTION()
+		TArray<USM_InputAtom>* ReadInputstream(unsigned short input);
+
 protected:
 	void LeftButtonPressed();
 	void LeftButtonReleased();
@@ -88,6 +97,14 @@ protected:
 	void RightButtonReleased();
 	void BottomButtonPressed();
 	void BottomButtonReleased();
+	void TriggerLeftPressed();
+	void TriggerLeftReleased();
+	void TriggerRightPressed();
+	void TriggerRightReleased();
+	void BumperLeftPressed();
+	void BumperLeftReleased();
+	void BumperRightPressed();
+	void BumperRightReleased();
 	void ReadXAxis(float Value);
 	void ReadYAxis(float Value);
 
@@ -162,4 +179,6 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<USM_InputAtom*> InputStream;
 
+	UPROPERTY(VisibleInstanceOnly)
+	TArray<USM_InputAtom*> RecievedInputStream;
 };
