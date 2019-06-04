@@ -18,7 +18,7 @@ UHitBoxIDComp::UHitBoxIDComp()
 void UHitBoxIDComp::BeginPlay()
 {
 	Super::BeginPlay();
-	//player = Cast<AFGDefaultPawn>(GetOwner());
+	player = Cast<AFGDefaultPawn>(GetOwner());
 
 
 	// ...

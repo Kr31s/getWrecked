@@ -179,6 +179,6 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<USM_InputAtom*> InputStream;
 
-	UPROPERTY(VisibleInstanceOnly)
-	TArray<USM_InputAtom*> RecievedInputStream;
+	//UPROPERTY(VisibleInstanceOnly)
+	//TArray<USM_InputAtom*> RecievedInputStream;
 };

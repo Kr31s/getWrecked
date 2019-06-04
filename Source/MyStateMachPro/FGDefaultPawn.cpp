@@ -198,14 +198,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			}
 		}
 	}
-	if (this == Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0)))
-	{
 		InputStream.Add(InputDirection);
-	}
-	else
-	{
-		//InputStream = RecievedInputStream(10);
-	}
+	//if (this == Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0))){	}
+	//else{	//InputStream = RecievedInputStream(10);}
 
 	// Add one atom for each buttons state.
 	for (int32 i = 0; i < (int32)EFGInputButtons::Count; ++i)
