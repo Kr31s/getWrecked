@@ -5,7 +5,7 @@
 #include "BCClient.h"
 #include "BCMessage.h"
 
-void DecodeMessageServer(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime, unsigned char& identifier, unsigned char& status);
+void DecodeMessageServer(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime, unsigned char& identifier, unsigned char& status, unsigned int& intValue);
 void ClearReceiveArray(char* receiveArray, long long length)
 {
 	for (int i = 0; (receiveArray[i] != NULL) && i < length; ++i)
@@ -18,12 +18,13 @@ void ClearReceiveArray(char* receiveArray, long long length)
 void ServerThread()
 {
 	NetAddress receiveAddress;
-	char receiveArray[51] = { 0 };
+	char receiveArray[46] = { 0 };
 
-	unsigned char rounds = 0;
-	unsigned char gameTime = 0;
-	unsigned char identifier = NULL;
-	unsigned char status = NULL;
+	unsigned int	intValue = NULL;
+	unsigned char	rounds = NULL;
+	unsigned char	gameTime = NULL;
+	unsigned char	identifier = NULL;
+	unsigned char	status = NULL;
 
 
 	while (BCServer::theServer->serverRunning)
@@ -31,17 +32,24 @@ void ServerThread()
 		receiveAddress = BCServer::theServer->serverSocket.Receive((char*)receiveArray, sizeof(receiveArray));
 		if (receiveAddress.GetPortRef() != NULL)
 		{
-			DecodeMessageServer(receiveAddress, receiveArray, rounds, gameTime, identifier, status);
+			DecodeMessageServer(receiveAddress, receiveArray, rounds, gameTime, identifier, status, intValue);
+
 			ClearReceiveArray(receiveArray, sizeof(receiveArray));
+			intValue = NULL;
+			rounds = NULL;
+			gameTime = NULL;
+			identifier = NULL;
+			status = NULL;
 		}
 	}
+
 	Println("ServerThread closed");
 }
 void MessageThread()
 {
 	while (BCServer::theServer->serverRunning)
 	{
-		//BCMessage::CheckResendMessages();
+		BCMessage::CheckResendMessages();
 	}
 	Println("MessageThread closed");
 }
@@ -68,7 +76,7 @@ void NonServerMessage()
 
 }
 
-void DecodeMessageServer(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime, unsigned char& identifier, unsigned char& status)
+void DecodeMessageServer(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime, unsigned char& identifier, unsigned char& status, unsigned int& intValue)
 {
 	identifier = receiveArray[0] >> 1;
 	status = receiveArray[0] << 7;
@@ -88,10 +96,16 @@ void DecodeMessageServer(NetAddress& receiveAddress, char* receiveArray, unsigne
 			BCServer::theServer->CreateRoom(receiveAddress, receiveArray, rounds, gameTime);
 			break;
 		case 3:
-			BCServer::theServer->LeaveRoom(receiveAddress, receiveArray, rounds, gameTime);
+			BCServer::theServer->LeaveRoom(receiveAddress, receiveArray);
 			break;
 		case 6:
-			BCServer::theServer->LobbyValueChange(receiveAddress, receiveArray);
+			BCServer::theServer->ElementChange(receiveAddress, receiveArray);
+			break;
+		case 8:
+			BCServer::theServer->PauseGame(receiveAddress, receiveArray);
+			break;
+		case 10:
+			BCServer::theServer->GameMessage(receiveAddress, receiveArray, intValue);
 			break;
 		default:
 			NonServerMessage();
@@ -108,8 +122,8 @@ int main()
 {
 	BCServer::theServer = new BCServer(4405, true);
 
-	std::thread t1(ServerThread);
-	std::thread t2(MessageThread);
+	//std::thread t1(ServerThread);
+	//std::thread t2(MessageThread);
 	std::thread t3(HeartThread);
 
 
@@ -118,8 +132,8 @@ int main()
 
 	BCServer::theServer->serverRunning = false;
 
-	t1.join();
-	t2.join();
+	//t1.join();
+	//t2.join();
 	t3.join();
 
 	return 0;

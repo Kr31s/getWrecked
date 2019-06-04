@@ -24,10 +24,13 @@ public:
 	//Only address needed, no controllMessage
 	void SendData(NetAddress& netAddress, SendType p_status, char* dataArray, unsigned int lengthArrayToSend);
 
-	void RoomRequest(NetAddress& receiveAddress, char* receiveArray, unsigned char rounds, unsigned char gameTime);
-	void CreateRoom(NetAddress& receiveAddress, char* receiveArray, unsigned char rounds, unsigned char gameTime);
-	void LeaveRoom(NetAddress& receiveAddress, char* receiveArray, unsigned char rounds, unsigned char gameTime);
-	void LobbyValueChange(NetAddress& receiveAddress, char* p_receiveArray);
 	void HeartBeat(NetAddress& receiveAddress, char* receiveArray);
+
+	void RoomRequest(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime);
+	void CreateRoom(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime);
+	void LeaveRoom(NetAddress& receiveAddress, char* receiveArray);
+	void ElementChange(NetAddress& receiveAddress, char* p_receiveArray);
+	void PauseGame(NetAddress& receiveAddress, char* p_receiveArray);
+	void GameMessage(NetAddress& receiveAddress, char* p_receiveArray, unsigned int& intValue);
 };
 
