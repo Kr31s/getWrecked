@@ -9,6 +9,7 @@
 
 #include "MessageReceiveThread.h"
 #include "ResendMessageThread.h"
+#include <map>
 
 class NetworkSystem
 {
@@ -27,6 +28,7 @@ public:
 
 	bool roomOwner;
 
+	std::map<unsigned int, unsigned short> receivedInputs;
 
 	FMessageReceiveThread* MessageReceiveThread;
 	//FResendMessageThread ResendMessageThread;

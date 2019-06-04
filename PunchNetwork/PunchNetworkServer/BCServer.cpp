@@ -277,14 +277,13 @@ void BCServer::GameMessage(NetAddress & receiveAddress, char* p_receiveArray, un
 	{
 		if (i % 2 == 0)
 		{
-			intValue = ((int)p_receiveArray[2 + i] << 8);
-			intValue |= (int)(p_receiveArray[2 + i + 1] >> 4);
+			intValue = ((int)p_receiveArray[1 + i * 2] << 4);
+			intValue |= (int)(p_receiveArray[1 + i * 2 + 1] >> 4);
 		}
 		else
 		{
-			intValue = (int)(p_receiveArray[2 + i] << 4);
-			intValue = (intValue << 4);
-			intValue |= (int)(p_receiveArray[2 + i + 1]);
+			intValue = ((int)p_receiveArray[1 + i * 2 + 1] << 4);
+			intValue |= (int)(p_receiveArray[1 + i * 2 + 2] >> 4);
 		}
 
 		if (roomIDList->at(p_receiveArray[1]).GetClient(receiveAddress)->lastClientFrame + 1 == intValue)
