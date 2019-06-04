@@ -8,6 +8,7 @@ public:
 	static unsigned int totalClientID;
 	static unsigned int maxLeftHeartBeats;
 
+	unsigned int lastClientFrame = 0;
 
 	BCRoom* myRoom = nullptr;
 	NetAddress m_netaddress;
