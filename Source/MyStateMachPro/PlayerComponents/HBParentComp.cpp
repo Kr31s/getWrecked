@@ -43,6 +43,7 @@ void UHBParentComp::BeginPlay()
 void UHBParentComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("HBParent!"));
 
 	// ...
 }

@@ -54,7 +54,17 @@ void AFGDefaultPawn::BeginPlay()
 	KickL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 	KickR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 
-	//this->GetAllChildActors(TArray<AActor*>& )
+	this->GetAllChildActors(ColliderParentsArray, false);
+	for (AActor* Element : ColliderParentsArray)
+	{
+		Element->GetName();
+		//MoveColliderParents[0](TEXT("NALP");
+	}
+	if(CurrentMove->GetName() == "NA_LP")
+	{
+		
+	}
+
 
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));

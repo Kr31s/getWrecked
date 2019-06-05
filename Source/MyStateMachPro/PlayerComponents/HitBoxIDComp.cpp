@@ -20,7 +20,6 @@ void UHitBoxIDComp::BeginPlay()
 	Super::BeginPlay();
 	player = Cast<AFGDefaultPawn>(GetOwner());
 
-
 	// ...
 	
 }
@@ -30,6 +29,7 @@ void UHitBoxIDComp::BeginPlay()
 void UHitBoxIDComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("HITBOXIDCOMP"));
 
 	// ...
 }

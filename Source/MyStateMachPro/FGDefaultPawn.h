@@ -69,7 +69,7 @@ public:
 		bool isStunned;
 
 	UPROPERTY(BlueprintReadOnly)
-	AActor* Opponent;
+		AActor* Opponent;
 
 	UPROPERTY()
 		TArray<AActor*> ColliderParentsArray;
