@@ -191,7 +191,7 @@ void NetworkSystem::ElementChanged(int& slot1Pos, int& slot2Pos, bool& ready)
 void NetworkSystem::PauseGame(bool& stop)
 {
 }
-void NetworkSystem::GameMessage()
+void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
 {
 }
 
