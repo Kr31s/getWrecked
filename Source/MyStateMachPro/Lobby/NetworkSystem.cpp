@@ -27,7 +27,8 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 	status = status >> 7;
 
 	UE_LOG(LogTemp, Warning, TEXT("%d"), (int)identifier);
-
+	unsigned int frameValue = 0;
+	unsigned short inputValue = 0;
 
 	switch (identifier)
 	{
@@ -126,8 +127,7 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 		break;
 
 	case 11:
-		unsigned int frameValue = 0;
-		unsigned short inputValue = 0;
+
 
 		for (int i = 0; i < 14; ++i)
 		{

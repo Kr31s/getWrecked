@@ -3,3 +3,8 @@
 
 #include "MoveIDNotifier.h"
 
+UMoveIDNotifier::UMoveIDNotifier()
+{
+	GetNotifyName();
+	
+}

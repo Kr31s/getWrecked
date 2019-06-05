@@ -8,6 +8,7 @@
 #include "Public/RessourceComponent.h"
 #include "PlayerComponents/MovementRestrictionComponent.h"
 #include "PlayerComponents/ActorRotationComponent.h"
+#include "PlayerComponents/HBParentComp.h"
 
 #include "FGDefaultPawn.generated.h"
 
@@ -37,7 +38,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		float stunTimer;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Id;
 
 	UPROPERTY(EditAnywhere)
@@ -70,6 +71,12 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	AActor* Opponent;
 
+	UPROPERTY()
+		TArray<AActor*> ColliderParentsArray;
+
+	UPROPERTY(EditAnywhere)
+		TMap<UFGMove*, FString> MoveColliderParents;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		URessourceComponent* RessourceComp;
 	
@@ -85,6 +92,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		UFGMove* GetCurrentMove();
 
+	void MoveColliderSwitch();
 	//UFUNCTION()
 	//	void ReadInputstream();
 

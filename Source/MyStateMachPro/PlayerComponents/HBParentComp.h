@@ -8,7 +8,7 @@
 #include "HBParentComp.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable )
 class MYSTATEMACHPRO_API UHBParentComp : public USceneComponent
 {
 	GENERATED_BODY()
@@ -17,12 +17,18 @@ public:
 	// Sets default values for this component's properties
 	UHBParentComp();
 
+
+
 	UPROPERTY(EditAnywhere)
-		UFGMove* Move;
+		USkeletalMesh* PlayerMesh;
+
+	UPROPERTY(EditAnywhere)
+		UAnimationAsset* Animation;
 
 	UPROPERTY()
 		AFGDefaultPawn* player;
 
+	//CollisionSetupsPerMove
 	UPROPERTY()
 		TArray<USceneComponent*> TIDChildren;
 protected:
@@ -33,5 +39,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+private:
+
+	void SwitchBetweenChildren();
 };

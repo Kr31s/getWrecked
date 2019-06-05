@@ -31,13 +31,6 @@ void UHitBoxIDComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (player->Id == MoveID)
-	{
-		this->Activate();
-	}else
-	{
-		this->Deactivate();
-	}
 	// ...
 }
 

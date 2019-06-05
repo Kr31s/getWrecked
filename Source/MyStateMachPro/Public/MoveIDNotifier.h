@@ -15,6 +15,10 @@ class MYSTATEMACHPRO_API UMoveIDNotifier : public UAnimNotify
 	GENERATED_BODY()
 
 public:
+	UMoveIDNotifier();
+
 	UPROPERTY(EditAnywhere)
 		int Id;
+
+
 };

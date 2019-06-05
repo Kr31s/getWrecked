@@ -43,13 +43,34 @@ void UHBParentComp::BeginPlay()
 void UHBParentComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if(player->GetCurrentMove() == Move)
-	{
-		this->Activate();
-	}else
-	{
-		this->Deactivate();
-	}
+
 	// ...
 }
 
+void UHBParentComp::SwitchBetweenChildren()
+{
+	switch (player->Id)
+	{
+	case 0:
+		TIDChildren[0]->SetActive(true);
+		TIDChildren[1]->SetActive(false);
+		TIDChildren[2]->SetActive(false);
+		break;
+	case 1:
+		TIDChildren[0]->SetActive(false);
+		TIDChildren[1]->SetActive(true);
+		TIDChildren[2]->SetActive(false);
+		break;
+
+	case 2:
+		TIDChildren[0]->SetActive(false);
+		TIDChildren[1]->SetActive(false);
+		TIDChildren[2]->SetActive(true);
+		break;
+	default:
+		TIDChildren[0]->Deactivate();
+		TIDChildren[1]->Deactivate();
+		TIDChildren[2]->Deactivate();
+		break;
+	}
+}

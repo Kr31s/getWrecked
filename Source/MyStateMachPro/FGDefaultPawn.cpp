@@ -54,6 +54,8 @@ void AFGDefaultPawn::BeginPlay()
 	KickL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 	KickR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 
+	//this->GetAllChildActors(TArray<AActor*>& )
+
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
 	}
@@ -461,11 +463,102 @@ void AFGDefaultPawn::UseGameCamera()
 
 /*
  *
-	TArray<USM_InputAtom>* ReadInputstream(unsigned short input)
+ *#include <bitset>
+void AFGDefaultPawn::ReadInputstream(unsigned short p_keyInput)
+{
+	std::bitset<12> inputArray(p_keyInput);
+	if (inputArray[0])
 	{
-
-		//return input;
+		this->LeftButtonPressed();
 	}
+	else {
+		this->LeftButtonReleased();
+	}
+	if (inputArray[1])
+	{
+		this->TopButtonPressed();
+	}
+	else {
+		this->TopButtonReleased();
+	}
+	if (inputArray[2])
+	{
+		this->RightButtonPressed();
+	}
+	else {
+		this->RightButtonReleased();
+	}
+	if (inputArray[3])
+	{
+		this->BottomButtonPressed();
+	}
+	else {
+		this->BottomButtonReleased();
+	}
+	if (inputArray[4])
+	{
+		this->BumperLeftPressed();
+	}
+	else {
+		this->BumperLeftReleased();
+	}
+	if (inputArray[5])
+	{
+		this->TriggerLeftPressed();
+	}
+	else {
+		this->TriggerLeftReleased();
+	}
+	if (inputArray[6])
+	{
+		this->BumperRightPressed()
+	}
+	else {
+		this->BumperRightReleased()
+	}
+	if (inputArray[7])
+	{
+		this->TriggerRightPressed()
+	}
+	else {
+		this->TriggerRightReleased()
+	}
+	if (inputArray[8])
+	{
+		this->ReadYAxis(1)
+	}
+	else {
+		this->ReadYAxis(0)
+	}
+	if (inputArray[9])
+	{
+		this->ReadYAxis(-1)
+	}
+	else {
+		this->ReadYAxis(0)
+	}
+	if (inputArray[10])
+	{
+		this->ReadXAxis(1)
+	}
+	else {
+		this->ReadXAxis(0)
+	}
+	if (inputArray[11])
+	{
+		this->ReadXAxis(-1)
+	}
+	else {
+		this->ReadXAxis(0)
+	}
+}
  */
 
 }
+
+void AFGDefaultPawn::MoveColliderSwitch()
+{
+	//MoveColliderParents[CurrentMove]->SetActive(true);
+
+}
+
