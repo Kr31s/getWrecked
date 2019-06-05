@@ -354,83 +354,123 @@ void AFGDefaultPawn::ReadXAxis(float Value)
 {
 	// Don't care about clamping. We just need to know negative, zero, or positive.
 	DirectionInput.X = Value;
+
+	if(Value > 0.5)
+	{
+		SendInputStream.set(11);
+		SendInputStream.reset(10);
+	}
+	else if (Value < -0.5)
+	{
+		SendInputStream.set(10);
+		SendInputStream.reset(11);
+	}else
+	{
+		SendInputStream.reset(11);
+		SendInputStream.reset(10);
+	}
+
 }
 void AFGDefaultPawn::ReadYAxis(float Value)
 {
 	// Don't care about clamping. We just need to know negative, zero, or positive.
 	DirectionInput.Y = Value;
+
+	if (Value > 0.5)
+	{
+		SendInputStream.set(8);
+		SendInputStream.reset(9);
+	}
+	else if (Value < -0.5)
+	{
+		SendInputStream.set(9);
+		SendInputStream.reset(8);
+	}
+	else
+	{
+		SendInputStream.reset(8);
+		SendInputStream.reset(9);
+	}
 }
 
 void AFGDefaultPawn::LeftButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::LeftFace);
+	SendInputStream.set(0);
 }
 
 void AFGDefaultPawn::LeftButtonReleased()
 {
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::LeftFace);
+	SendInputStream.reset(0);
 }
 
 void AFGDefaultPawn::TopButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::TopFace);
+	SendInputStream.set(1);
 }
 
 void AFGDefaultPawn::TopButtonReleased()
 {
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::TopFace);
+	SendInputStream.reset(1);
 }
 
 void AFGDefaultPawn::RightButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::RightFace);
+	SendInputStream.set(2);
 }
 
 void AFGDefaultPawn::RightButtonReleased()
 {
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::RightFace);
+	SendInputStream.reset(2);
 }
 void AFGDefaultPawn::BottomButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::BottomFace);
+	SendInputStream.set(3);
 }
 
 void AFGDefaultPawn::BottomButtonReleased()
 {
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::BottomFace);
+	SendInputStream.reset(3);
 }
 
 void AFGDefaultPawn::TriggerLeftPressed()
 {
-
+	SendInputStream.set(5);
 }
 void AFGDefaultPawn::TriggerLeftReleased()
 {
-
+	SendInputStream.reset(5);
 }
 void AFGDefaultPawn::TriggerRightPressed()
 {
-
+	SendInputStream.set(7);
 }
 void AFGDefaultPawn::TriggerRightReleased()
 {
-
+	SendInputStream.reset(7);
 }
 void AFGDefaultPawn::BumperLeftPressed()
 {
-
+	SendInputStream.set(4);
 }
 void AFGDefaultPawn::BumperLeftReleased()
 {
-
+	SendInputStream.reset(4);
 }
 void AFGDefaultPawn::BumperRightPressed()
 {
-
+	SendInputStream.set(6);
 }
 void AFGDefaultPawn::BumperRightReleased()
 {
-
+	SendInputStream.reset(6);
 }
 
 //TArray<USM_InputAtom*> AFGDefaultPawn::ReadInputstream()
@@ -473,7 +513,6 @@ void AFGDefaultPawn::UseGameCamera()
 
 /*
  *
- *#include <bitset>
 void AFGDefaultPawn::ReadInputstream(unsigned short p_keyInput)
 {
 	std::bitset<12> inputArray(p_keyInput);

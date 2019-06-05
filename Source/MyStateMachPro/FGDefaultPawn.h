@@ -9,8 +9,8 @@
 #include "PlayerComponents/MovementRestrictionComponent.h"
 #include "PlayerComponents/ActorRotationComponent.h"
 #include "PlayerComponents/HBParentComp.h"
-
 #include "FGDefaultPawn.generated.h"
+#include <bitset>
 
 
 class UFGDirectionalInputAtom;
@@ -186,6 +186,8 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<USM_InputAtom*> InputStream;
+
+	std::bitset<12> SendInputStream;
 
 	//UPROPERTY(VisibleInstanceOnly)
 	//TArray<USM_InputAtom*> RecievedInputStream;

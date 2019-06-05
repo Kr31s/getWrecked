@@ -9,6 +9,8 @@
 
 #include "MessageReceiveThread.h"
 #include "ResendMessageThread.h"
+#include "../../../Plugins/StateMachine/Source/StateMachine/Classes/SM_State.h"
+#include <bitset>
 #include <map>
 
 class NetworkSystem
@@ -61,7 +63,7 @@ public:
 	void LeaveRoom();
 	void ElementChanged(int& Element1_ID, int& Element2_ID, bool& ready);
 	void PauseGame(bool& stop);
-	void GameMessage();
+	void GameMessage(std::bitset<12>& inputStream);
 
 	//MessagesToReceive
 	void RoomRequestAnswer(unsigned char& status, char* receiveArray);
