@@ -10,7 +10,6 @@ void ReceiveMessageClient();
 void SendReceiveMessageClient();
 void ClearReceiveArray();
 
-
 NetSocketUDP socketUDP;
 NetAddress serverAddress(127, 0, 0, 1, 4405);
 NetAddress receiveAddress;

@@ -20,6 +20,6 @@ public:
 
 	BCClient(NetAddress netaddress, char* nickname);
 	void resetHeartBeats();
-	void lostHeartBeat();
+	bool lostHeartBeat();
 };
 

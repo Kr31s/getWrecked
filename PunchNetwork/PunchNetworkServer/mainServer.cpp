@@ -27,7 +27,7 @@ void ServerThread()
 	unsigned char	status = NULL;
 
 
-	while (BCServer::theServer->serverRunning)
+	while (*BCServer::theServer->serverRunning)
 	{
 		receiveAddress = BCServer::theServer->serverSocket.Receive((char*)receiveArray, sizeof(receiveArray));
 		if (receiveAddress.GetPortRef() != NULL)
@@ -47,7 +47,7 @@ void ServerThread()
 }
 void MessageThread()
 {
-	while (BCServer::theServer->serverRunning)
+	while (*BCServer::theServer->serverRunning)
 	{
 		BCMessage::CheckResendMessages();
 	}
@@ -58,14 +58,14 @@ void HeartThread()
 	char heartThreadArray[2] = { 0 };
 	heartThreadArray[0] = 5 << 1;
 
-	while (BCServer::theServer->serverRunning)
+	while (*BCServer::theServer->serverRunning)
 	{
-		for (int i = 0; i < BCClient::totalClientID; ++i)
+		for (int i = 0; i < BCServer::theServer->clientIDList->size(); ++i)
 		{
-			BCServer::theServer->SendDataBCM(&BCServer::theServer->clientIDList->at(i), False, heartThreadArray, 1);
+			BCServer::theServer->SendDataBCM(BCServer::theServer->clientIDList->at(i).m_clientID, False, heartThreadArray, 1);
 		}
 
-		//Println("Sleep 2sec");
+		Println("Sleep 2sec");
 		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	}
 	Println("HeartThread closed");
@@ -118,13 +118,16 @@ void DecodeMessageServer(NetAddress& receiveAddress, char* receiveArray, unsigne
 	}
 }
 
+
+
 int main()
 {
 	BCServer::theServer = new BCServer(4405, true);
 
-	//std::thread t1(ServerThread);
-	//std::thread t2(MessageThread);
+	std::thread t1(ServerThread);
+	std::thread t2(MessageThread);
 	std::thread t3(HeartThread);
+	
 
 
 	int i;
@@ -132,8 +135,8 @@ int main()
 
 	BCServer::theServer->serverRunning = false;
 
-	//t1.join();
-	//t2.join();
+	t1.join();
+	t2.join();
 	t3.join();
 
 	return 0;
