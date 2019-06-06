@@ -9,8 +9,8 @@
 #include "PlayerComponents/MovementRestrictionComponent.h"
 #include "PlayerComponents/ActorRotationComponent.h"
 #include "PlayerComponents/HBParentComp.h"
-#include "FGDefaultPawn.generated.h"
 #include <bitset>
+#include "FGDefaultPawn.generated.h"
 
 
 class UFGDirectionalInputAtom;

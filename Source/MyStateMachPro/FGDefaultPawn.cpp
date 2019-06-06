@@ -58,7 +58,7 @@ void AFGDefaultPawn::BeginPlay()
 	for (AActor* Element : ColliderParentsArray)
 	{
 		Element->GetName();
-		//MoveColliderParents[0](TEXT("NALP");
+		//MoveColliderParents[CurrentMove](TEXT("NALP");
 	}
 	if(CurrentMove->GetName() == "NA_LP")
 	{

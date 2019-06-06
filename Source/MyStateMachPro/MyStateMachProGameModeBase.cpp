@@ -13,6 +13,7 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 	roundTimer = 99.0F;
 	//startTimer = 3.0F;
 
+
 }
 
 void AMyStateMachProGameModeBase::StartPlay() {

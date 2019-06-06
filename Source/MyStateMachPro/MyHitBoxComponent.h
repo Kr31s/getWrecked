@@ -27,10 +27,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Body")
 		uint8 someValue = 1;
 
-	UPROPERTY(EditAnywhere, Category = "Body")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite , Category = "Body")
 		EBoxType Etype;
 
 
+	UFUNCTION()
+		void CollisionEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 
 #if WITH_EDITOR
