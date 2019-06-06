@@ -20,7 +20,6 @@ BCClient::BCClient(NetAddress p_netaddress, char* p_nickname)
 	{
 		if (BCServer::theServer->clientIDList->find(i) == BCServer::theServer->clientIDList->end())
 		{
-			BCServer::theServer->clientIDList->insert({ i, *this });
 			m_clientID = i;
 
 			if (i == BCClient::totalClientID)
@@ -30,6 +29,7 @@ BCClient::BCClient(NetAddress p_netaddress, char* p_nickname)
 			break;
 		}
 	}
+	BCServer::theServer->clientIDList->insert({ m_clientID, *this });
 }
 
 void BCClient::resetHeartBeats()
@@ -37,12 +37,16 @@ void BCClient::resetHeartBeats()
 	leftHeartBeats = 0;
 }
 
-void BCClient::lostHeartBeat()
+bool BCClient::lostHeartBeat()
 {
 	++leftHeartBeats;
-	if(leftHeartBeats >= maxLeftHeartBeats)
+	if (leftHeartBeats >= maxLeftHeartBeats)
 	{
 		char arraytToSend[1];
 		myRoom->RemoveRival(m_netaddress, arraytToSend);
+		Println("clientIDList->size(): "<< BCServer::theServer->clientIDList->size());
+		Println("roomIDList->size()" << BCServer::theServer->roomIDList->size());
+		return false;
 	}
+	return true;
 }
