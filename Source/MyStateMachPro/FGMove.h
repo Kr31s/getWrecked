@@ -82,8 +82,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		EMoveType Movetype;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		ADemoFrameActor* CollisionComponents;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		USkeletalMesh* SkeletalMesh;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		AActor* ColliderSetup;
 
 };
 

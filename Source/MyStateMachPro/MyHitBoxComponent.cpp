@@ -8,7 +8,7 @@ UMyHitBoxComponent::UMyHitBoxComponent() {
 	Etype = EBoxType::Hurt;
 	this->ShapeColor = FColor::Green;
 
-	//this->OnComponentBeginOverlap.AddDynamic(this, &UMyHitBoxComponent::CollisionEvent);
+	this->OnComponentBeginOverlap.AddDynamic(this, &UMyHitBoxComponent::CollisionEvent);
 }
 
 #if WITH_EDITOR
@@ -47,26 +47,38 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 {
 	 
 	auto* collider{ Cast<UMyHitBoxComponent>(OtherComp) };
-	/*
+	if(collider)
+	{
+			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("CastSUCCESS"));
+			auto* opponent = Cast<AFGDefaultPawn>(collider->GetOwner());
+//			opponent->RessourceComp->ReduceHealth(0.05F/*Cast<AFGDefaultPawn>(this->GetOwner())->GetCurrentMove()->DamageValue*/);
+	}else
+	{
+			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("CastFAILED"));
+	}
+
+	 
 	switch (Etype)
 	{
 	case EBoxType::Hit:
 		if (collider->Etype == EBoxType::Hurt)
 		{
-			auto* opponent = Cast<AFGDefaultPawn>(collider->GetOwner());
-			opponent->RessourceComp->ReduceHealth(Cast<AFGDefaultPawn>(this->GetOwner())->GetCurrentMove()->DamageValue);
 		}
 		break;
 	case EBoxType::Block:
-		if (collider->Etype == EBoxType::Hurt)
+		if (OtherComp->GetName() == TEXT("CollisionCylinder"))//(collider->Etype == EBoxType::Hurt)
 		{
-
+			GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, OtherComp->GetName());
+			GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("BlockBoxCollision"));
 		}
+		break;
+	case EBoxType::Hurt:
 		break;
 	default:
 		break;
 	}
-	 */
+	 
+	 
 
 
 
