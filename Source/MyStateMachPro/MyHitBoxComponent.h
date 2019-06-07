@@ -23,6 +23,7 @@ class MYSTATEMACHPRO_API UMyHitBoxComponent : public UBoxComponent
 	
 public:
 	UMyHitBoxComponent();
+	virtual void PostInitProperties() override;
 
 	UPROPERTY(EditAnywhere, Category = "Body")
 		uint8 someValue = 1;

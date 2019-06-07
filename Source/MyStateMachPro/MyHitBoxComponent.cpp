@@ -7,8 +7,18 @@ UMyHitBoxComponent::UMyHitBoxComponent() {
 
 	Etype = EBoxType::Hurt;
 	this->ShapeColor = FColor::Green;
+	if(!IsTemplate()) // 
+	{
+		this->OnComponentBeginOverlap.AddDynamic(this, &UMyHitBoxComponent::CollisionEvent);
+		TArray<UPrimitiveComponent*> overlaps;
+		GetOverlappingComponents(overlaps);
+	}
+	// PostInitProperties() --> start straight after constructor (CDO?)
+}
 
-	this->OnComponentBeginOverlap.AddDynamic(this, &UMyHitBoxComponent::CollisionEvent);
+void UMyHitBoxComponent::PostInitProperties()
+{
+	Super::PostInitProperties();
 }
 
 #if WITH_EDITOR
