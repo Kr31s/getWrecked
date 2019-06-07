@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
+#include "FGDefaultPawn.h"
 #include "MyHitBoxComponent.generated.h"
 
 /**
@@ -35,12 +36,14 @@ public:
 	UFUNCTION()
 		void CollisionEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+private:
+	UPROPERTY()
+		AFGDefaultPawn* owner;
 
 #if WITH_EDITOR
 
 	virtual void PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent) override;
 #endif
-
 
 
 };

@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyHitBoxComponent.h"
-#include "FGDefaultPawn.h"
 
 UMyHitBoxComponent::UMyHitBoxComponent() {
 
@@ -19,6 +18,7 @@ UMyHitBoxComponent::UMyHitBoxComponent() {
 void UMyHitBoxComponent::PostInitProperties()
 {
 	Super::PostInitProperties();
+	owner = Cast<AFGDefaultPawn>(this->GetOwner());
 }
 
 #if WITH_EDITOR
@@ -60,7 +60,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 	if(collider)
 	{
 			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("CastSUCCESS"));
-			auto* opponent = Cast<AFGDefaultPawn>(collider->GetOwner());
+			auto* Opponent = Cast<AFGDefaultPawn>(collider->GetOwner());
 //			opponent->RessourceComp->ReduceHealth(0.05F/*Cast<AFGDefaultPawn>(this->GetOwner())->GetCurrentMove()->DamageValue*/);
 	}else
 	{
