@@ -7,6 +7,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "Animation/AnimMontage.h"
+#include "DemoFrameActor.h"
 #include "FGMove.generated.h"
 
 
@@ -75,8 +76,17 @@ public:
 	UPROPERTY(EditAnywhere)
 		float DamageValue = 0.0F;
 
+	UPROPERTY(EditAnywhere)
+		float StunValue = 0.0F;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		EMoveType Movetype;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		USkeletalMesh* SkeletalMesh;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		AActor* ColliderSetup;
 
 };
 

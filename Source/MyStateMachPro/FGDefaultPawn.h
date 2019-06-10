@@ -8,7 +8,8 @@
 #include "Public/RessourceComponent.h"
 #include "PlayerComponents/MovementRestrictionComponent.h"
 #include "PlayerComponents/ActorRotationComponent.h"
-
+#include "PlayerComponents/HBParentComp.h"
+#include <bitset>
 #include "FGDefaultPawn.generated.h"
 
 
@@ -37,6 +38,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		float stunTimer;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int Id;
+
 	UPROPERTY(EditAnywhere)
 		bool CanMoveInRightDirection;
 
@@ -45,6 +49,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isBlocking;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool bIsBlocking;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isInAir;
@@ -62,7 +69,13 @@ public:
 		bool isStunned;
 
 	UPROPERTY(BlueprintReadOnly)
-	AActor* Opponent;
+		AActor* Opponent;
+
+	UPROPERTY()
+		TArray<AActor*> ColliderParentsArray;
+
+	UPROPERTY(EditAnywhere)
+		TMap<UFGMove*, FString> MoveColliderParents;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		URessourceComponent* RessourceComp;
@@ -79,6 +92,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 		UFGMove* GetCurrentMove();
 
+	void MoveColliderSwitch();
+	//UFUNCTION()
+	//	void ReadInputstream();
+
 protected:
 	void LeftButtonPressed();
 	void LeftButtonReleased();
@@ -88,6 +105,14 @@ protected:
 	void RightButtonReleased();
 	void BottomButtonPressed();
 	void BottomButtonReleased();
+	void TriggerLeftPressed();
+	void TriggerLeftReleased();
+	void TriggerRightPressed();
+	void TriggerRightReleased();
+	void BumperLeftPressed();
+	void BumperLeftReleased();
+	void BumperRightPressed();
+	void BumperRightReleased();
 	void ReadXAxis(float Value);
 	void ReadYAxis(float Value);
 
@@ -162,4 +187,8 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<USM_InputAtom*> InputStream;
 
+	std::bitset<12> SendInputStream;
+
+	//UPROPERTY(VisibleInstanceOnly)
+	//TArray<USM_InputAtom*> RecievedInputStream;
 };

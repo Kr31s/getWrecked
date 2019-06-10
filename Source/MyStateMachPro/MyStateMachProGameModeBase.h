@@ -50,4 +50,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float startTimer;
+
+	UPROPERTY()
+		UObjectLibrary* ColliderLibrary;
 };

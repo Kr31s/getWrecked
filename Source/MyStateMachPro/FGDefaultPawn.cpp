@@ -54,6 +54,18 @@ void AFGDefaultPawn::BeginPlay()
 	KickL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 	KickR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 
+	this->GetAllChildActors(ColliderParentsArray, false);
+	for (AActor* Element : ColliderParentsArray)
+	{
+		Element->GetName();
+		//MoveColliderParents[CurrentMove](TEXT("NALP");
+	}
+	if(CurrentMove->GetName() == "NA_LP")
+	{
+		
+	}
+
+
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
 	}
@@ -78,9 +90,9 @@ void AFGDefaultPawn::BeginPlay()
 	{
 		if (!ButtonAtoms.IsValidIndex(i) || !ButtonAtoms[i])
 		{
-		UE_LOG(LogTemp, Warning, TEXT("Not enough button input atoms, or a NULL entry was found in the "));
-		Destroy();
-		return;
+			UE_LOG(LogTemp, Warning, TEXT("Not enough button input atoms, or a NULL entry was found in the "));
+			Destroy();
+			return;
 		}
 	}
 	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
@@ -93,17 +105,18 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	this->SetRotationOfPlayer();
 
 	// Process input
-	if(isStunned || gotHit)
+	if (isStunned || gotHit)
 	{
 		DisableInput(Cast<APlayerController>(this));
 		stunTimer += DeltaSeconds;
-		if(stunTimer>= 2.0F)
+		if (stunTimer >= 2.0F)
 		{
 			gotHit = false;
 			stunTimer = 0.0F;
 		}
 		return;
-	}else
+	}
+	else
 	{
 		EnableInput(Cast<APlayerController>(this));
 	}
@@ -119,10 +132,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
-			if(this->isOnLeftSide)
+			if (this->isOnLeftSide)
 			{
 				InputDirection = DirectionBackAtom; // Back on Leftside
-			}else
+			}
+			else
 			{
 				InputDirection = DirectionForwardAtom; // Forward on Rightside
 
@@ -172,13 +186,14 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
-			if(this->isOnLeftSide)
+			if (this->isOnLeftSide)
 			{
 				InputDirection = DirectionForwardAtom; // Forward on Leftside
-			}else
+			}
+			else
 			{
 				InputDirection = DirectionBackAtom; // Back on Rightside
-				
+
 			}
 
 			if (CanMoveInRightDirection) {
@@ -188,14 +203,16 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else
 		{
 			InputDirection = DirectionUpForwardAtom; // Jump Forward
-			if(this->GetMovementComponent()->IsMovingOnGround())
+			if (this->GetMovementComponent()->IsMovingOnGround())
 			{
 				this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
-				
+
 			}
 		}
 	}
-	InputStream.Add(InputDirection);
+		InputStream.Add(InputDirection);
+	//if (this == Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0))){	}
+	//else{	//InputStream = RecievedInputStream(10);}
 
 	// Add one atom for each buttons state.
 	for (int32 i = 0; i < (int32)EFGInputButtons::Count; ++i)
@@ -274,24 +291,24 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 
-void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AFGDefaultPawn::OnOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
 
-		if(OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
+		if (OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
 		{
-			if(this->canApplyDamage)
+			if (this->canApplyDamage)
 			{
-			UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
-			
-			pAsPawn->gotHit = true;
-			pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
-			pAsPawn->RessourceComp->IncreaseStunMeter(0.05F);
-			//pAsPawn->gotHit = false;
-			FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), gotHitFire, FVector(EmitterSpawnLocation2.X,0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F,0.3F,0.3F), true);
-				
+				UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
+
+				pAsPawn->gotHit = true;
+				pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
+				pAsPawn->RessourceComp->IncreaseStunMeter(0.05F);
+				//pAsPawn->gotHit = false;
+				FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
+
 			}
 		}
 	}
@@ -317,7 +334,7 @@ void AFGDefaultPawn::SetRotationOfPlayer()
 	}
 }
 
-void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent)
+void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent * InInputComponent)
 {
 	Super::SetupPlayerInputComponent(InInputComponent);
 
@@ -337,51 +354,130 @@ void AFGDefaultPawn::ReadXAxis(float Value)
 {
 	// Don't care about clamping. We just need to know negative, zero, or positive.
 	DirectionInput.X = Value;
+
+	if(Value > 0.5)
+	{
+		SendInputStream.set(11);
+		SendInputStream.reset(10);
+	}
+	else if (Value < -0.5)
+	{
+		SendInputStream.set(10);
+		SendInputStream.reset(11);
+	}else
+	{
+		SendInputStream.reset(11);
+		SendInputStream.reset(10);
+	}
+
 }
 void AFGDefaultPawn::ReadYAxis(float Value)
 {
 	// Don't care about clamping. We just need to know negative, zero, or positive.
 	DirectionInput.Y = Value;
+
+	if (Value > 0.5)
+	{
+		SendInputStream.set(8);
+		SendInputStream.reset(9);
+	}
+	else if (Value < -0.5)
+	{
+		SendInputStream.set(9);
+		SendInputStream.reset(8);
+	}
+	else
+	{
+		SendInputStream.reset(8);
+		SendInputStream.reset(9);
+	}
 }
 
 void AFGDefaultPawn::LeftButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::LeftFace);
+	SendInputStream.set(0);
 }
 
 void AFGDefaultPawn::LeftButtonReleased()
 {
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::LeftFace);
+	SendInputStream.reset(0);
 }
 
 void AFGDefaultPawn::TopButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::TopFace);
+	SendInputStream.set(1);
 }
 
 void AFGDefaultPawn::TopButtonReleased()
 {
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::TopFace);
+	SendInputStream.reset(1);
 }
 
 void AFGDefaultPawn::RightButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::RightFace);
+	SendInputStream.set(2);
 }
 
 void AFGDefaultPawn::RightButtonReleased()
 {
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::RightFace);
+	SendInputStream.reset(2);
 }
 void AFGDefaultPawn::BottomButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::BottomFace);
+	SendInputStream.set(3);
 }
 
 void AFGDefaultPawn::BottomButtonReleased()
 {
 	ButtonsDown &= ~(1 << (int32)EFGInputButtons::BottomFace);
+	SendInputStream.reset(3);
 }
+
+void AFGDefaultPawn::TriggerLeftPressed()
+{
+	SendInputStream.set(5);
+}
+void AFGDefaultPawn::TriggerLeftReleased()
+{
+	SendInputStream.reset(5);
+}
+void AFGDefaultPawn::TriggerRightPressed()
+{
+	SendInputStream.set(7);
+}
+void AFGDefaultPawn::TriggerRightReleased()
+{
+	SendInputStream.reset(7);
+}
+void AFGDefaultPawn::BumperLeftPressed()
+{
+	SendInputStream.set(4);
+}
+void AFGDefaultPawn::BumperLeftReleased()
+{
+	SendInputStream.reset(4);
+}
+void AFGDefaultPawn::BumperRightPressed()
+{
+	SendInputStream.set(6);
+}
+void AFGDefaultPawn::BumperRightReleased()
+{
+	SendInputStream.reset(6);
+}
+
+//TArray<USM_InputAtom*> AFGDefaultPawn::ReadInputstream()
+//{	
+//	InputStream =
+//		return InputStream;
+//}
 
 
 void AFGDefaultPawn::UseGameCamera()
@@ -414,4 +510,104 @@ void AFGDefaultPawn::UseGameCamera()
 	}
 	// Try again next frame. Currently, there's no limit to how many times we'll do this.
 	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
+
+/*
+ *
+void AFGDefaultPawn::ReadInputstream(unsigned short p_keyInput)
+{
+	std::bitset<12> inputArray(p_keyInput);
+	if (inputArray[0])
+	{
+		this->LeftButtonPressed();
+	}
+	else {
+		this->LeftButtonReleased();
+	}
+	if (inputArray[1])
+	{
+		this->TopButtonPressed();
+	}
+	else {
+		this->TopButtonReleased();
+	}
+	if (inputArray[2])
+	{
+		this->RightButtonPressed();
+	}
+	else {
+		this->RightButtonReleased();
+	}
+	if (inputArray[3])
+	{
+		this->BottomButtonPressed();
+	}
+	else {
+		this->BottomButtonReleased();
+	}
+	if (inputArray[4])
+	{
+		this->BumperLeftPressed();
+	}
+	else {
+		this->BumperLeftReleased();
+	}
+	if (inputArray[5])
+	{
+		this->TriggerLeftPressed();
+	}
+	else {
+		this->TriggerLeftReleased();
+	}
+	if (inputArray[6])
+	{
+		this->BumperRightPressed()
+	}
+	else {
+		this->BumperRightReleased()
+	}
+	if (inputArray[7])
+	{
+		this->TriggerRightPressed()
+	}
+	else {
+		this->TriggerRightReleased()
+	}
+	if (inputArray[8])
+	{
+		this->ReadYAxis(1)
+	}
+	else {
+		this->ReadYAxis(0)
+	}
+	if (inputArray[9])
+	{
+		this->ReadYAxis(-1)
+	}
+	else {
+		this->ReadYAxis(0)
+	}
+	if (inputArray[10])
+	{
+		this->ReadXAxis(1)
+	}
+	else {
+		this->ReadXAxis(0)
+	}
+	if (inputArray[11])
+	{
+		this->ReadXAxis(-1)
+	}
+	else {
+		this->ReadXAxis(0)
+	}
 }
+ */
+
+}
+
+void AFGDefaultPawn::MoveColliderSwitch()
+{
+	//MoveColliderParents[CurrentMove]->SetActive(true);
+
+}
+

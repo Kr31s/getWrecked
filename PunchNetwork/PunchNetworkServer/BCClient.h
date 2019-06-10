@@ -8,6 +8,7 @@ public:
 	static unsigned int totalClientID;
 	static unsigned int maxLeftHeartBeats;
 
+	unsigned int lastClientFrame = 0;
 
 	BCRoom* myRoom = nullptr;
 	NetAddress m_netaddress;
@@ -15,10 +16,10 @@ public:
 	char m_nickname[20];
 	unsigned short m_clientID;
 	unsigned int leftHeartBeats = 0;
-	long long m_ping = 1500;
+	unsigned char m_ping = 1500;
 
 	BCClient(NetAddress netaddress, char* nickname);
 	void resetHeartBeats();
-	void lostHeartBeat();
+	bool lostHeartBeat();
 };
 
