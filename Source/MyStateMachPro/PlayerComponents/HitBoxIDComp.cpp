@@ -19,7 +19,7 @@ void UHitBoxIDComp::BeginPlay()
 {
 	Super::BeginPlay();
 	player = Cast<AFGDefaultPawn>(GetOwner());
-
+	GetChildrenComponents(false, ColliderComponents);
 	// ...
 	
 }
@@ -32,5 +32,18 @@ void UHitBoxIDComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("HITBOXIDCOMP"));
 
 	// ...
+	if(this->IsActive())
+	{
+		for (USceneComponent* collider : ColliderComponents)
+		{
+			Cast<UPrimitiveComponent>(collider)->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		}
+	}else
+	{
+		for (USceneComponent* collider : ColliderComponents)
+		{
+			Cast<UPrimitiveComponent>(collider)->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+	}
 }
 

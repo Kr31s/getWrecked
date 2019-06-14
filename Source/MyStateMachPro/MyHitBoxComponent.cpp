@@ -6,6 +6,12 @@ UMyHitBoxComponent::UMyHitBoxComponent() {
 
 	Etype = EBoxType::Hurt;
 	this->ShapeColor = FColor::Green;
+	this->SetCollisionProfileName("Custom");
+	this->SetCollisionObjectType(ECC_WorldDynamic);
+	this->SetCollisionResponseToAllChannels(ECR_Ignore);
+	this->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	this->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 	if(!IsTemplate()) // 
 	{
 		this->OnComponentBeginOverlap.AddDynamic(this, &UMyHitBoxComponent::CollisionEvent);
@@ -17,8 +23,14 @@ UMyHitBoxComponent::UMyHitBoxComponent() {
 
 void UMyHitBoxComponent::PostInitProperties()
 {
+
 	Super::PostInitProperties();
-	owner = Cast<AFGDefaultPawn>(this->GetOwner());
+	this->SetCollisionResponseToChannel(ECC_Visibility,::ECR_Overlap);
+	this->SetCollisionResponseToChannel(ECC_Camera,::ECR_Overlap);
+	if (!IsTemplate()) // 
+	{
+	}
+
 }
 
 #if WITH_EDITOR
@@ -55,24 +67,30 @@ void UMyHitBoxComponent::PostEditChangeProperty(struct FPropertyChangedEvent& Pr
 
 void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	 
-	auto* collider{ Cast<UMyHitBoxComponent>(OtherComp) };
-	if(collider)
-	{
-			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("CastSUCCESS"));
-			auto* Opponent = Cast<AFGDefaultPawn>(collider->GetOwner());
-//			opponent->RessourceComp->ReduceHealth(0.05F/*Cast<AFGDefaultPawn>(this->GetOwner())->GetCurrentMove()->DamageValue*/);
-	}else
-	{
-			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("CastFAILED"));
-	}
+	//owner = Cast<AFGDefaultPawn>(this->GetOwner());
+
+//	auto* collider{ Cast<UMyHitBoxComponent>(OtherComp) };
+//	if(collider)
+//	{
+//			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("CastSUCCESS"));
+//			auto* Opponent = Cast<AFGDefaultPawn>(collider->GetOwner());
+////			opponent->RessourceComp->ReduceHealth(0.05F/*Cast<AFGDefaultPawn>(this->GetOwner())->GetCurrentMove()->DamageValue*/);
+//	}else
+//	{
+//			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("CastFAILED"));
+//	}
+	//MyOwner = GetOwner()->GetAttachParentActor();
 
 	 
 	switch (Etype)
 	{
 	case EBoxType::Hit:
-		if (collider->Etype == EBoxType::Hurt)
+		
+
+		if (OtherComp->GetName() == TEXT("CollisionCylinder") )//&& MyOwner != OtherComp->GetOwner())//(collider->Etype == EBoxType::Hurt)
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
+
 		}
 		break;
 	case EBoxType::Block:

@@ -40,6 +40,9 @@ private:
 	UPROPERTY()
 		AFGDefaultPawn* owner;
 
+	UPROPERTY()
+		AActor* MyOwner;
+
 #if WITH_EDITOR
 
 	virtual void PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent) override;

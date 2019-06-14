@@ -295,7 +295,7 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent * OverlappedComponent, AActor
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
-
+		
 		if (OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
 		{
 			if (this->canApplyDamage)

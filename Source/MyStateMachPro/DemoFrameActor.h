@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "DemoFrameActor.generated.h"
 
+
 UCLASS()
 class MYSTATEMACHPRO_API ADemoFrameActor : public AActor
 {
@@ -14,6 +15,9 @@ class MYSTATEMACHPRO_API ADemoFrameActor : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ADemoFrameActor();
+
+	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	USkeletalMeshComponent* Mesh;
 
 protected:
 	// Called when the game starts or when spawned
@@ -26,4 +30,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
+	UFUNCTION(BlueprintCallable)
+		void DisableComponent(TArray<UPrimitiveComponent*> Box);
 };
