@@ -27,6 +27,7 @@ void UMyHitBoxComponent::PostInitProperties()
 	Super::PostInitProperties();
 	this->SetCollisionResponseToChannel(ECC_Visibility,::ECR_Overlap);
 	this->SetCollisionResponseToChannel(ECC_Camera,::ECR_Overlap);
+	this->SetCollisionResponseToChannel(ECC_WorldDynamic,::ECR_Overlap);
 	if (!IsTemplate()) // 
 	{
 	}
@@ -67,29 +68,26 @@ void UMyHitBoxComponent::PostEditChangeProperty(struct FPropertyChangedEvent& Pr
 
 void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//owner = Cast<AFGDefaultPawn>(this->GetOwner());
 
-//	auto* collider{ Cast<UMyHitBoxComponent>(OtherComp) };
-//	if(collider)
-//	{
-//			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("CastSUCCESS"));
-//			auto* Opponent = Cast<AFGDefaultPawn>(collider->GetOwner());
-////			opponent->RessourceComp->ReduceHealth(0.05F/*Cast<AFGDefaultPawn>(this->GetOwner())->GetCurrentMove()->DamageValue*/);
-//	}else
-//	{
-//			//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("CastFAILED"));
-//	}
-	//MyOwner = GetOwner()->GetAttachParentActor();
+	//	auto* Opponent = Cast<AFGDefaultPawn>(collider->GetOwner());
+	//	opponent->RessourceComp->ReduceHealth(0.05F/*Cast<AFGDefaultPawn>(this->GetOwner())->GetCurrentMove()->DamageValue*/);
+
+	//	MyOwner = GetOwner()->GetAttachParentActor();
 
 	 
 	switch (Etype)
 	{
 	case EBoxType::Hit:
 		
-
-		if (OtherComp->GetName() == TEXT("CollisionCylinder") )//&& MyOwner != OtherComp->GetOwner())//(collider->Etype == EBoxType::Hurt)
+		//if (OtherComp->GetName() == TEXT("CollisionCylinder") )//&& MyOwner != OtherComp->GetOwner())//(collider->Etype == EBoxType::Hurt)
+		if(Cast<UMyHitBoxComponent>(OtherComp))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
+			if(Cast<UMyHitBoxComponent>(OtherComp)->Etype == EBoxType::Hurt)
+			{
+				// Cast to Enenmy Apply Damage
+				GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
+
+			}
 
 		}
 		break;

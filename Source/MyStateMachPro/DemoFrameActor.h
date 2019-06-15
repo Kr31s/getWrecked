@@ -16,6 +16,9 @@ public:
 	// Sets default values for this actor's properties
 	ADemoFrameActor();
 
+	UPROPERTY()
+		USceneComponent* RootSceneComponent;
+
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* Mesh;
 

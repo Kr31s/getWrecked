@@ -2,6 +2,7 @@
 
 #include "DemoFrameActor.h"
 #include "Components/PrimitiveComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 // Sets default values
 ADemoFrameActor::ADemoFrameActor()
@@ -11,8 +12,12 @@ ADemoFrameActor::ADemoFrameActor()
 	id = 1;
 
 	//Mesh need to be Attached to Root 
-	//Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
-	//Mesh->SetupAttachment(GetRootComponent());
+	RootSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootScene"));
+	RootComponent = RootSceneComponent;
+
+	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
+	Mesh->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
