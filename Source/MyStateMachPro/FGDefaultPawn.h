@@ -48,7 +48,10 @@ public:
 		bool isCrouching;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool isBlocking;
+		bool bCanBlock;
+
+	UFUNCTION()
+	void SetCanBlock(bool blockState) { this->bCanBlock = blockState; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool bIsBlocking;

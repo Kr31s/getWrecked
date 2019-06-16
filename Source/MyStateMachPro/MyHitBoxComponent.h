@@ -36,12 +36,16 @@ public:
 	UFUNCTION()
 		void CollisionEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION(BlueprintCallable)
+	void CollisionEndEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                       int32 OtherBodyIndex);
+
 private:
 	UPROPERTY()
-		AFGDefaultPawn* owner;
+		AFGDefaultPawn* Owner;
 
 	UPROPERTY()
-		AActor* MyOwner;
+		AFGDefaultPawn* Enemy;
 
 #if WITH_EDITOR
 
