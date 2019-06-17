@@ -4,7 +4,7 @@
 class BCRoom
 {
 public:
-	static unsigned int totalRoomID;
+	static unsigned int sTotalRoomID;
 
 	bool m_full = false;
 	unsigned short m_roomID;
@@ -19,7 +19,7 @@ public:
 
 	BCRoom(BCClient* client, unsigned char roundState, unsigned char timeState);
 	void AddRival(BCClient* client);
-	void RemoveRival(NetAddress& netAddress, char* p_receiveArray);
+	void RemoveRival(NetAddress& netAddress, char* receiveArray);
 	bool FindClient(NetAddress& netAddress);
 	bool IsOwner(NetAddress& netAddress);
 	BCClient* GetClient(NetAddress& netAddress);

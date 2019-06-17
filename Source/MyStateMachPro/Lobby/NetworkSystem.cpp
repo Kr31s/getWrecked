@@ -135,18 +135,19 @@ void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FStri
 	UE_LOG(LogTemp, Warning, TEXT("RoomRequest"));
 	//charInput Name
 	char* result = TCHAR_TO_ANSI(*p_name);
-	for (int i = 2; i < 22; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
-		sendArray[i] = result[i - 2];
+		sendArray[i] = result[i + 4];
 	}
 	sendArray[0] = 0;
+	sendArray[1] = 0;
 
 	//input round settings
-	sendArray[1] = p_roundValue << 5;
+	sendArray[2] = p_roundValue;
 	//input time settings
-	sendArray[1] |= p_timeValue << 2;
+	sendArray[3] = p_timeValue;
 
-	socketUDP.Send(serverAddress, (char*)sendArray, 22).m_errorCode;
+	socketUDP.Send(serverAddress, (char*)sendArray, 24).m_errorCode;
 
 }
 void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FString& p_name)
@@ -154,42 +155,47 @@ void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FStrin
 	UE_LOG(LogTemp, Warning, TEXT("CreateRoom"));
 	char* result = TCHAR_TO_ANSI(*p_name);
 
-	for (int i = 2; i < 22; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
-		sendArray[i] = result[i - 2];
+		sendArray[i] = result[i + 4];
 	}
-	sendArray[0] = 2 << 1;
+	sendArray[0] = 0;
+	sendArray[1] = 0;
 
 	//input round settings
-	sendArray[1] = p_roundValue << 5;
+	sendArray[2] = p_roundValue;
 	//input time settings
-	sendArray[1] |= p_timeValue << 2;
+	sendArray[3] = p_timeValue;
 
-	socketUDP.Send(serverAddress, (char*)sendArray, 22).m_errorCode;
+	socketUDP.Send(serverAddress, (char*)sendArray, 24).m_errorCode;
 
 }
 void NetworkSystem::LeaveRoom()
 {
 	if (myRoomID >= 0)
 	{
-		sendArray[0] = 3 << 1;
-		sendArray[1] = myRoomID;
+		sendArray[0] = 3;
+		sendArray[1] = 0;
+		sendArray[2] = myRoomID;
 
 		socketUDP.Send(serverAddress, (char*)sendArray, 2);
 	}
 }
 void NetworkSystem::ElementChanged(int& slot1Pos, int& slot2Pos, bool& ready)
 {
-	sendArray[0] = 6 << 1;
+	sendArray[0] = 6;
 	sendArray[1] = myRoomID;
 	sendArray[2] = slot1Pos;
-	sendArray[2] |= slot2Pos << 2;
-	sendArray[2] |= ready << 4;
+	sendArray[3] = slot2Pos;
+	sendArray[4] = ready;
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 3);
 }
 void NetworkSystem::PauseGame(bool& stop)
 {
+	sendArray[0] = 8;
+
+	socketUDP.Send(serverAddress, (char*)sendArray, 1);
 }
 void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
 {

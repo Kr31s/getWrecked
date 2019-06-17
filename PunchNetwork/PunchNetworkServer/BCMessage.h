@@ -5,17 +5,16 @@
 class BCMessage
 {
 public:
-	static unsigned int totalMessageID;
+	static unsigned int sTotalMessageID;
 	unsigned short m_messageID;
-	bool finished = false;
+	bool m_finished = false;
 
 	unsigned int m_clientID;
 	long long m_timeStamp;
 
-	char m_messageArray[50];
-	unsigned int m_messageArrayLength;
+	char m_messageArray[46];
 
-	BCMessage(unsigned int clientID, long long timeStamp, char* messageArray, unsigned int messageArrayLength);
+	BCMessage(unsigned int clientID, long long timeStamp, char* messageArray);
 	static void CheckResendMessages();
-	static void GetReplyMessage(unsigned char& messageID);
+	static void GetReplyMessage(unsigned int messageID);
 };

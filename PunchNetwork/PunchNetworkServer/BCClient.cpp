@@ -3,49 +3,49 @@
 #include "BCRoom.h"
 #include "BCMessage.h"
 
-unsigned int BCClient::totalClientID = 0;
-unsigned int BCClient::maxLeftHeartBeats = 5;
+unsigned int BCClient::sTotalClientID = 0;
+unsigned int BCClient::sMaxLeftHeartBeats = 5;
 
 BCClient::BCClient(NetAddress p_netaddress, char* p_nickname)
 {
-	BCServer::theServer->clientIDList->size();
+	BCServer::sTheServer->m_clientIDList->size();
 	m_netaddress = p_netaddress;
 
-	for (int i = 2; (p_nickname[i] != NULL) && (i < 22); ++i)
+	for (int i = 0; i < 20; ++i)
 	{
-		m_nickname[i - 2] = p_nickname[i];
+		m_nickname[i] = p_nickname[i + 4];
 	}
 
-	for (int i = 0; i <= BCClient::totalClientID; ++i)
+	for (int i = 0; i <= BCClient::sTotalClientID; ++i)
 	{
-		if (BCServer::theServer->clientIDList->find(i) == BCServer::theServer->clientIDList->end())
+		if (BCServer::sTheServer->m_clientIDList->find(i) == BCServer::sTheServer->m_clientIDList->end())
 		{
 			m_clientID = i;
 
-			if (i == BCClient::totalClientID)
+			if (i == BCClient::sTotalClientID)
 			{
-				++BCClient::totalClientID;
+				++BCClient::sTotalClientID;
 			}
 			break;
 		}
 	}
-	BCServer::theServer->clientIDList->insert({ m_clientID, *this });
+	BCServer::sTheServer->m_clientIDList->insert({ m_clientID, *this });
 }
 
 void BCClient::resetHeartBeats()
 {
-	leftHeartBeats = 0;
+	m_leftHeartBeats = 0;
 }
 
 bool BCClient::lostHeartBeat()
 {
-	++leftHeartBeats;
-	if (leftHeartBeats >= maxLeftHeartBeats)
+	++m_leftHeartBeats;
+	if (m_leftHeartBeats >= sMaxLeftHeartBeats)
 	{
 		char arraytToSend[1];
-		myRoom->RemoveRival(m_netaddress, arraytToSend);
-		Println("clientIDList->size(): "<< BCServer::theServer->clientIDList->size());
-		Println("roomIDList->size()" << BCServer::theServer->roomIDList->size());
+		m_myRoom->RemoveRival(m_netaddress, arraytToSend);
+		Println("clientIDList->size(): "<< BCServer::sTheServer->m_clientIDList->size());
+		Println("roomIDList->size()" << BCServer::sTheServer->m_roomIDList->size());
 		return false;
 	}
 	return true;

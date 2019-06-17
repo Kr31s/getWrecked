@@ -22,6 +22,20 @@ enum SendType
 	False
 };
 
+enum Messages
+{
+	UnknownMessage = -1,
+	RoomRequest = 0,
+	CreateRoom = 2,
+	LeaveRoom = 3,
+	HeartBeat = 5,
+	ElementChange = 6,
+	PauseGame = 8,
+	GameMessage = 10
+};
+
+static Messages MessageOfIndex(int i) { return static_cast<Messages>(i); }
+
 
 static long long GetTimeInMilli()
 {
