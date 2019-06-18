@@ -28,7 +28,6 @@ enum Messages
 	RoomRequest = 0,
 	CreateRoom = 2,
 	LeaveRoom = 3,
-	HeartBeat = 5,
 	ElementChange = 6,
 	PauseGame = 8,
 	GameMessage = 10

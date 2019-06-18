@@ -23,13 +23,14 @@ public:
 	FMessageReceiveThread* MessageReceiveThread;
 	//FResendMessageThread* ResendMessageThread;
 
-	char m_receiveArray[51];
-	unsigned char sendArray[51];
-	unsigned char heartBeatArray[51];
+	char m_receiveArray[46];
+	char sendArray[46];
+	char heartBeatArray[46];
 	std::map<unsigned int, unsigned short> receivedInputs;
 
 	unsigned char opponentName[20];
 	int myRoomID = -1;
+	int clientID = -1;
 	unsigned char identifier = NULL;
 	unsigned char status = NULL;
 	unsigned short frameValue = 0;
@@ -38,12 +39,8 @@ public:
 	bool roomOwner;
 
 
-
-
 	bool StartingMessageReceiveThread();
 	//bool StartingResendMessageThread();
-
-
 
 	NetworkSystem();
 	~NetworkSystem();

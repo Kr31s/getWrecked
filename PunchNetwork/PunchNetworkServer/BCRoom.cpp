@@ -38,7 +38,7 @@ void BCRoom::AddRival(BCClient* p_client)
 
 void BCRoom::RemoveRival(NetAddress& netAddress, char* p_receiveArray)
 {
-	p_receiveArray[0] = 3 << 1;
+	p_receiveArray[0] = 3;
 
 	if (this->m_Owner->m_netaddress == netAddress)
 	{
@@ -52,7 +52,7 @@ void BCRoom::RemoveRival(NetAddress& netAddress, char* p_receiveArray)
 		{
 			if (m_Owner != nullptr)
 				BCServer::sTheServer->SendData(m_Owner->m_netaddress, True, p_receiveArray);
-			p_receiveArray[0] = 4 << 1;
+			p_receiveArray[0] = 4;
 			if (m_Member != nullptr)
 				BCServer::sTheServer->SendDataBCM(m_Member->m_clientID, True, p_receiveArray);
 
@@ -78,7 +78,7 @@ void BCRoom::RemoveRival(NetAddress& netAddress, char* p_receiveArray)
 		{
 			if (m_Member != nullptr)
 				BCServer::sTheServer->SendData(m_Member->m_netaddress, True, p_receiveArray);
-			p_receiveArray[0] = 4 << 1;
+			p_receiveArray[0] = 4;
 			if (m_Owner != nullptr)
 				BCServer::sTheServer->SendDataBCM(m_Owner->m_clientID, True, p_receiveArray);
 

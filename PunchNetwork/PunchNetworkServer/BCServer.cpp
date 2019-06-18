@@ -34,6 +34,17 @@ BCServer::~BCServer()
 
 void BCServer::deleteClient(BCClient * p_client, char* p_receiveArray)
 {
+	for (int i = 0; BCMessage::sTotalMessageID; ++i)
+	{
+		if (BCServer::sTheServer->m_messageIDList->find(i) == BCServer::sTheServer->m_messageIDList->end())
+		{
+			continue;
+		}
+		if(BCServer::sTheServer->m_messageIDList->at(i).m_clientID == p_client->m_clientID)
+		{
+			BCServer::sTheServer->m_messageIDList->at(i).m_finished = true;
+		}
+	}
 	BCServer::sTheServer->m_clientIDList->erase(p_client->m_clientID);
 }
 void BCServer::deleteRoom(BCRoom * p_room, char* p_receiveArray)
@@ -62,7 +73,7 @@ void BCServer::deleteMessage(BCMessage * p_message, char* p_receiveArray)
 
 void BCServer::SendDataBCM(unsigned int p_clientID, SendType p_status, char* p_dataArray)
 {
-	p_dataArray[46] = BCMessage(p_clientID, GetTimeInMilli(), p_dataArray).m_messageID;
+	p_dataArray[45] = BCMessage(p_clientID, GetTimeInMilli(), p_dataArray).m_messageID;
 
 	switch (p_status)
 	{
@@ -111,8 +122,14 @@ void BCServer::HeartBeat(NetAddress & p_receiveAddress, char* p_receiveArray)
 {
 	Println("Hearthbeat received");
 
-	m_clientIDList->at(p_receiveArray[1]).m_ping = m_messageIDList->at(p_receiveArray[0] >> 1).m_timeStamp - GetTimeInMilli();
-	BCServer::sTheServer->m_messageIDList->at(p_receiveArray[0] >> 1).m_finished = true;
+	if (BCServer::sTheServer->m_messageIDList->find(p_receiveArray[45]) == BCServer::sTheServer->m_messageIDList->end())
+	{
+		Println("Hearthbeat expired");
+		return;
+	}
+
+	m_clientIDList->at(p_receiveArray[2]).m_ping = m_messageIDList->at(p_receiveArray[45]).m_timeStamp - GetTimeInMilli();
+	BCServer::sTheServer->m_messageIDList->at(p_receiveArray[45]).m_finished = true;
 }
 void BCServer::RoomRequest(NetAddress & p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime)
 {
@@ -186,7 +203,7 @@ void BCServer::RoomRequest(NetAddress & p_receiveAddress, char* p_receiveArray, 
 
 				//write message to inform the owner of the room
 				p_receiveArray[0] = 1;
-				CharArrayAddChar(p_receiveArray, 1, BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Member->m_nickname, 20);
+				CharArrayAddChar(p_receiveArray, 2, BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Member->m_nickname, 20);
 				SendDataBCM(BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_clientID, True, p_receiveArray);
 
 				Print("Player joined room with ID ");
@@ -216,10 +233,12 @@ void BCServer::CreateRoom(NetAddress & p_receiveAddress, char* p_receiveArray, u
 			{
 				if (BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->FindClient(p_receiveAddress))
 				{
-					p_receiveArray[1] = BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
+					p_receiveArray[1] = 0;
+					p_receiveArray[2] = BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
+					p_receiveArray[3] = BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->GetClient(p_receiveAddress)->m_clientID;
 					SendData(p_receiveAddress, True, p_receiveArray);
 					Print("Room found with ID ");
-					Println((int)p_receiveArray[1]);
+					Println((int)p_receiveArray[2]);
 					return;
 				}
 			}
@@ -231,9 +250,9 @@ void BCServer::CreateRoom(NetAddress & p_receiveAddress, char* p_receiveArray, u
 
 	--p_rounds;
 	--p_gameTime;
-
-	p_receiveArray[1] = BCRoom(&BCServer::sTheServer->m_clientIDList->at(BCClient(p_receiveAddress, p_receiveArray).m_clientID), p_rounds, p_gameTime).m_roomID;
-
+	p_receiveArray[1] = 0;
+	p_receiveArray[3] = BCClient(p_receiveAddress, p_receiveArray).m_clientID;
+	p_receiveArray[2] = BCRoom(&BCServer::sTheServer->m_clientIDList->at(p_receiveArray[3]), p_rounds, p_gameTime).m_roomID;
 	SendData(p_receiveAddress, True, p_receiveArray);
 	Print("Room created with ID ");
 	Println((int)p_receiveArray[1]);

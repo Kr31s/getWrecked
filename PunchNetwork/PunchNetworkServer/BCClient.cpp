@@ -37,15 +37,14 @@ void BCClient::resetHeartBeats()
 	m_leftHeartBeats = 0;
 }
 
-bool BCClient::lostHeartBeat()
+bool BCClient::lostHeartBeat(char* p_receiveArray)
 {
 	++m_leftHeartBeats;
 	if (m_leftHeartBeats >= sMaxLeftHeartBeats)
 	{
-		char arraytToSend[1];
-		m_myRoom->RemoveRival(m_netaddress, arraytToSend);
+		m_myRoom->RemoveRival(m_netaddress, p_receiveArray);
 		Println("clientIDList->size(): "<< BCServer::sTheServer->m_clientIDList->size());
-		Println("roomIDList->size()" << BCServer::sTheServer->m_roomIDList->size());
+		Println("roomIDList->size(): " << BCServer::sTheServer->m_roomIDList->size());
 		return false;
 	}
 	return true;
