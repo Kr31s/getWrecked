@@ -186,13 +186,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionNeutralAtom; // Idle
+			
 			isCrouching = false;
 		}
 		else
 		{
 
 			InputDirection = DirectionUpAtom; // Jump
-
 			UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
 			this->Jump();
 		}
@@ -249,6 +249,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			}
 		}
 	}
+		this->CrouchValues(isCrouching);
 		bIsBlocking = false;
 		InputStream.Add(InputDirection);
 	//if (this == Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0))){	}
@@ -643,6 +644,42 @@ void AFGDefaultPawn::ReadInputstream(unsigned short p_keyInput)
 }
  */
 
+}
+
+
+
+
+void AFGDefaultPawn::DiagonalJump(float direction)
+{
+	if(true)
+	{
+		
+	}else
+	{
+		
+	}
+	if(direction < 0)
+	{
+		
+	}else
+	{
+		
+	}
+
+
+}
+
+void AFGDefaultPawn::CrouchValues(bool inCrouch)
+{
+	if(inCrouch)
+	{
+		this->GetCapsuleComponent()->SetCapsuleRadius(34.0F, true);
+		this->Crouch();
+	}else
+	{
+		this->UnCrouch();
+		GetCapsuleComponent()->SetCapsuleRadius(40.0F,true);
+	}
 }
 
 void AFGDefaultPawn::MoveColliderSwitch()

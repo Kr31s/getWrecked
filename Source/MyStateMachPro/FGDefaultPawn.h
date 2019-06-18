@@ -32,6 +32,9 @@ public:
 
 	FORCEINLINE float GetTimeInMove() const { return TimeInCurrentMove; }
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UCurveFloat* DiagonalCurve;
+
 	UPROPERTY(EditAnywhere)
 		bool CanMoveInLeftDirection;
 
@@ -192,6 +195,10 @@ private:
 
 	std::bitset<12> SendInputStream;
 
+
+	void CrouchValues(bool inCrouch);
+
+	void DiagonalJump(float direction);
 	//UPROPERTY(VisibleInstanceOnly)
 	//TArray<USM_InputAtom*> RecievedInputStream;
 };
