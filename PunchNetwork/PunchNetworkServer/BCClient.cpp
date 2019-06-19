@@ -14,6 +14,7 @@ BCClient::BCClient(NetAddress p_netaddress, char* p_nickname)
 	for (int i = 0; i < 20; ++i)
 	{
 		m_nickname[i] = p_nickname[i + 4];
+		Print(m_nickname[i]);
 	}
 
 	for (int i = 0; i <= BCClient::sTotalClientID; ++i)
@@ -42,6 +43,7 @@ bool BCClient::lostHeartBeat(char* p_receiveArray)
 	++m_leftHeartBeats;
 	if (m_leftHeartBeats >= sMaxLeftHeartBeats)
 	{
+		m_clientStatus = ClientStatus::Offline;
 		m_myRoom->RemoveRival(m_netaddress, p_receiveArray);
 		Println("clientIDList->size(): "<< BCServer::sTheServer->m_clientIDList->size());
 		Println("roomIDList->size(): " << BCServer::sTheServer->m_roomIDList->size());

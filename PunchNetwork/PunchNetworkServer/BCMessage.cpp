@@ -40,21 +40,18 @@ void BCMessage::CheckResendMessages(char* p_receiveArray)
 		}
 		if (BCServer::sTheServer->m_messageIDList->at(i).m_finished)
 		{
-			Println(BCServer::sTheServer->m_messageIDList->size());
-
 			BCServer::sTheServer->m_messageIDList->erase(i);
-			Println(BCServer::sTheServer->m_messageIDList->size());
-
 			continue;
 		}
-		if ((GetTimeInMilli() - BCServer::sTheServer->m_messageIDList->at(i).m_timeStamp) > BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping + (unsigned char)20)
+		if (BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_clientStatus != ClientStatus::Offline
+			&& (GetTimeInMilli() - BCServer::sTheServer->m_messageIDList->at(i).m_timeStamp) > BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping + (unsigned char)20)
 		{
 			Println("HearthAtk");
 			if (BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).lostHeartBeat(p_receiveArray))
 			{
-				BCServer::sTheServer->SendDataBCM(BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_clientID, None, BCServer::sTheServer->m_messageIDList->at(i).m_messageArray);
+				BCServer::sTheServer->SendDataBCM(BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_clientID, SendType::None, BCServer::sTheServer->m_messageIDList->at(i).m_messageArray);
+				BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping = 2000;
 			}
-			BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping = 2000;
 			BCServer::sTheServer->m_messageIDList->at(i).m_finished = true;
 		}
 	}

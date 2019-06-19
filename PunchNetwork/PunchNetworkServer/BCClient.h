@@ -9,6 +9,7 @@ public:
 	static unsigned int		sMaxLeftHeartBeats;
 
 	unsigned int			m_lastClientFrame = 0;
+	ClientStatus			m_clientStatus = ClientStatus::None;
 
 	BCRoom*					m_myRoom = nullptr;
 	NetAddress				m_netaddress;

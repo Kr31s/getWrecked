@@ -51,10 +51,10 @@ void BCRoom::RemoveRival(NetAddress& netAddress, char* p_receiveArray)
 		else
 		{
 			if (m_Owner != nullptr)
-				BCServer::sTheServer->SendData(m_Owner->m_netaddress, True, p_receiveArray);
+				BCServer::sTheServer->SendData(m_Owner->m_netaddress, SendType::True, p_receiveArray);
 			p_receiveArray[0] = 4;
 			if (m_Member != nullptr)
-				BCServer::sTheServer->SendDataBCM(m_Member->m_clientID, True, p_receiveArray);
+				BCServer::sTheServer->SendDataBCM(m_Member->m_clientID, SendType::True, p_receiveArray);
 
 			BCServer::sTheServer->deleteClient(this->m_Owner, p_receiveArray);
 			m_Owner = m_Member;
@@ -63,7 +63,7 @@ void BCRoom::RemoveRival(NetAddress& netAddress, char* p_receiveArray)
 			Println("One player left the room with the ID " << m_roomID);
 		}
 		if (m_Owner != nullptr)
-			BCServer::sTheServer->SendData(m_Owner->m_netaddress, False, p_receiveArray);
+			BCServer::sTheServer->SendData(m_Owner->m_netaddress, SendType::False, p_receiveArray);
 	}
 	else if (m_Member->m_netaddress == netAddress)
 	{
@@ -77,10 +77,10 @@ void BCRoom::RemoveRival(NetAddress& netAddress, char* p_receiveArray)
 		else
 		{
 			if (m_Member != nullptr)
-				BCServer::sTheServer->SendData(m_Member->m_netaddress, True, p_receiveArray);
+				BCServer::sTheServer->SendData(m_Member->m_netaddress, SendType::True, p_receiveArray);
 			p_receiveArray[0] = 4;
 			if (m_Owner != nullptr)
-				BCServer::sTheServer->SendDataBCM(m_Owner->m_clientID, True, p_receiveArray);
+				BCServer::sTheServer->SendDataBCM(m_Owner->m_clientID, SendType::True, p_receiveArray);
 
 			BCServer::sTheServer->deleteClient(this->m_Member, p_receiveArray);
 			m_full = false;
@@ -88,7 +88,7 @@ void BCRoom::RemoveRival(NetAddress& netAddress, char* p_receiveArray)
 			return;
 		}
 		if (m_Member != nullptr)
-			BCServer::sTheServer->SendData(m_Member->m_netaddress, False, p_receiveArray);
+			BCServer::sTheServer->SendData(m_Member->m_netaddress, SendType::False, p_receiveArray);
 	}
 }
 
