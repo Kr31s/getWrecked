@@ -32,6 +32,9 @@ public:
 
 	FORCEINLINE float GetTimeInMove() const { return TimeInCurrentMove; }
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UCurveFloat* DiagonalCurve;
+
 	UPROPERTY(EditAnywhere)
 		bool CanMoveInLeftDirection;
 
@@ -48,7 +51,10 @@ public:
 		bool isCrouching;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool isBlocking;
+		bool bCanBlock;
+
+	UFUNCTION()
+	void SetCanBlock(bool blockState) { this->bCanBlock = blockState; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool bIsBlocking;
@@ -189,6 +195,10 @@ private:
 
 	std::bitset<12> SendInputStream;
 
+
+	void CrouchValues(bool inCrouch);
+
+	void DiagonalJump(float direction);
 	//UPROPERTY(VisibleInstanceOnly)
 	//TArray<USM_InputAtom*> RecievedInputStream;
 };

@@ -4,37 +4,36 @@
 class BCServer
 {
 public:
-	static BCServer*					theServer;
+	static BCServer*					sTheServer;
 
-	bool*								serverRunning	= new bool(true);
+	bool*								m_serverRunning	= new bool(true);
 
-	NetSocketUDP						serverSocket;
+	NetSocketUDP						m_serverSocket;
 
-	std::map<unsigned int, BCRoom>*		roomIDList		= new std::map<unsigned int, BCRoom>();
-	std::map<unsigned int, BCClient>*	clientIDList	= new std::map<unsigned int, BCClient>();
-	std::map<unsigned int, BCMessage>*	messageIDList	= new std::map<unsigned int, BCMessage>();
+	std::map<unsigned int, BCRoom>*		m_roomIDList		= new std::map<unsigned int, BCRoom>();
+	std::map<unsigned int, BCClient>*	m_clientIDList	= new std::map<unsigned int, BCClient>();
+	std::map<unsigned int, BCMessage>*	m_messageIDList	= new std::map<unsigned int, BCMessage>();
 
-	std::vector<BCRoom*>				roomList[3 * 3]; //roomList[i * sizeof(j) + j] insane
+	std::vector<BCRoom*>				m_roomList[3 * 3]; //roomList[i * sizeof(j) + j] insane
 
 	BCServer(unsigned short port, bool enableNonBlocking);
 	~BCServer();
 
-	void deleteClient(BCClient* client, char* p_receiveArray);
-	void deleteRoom(BCRoom* room, char* p_receiveArray);
-	void deleteMessage(BCMessage* message, char* p_receiveArray);
+	void deleteClient(BCClient* client, char* receiveArray);
+	void deleteRoom(BCRoom* room, char* receiveArray);
+	void deleteMessage(BCMessage* message, char* receiveArray);
 
 	//BCClient needed to add it to controllMessage
-	void SendDataBCM(unsigned int p_clientID, SendType p_status, char* dataArray, unsigned int lengthArrayToSend);
+	void SendDataBCM(unsigned int clientID, SendType status, char* dataArray);
 	//Only address needed, no controllMessage
-	void SendData(NetAddress& netAddress, SendType p_status, char* dataArray, unsigned int lengthArrayToSend);
-
+	void SendData(NetAddress& netAddress, SendType status, char* dataArray);
 	void HeartBeat(NetAddress& receiveAddress, char* receiveArray);
 
 	void RoomRequest(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime);
 	void CreateRoom(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime);
 	void LeaveRoom(NetAddress& receiveAddress, char* receiveArray);
-	void ElementChange(NetAddress& receiveAddress, char* p_receiveArray);
-	void PauseGame(NetAddress& receiveAddress, char* p_receiveArray);
-	void GameMessage(NetAddress& receiveAddress, char* p_receiveArray, unsigned int& intValue);
+	void ElementChange(NetAddress& receiveAddress, char* receiveArray);
+	void PauseGame(NetAddress& receiveAddress, char* receiveArray);
+	void GameMessage(NetAddress& receiveAddress, char* receiveArray, unsigned int& intValue);
 };
 

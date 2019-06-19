@@ -17,11 +17,18 @@ public:
 	// Sets default values for this component's properties
 	UHitBoxIDComp();
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int MoveID;
 
 	UPROPERTY()
 		AFGDefaultPawn* player;
+
+	UFUNCTION(BlueprintCallable)
+		const int GetMoveID() { return MoveID; }
+
+
+	UPROPERTY()
+		TArray<USceneComponent*> ColliderComponents;
 
 protected:
 	// Called when the game starts

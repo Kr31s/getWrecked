@@ -128,21 +128,41 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	{
 		if (DirectionInput.Y < -DirectionThreshold)
 		{
-			InputDirection = DirectionDownBackAtom;; // Crouch + Back
+			if (this->isOnLeftSide)
+			{
+				if (bCanBlock)
+				{
+					bIsBlocking = true;
+				}
+				else
+				{
+					InputDirection = DirectionDownBackAtom;; // Crouch + Back is On LeftSide
+				}
+			}
+			else
+			{
+				InputDirection = DirectionDownForwardAtom;; // Crouch + Forward is On RightSide
+			}
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			if (this->isOnLeftSide)
 			{
-				InputDirection = DirectionBackAtom; // Back on Leftside
+				if(bCanBlock)
+				{
+					bIsBlocking = true;
+				}
+				else
+				{
+					InputDirection = DirectionBackAtom; // Back on Leftside
+				}
 			}
 			else
 			{
 				InputDirection = DirectionForwardAtom; // Forward on Rightside
-
 			}
 
-			if (CanMoveInLeftDirection) {
+			if (CanMoveInLeftDirection && !bIsBlocking) {
 				this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
 			}
 		}
@@ -166,13 +186,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionNeutralAtom; // Idle
+			
 			isCrouching = false;
 		}
 		else
 		{
 
 			InputDirection = DirectionUpAtom; // Jump
-
 			UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
 			this->Jump();
 		}
@@ -181,22 +201,41 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	{
 		if (DirectionInput.Y < -DirectionThreshold)
 		{
-			InputDirection = DirectionDownForwardAtom; // Crouch + Forward
-			UE_LOG(LogTemp, Warning, TEXT("i want to crouchForward"));
+			if (this->isOnLeftSide)
+			{
+				InputDirection = DirectionDownForwardAtom; // Crouch + Forward on LeftSide
+				UE_LOG(LogTemp, Warning, TEXT("i want to crouchForward"));
+			}else
+			{
+				if (bCanBlock)
+				{
+					bIsBlocking = true;
+				}
+				else
+				{
+					InputDirection = DirectionDownBackAtom; // Crouch + Back on RightSide
+				}
+			}
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			if (this->isOnLeftSide)
 			{
-				InputDirection = DirectionForwardAtom; // Forward on Leftside
+				InputDirection = DirectionForwardAtom; // Forward on LeftSide
 			}
 			else
 			{
-				InputDirection = DirectionBackAtom; // Back on Rightside
+				if(bCanBlock)
+				{
+					bIsBlocking = true;
+				}else
+				{
+					InputDirection = DirectionBackAtom; // Back on RightSide
+				}
 
 			}
 
-			if (CanMoveInRightDirection) {
+			if (CanMoveInRightDirection && !bIsBlocking) {
 				this->AddMovementInput(this->GetActorForwardVector(), 100.0F);
 			}
 		}
@@ -210,6 +249,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			}
 		}
 	}
+		this->CrouchValues(isCrouching);
+		bIsBlocking = false;
 		InputStream.Add(InputDirection);
 	//if (this == Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0))){	}
 	//else{	//InputStream = RecievedInputStream(10);}
@@ -295,19 +336,19 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent * OverlappedComponent, AActor
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
-
+		
 		if (OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
 		{
 			if (this->canApplyDamage)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
 
-				pAsPawn->gotHit = true;
-				pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
-				pAsPawn->RessourceComp->IncreaseStunMeter(0.05F);
-				//pAsPawn->gotHit = false;
-				FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
-				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
+				//pAsPawn->gotHit = true;
+				//pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
+				//pAsPawn->RessourceComp->IncreaseStunMeter(0.05F);
+				////pAsPawn->gotHit = false;
+				//FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
+				//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
 
 			}
 		}
@@ -603,6 +644,42 @@ void AFGDefaultPawn::ReadInputstream(unsigned short p_keyInput)
 }
  */
 
+}
+
+
+
+
+void AFGDefaultPawn::DiagonalJump(float direction)
+{
+	if(true)
+	{
+		
+	}else
+	{
+		
+	}
+	if(direction < 0)
+	{
+		
+	}else
+	{
+		
+	}
+
+
+}
+
+void AFGDefaultPawn::CrouchValues(bool inCrouch)
+{
+	if(inCrouch)
+	{
+		this->GetCapsuleComponent()->SetCapsuleRadius(34.0F, true);
+		this->Crouch();
+	}else
+	{
+		this->UnCrouch();
+		GetCapsuleComponent()->SetCapsuleRadius(40.0F,true);
+	}
 }
 
 void AFGDefaultPawn::MoveColliderSwitch()

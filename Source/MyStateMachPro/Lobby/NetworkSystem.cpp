@@ -43,9 +43,8 @@ bool NetworkSystem::InitNetSystem()
 
 void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 {
-	identifier = p_receiveArray[0] >> 1;
-	status = p_receiveArray[0] << 7;
-	status = status >> 7;
+	identifier = p_receiveArray[0];
+	status = p_receiveArray[1];
 
 	UE_LOG(LogTemp, Warning, TEXT("%d"), (int)identifier);
 	unsigned int frameValue = 0;
@@ -73,6 +72,9 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 		break;
 	case 9:
 		this->PauseGameUpdate(status, p_receiveArray);
+		break;
+	case 10:
+		this->Hearthbeat(p_receiveArray);
 		break;
 	case 11:
 
@@ -115,9 +117,9 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 
 void NetworkSystem::SendReceiveMessageClient()
 {
-	sendArray[0] = sendArray[0] << 1;
-	sendArray[0] |= static_cast<char>(1);
-	socketUDP.Send(serverAddress, (char*)sendArray, 1).m_errorCode;
+	sendArray[0] = identifier;
+	sendArray[1] = 1;
+	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
 	ClearReceiveArray();
 }
 void NetworkSystem::ClearReceiveArray()
@@ -135,18 +137,19 @@ void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FStri
 	UE_LOG(LogTemp, Warning, TEXT("RoomRequest"));
 	//charInput Name
 	char* result = TCHAR_TO_ANSI(*p_name);
-	for (int i = 2; i < 22; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
-		sendArray[i] = result[i - 2];
+		sendArray[i] = result[i + 4];
 	}
 	sendArray[0] = 0;
+	sendArray[1] = 0;
 
 	//input round settings
-	sendArray[1] = p_roundValue << 5;
+	sendArray[2] = p_roundValue;
 	//input time settings
-	sendArray[1] |= p_timeValue << 2;
+	sendArray[3] = p_timeValue;
 
-	socketUDP.Send(serverAddress, (char*)sendArray, 22).m_errorCode;
+	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
 
 }
 void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FString& p_name)
@@ -154,42 +157,47 @@ void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FStrin
 	UE_LOG(LogTemp, Warning, TEXT("CreateRoom"));
 	char* result = TCHAR_TO_ANSI(*p_name);
 
-	for (int i = 2; i < 22; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
-		sendArray[i] = result[i - 2];
+		sendArray[i] = result[i + 4];
 	}
-	sendArray[0] = 2 << 1;
+	sendArray[0] = 2;
+	sendArray[1] = 0;
 
 	//input round settings
-	sendArray[1] = p_roundValue << 5;
+	sendArray[2] = p_roundValue;
 	//input time settings
-	sendArray[1] |= p_timeValue << 2;
+	sendArray[3] = p_timeValue;
 
-	socketUDP.Send(serverAddress, (char*)sendArray, 22).m_errorCode;
+	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
 
 }
 void NetworkSystem::LeaveRoom()
 {
 	if (myRoomID >= 0)
 	{
-		sendArray[0] = 3 << 1;
-		sendArray[1] = myRoomID;
+		sendArray[0] = 3;
+		sendArray[1] = 0;
+		sendArray[2] = myRoomID;
 
-		socketUDP.Send(serverAddress, (char*)sendArray, 2);
+		socketUDP.Send(serverAddress, (char*)sendArray, 46);
 	}
 }
 void NetworkSystem::ElementChanged(int& slot1Pos, int& slot2Pos, bool& ready)
 {
-	sendArray[0] = 6 << 1;
+	sendArray[0] = 6;
 	sendArray[1] = myRoomID;
 	sendArray[2] = slot1Pos;
-	sendArray[2] |= slot2Pos << 2;
-	sendArray[2] |= ready << 4;
+	sendArray[3] = slot2Pos;
+	sendArray[4] = ready;
 
-	socketUDP.Send(serverAddress, (char*)sendArray, 3);
+	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
 void NetworkSystem::PauseGame(bool& stop)
 {
+	sendArray[0] = 8;
+
+	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
 void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
 {
@@ -204,7 +212,9 @@ void NetworkSystem::RoomRequestAnswer(unsigned char& status, char* p_receiveArra
 			opponentName[i] = p_receiveArray[i + 2];
 		}
 
-		myRoomID = p_receiveArray[1];
+		myRoomID = p_receiveArray[2];
+		clientID = p_receiveArray[3];
+		roomOwner = true;
 
 		roomOwner = false;
 	}
@@ -232,7 +242,8 @@ void NetworkSystem::CreateRoomAnswer(unsigned char& status, char* p_receiveArray
 {
 	if (status)
 	{
-		myRoomID = p_receiveArray[1];
+		myRoomID = p_receiveArray[2];
+		clientID = p_receiveArray[3];
 		roomOwner = true;
 	}
 	else
@@ -253,12 +264,12 @@ void NetworkSystem::OpponentLeftRoom(char* p_receiveArray)
 }
 void NetworkSystem::Hearthbeat(char* p_receiveArray)
 {
-	heartBeatArray[0] = p_receiveArray[1];
-	heartBeatArray[0] = heartBeatArray[0] << 1;
-	heartBeatArray[0] |= static_cast<char>(1);
-	UE_LOG(LogTemp, Warning, TEXT("heart beat"));
+	heartBeatArray[0] = p_receiveArray[45];
+	heartBeatArray[1] = 1;
+	UE_LOG(LogTemp, Warning, TEXT("Heartbeat received"));
+	UE_LOG(LogTemp, Warning, TEXT("%d"), (int)p_receiveArray[45]);
 
-	socketUDP.Send(serverAddress, (char*)heartBeatArray, 1).m_errorCode;
+	socketUDP.Send(serverAddress, (char*)heartBeatArray, 46).m_errorCode;
 }
 void NetworkSystem::ElementUpdate(char* p_receiveArray)
 {
