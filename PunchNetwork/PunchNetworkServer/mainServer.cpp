@@ -5,26 +5,21 @@
 #include "BCClient.h"
 #include "BCMessage.h"
 
+
 void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime, unsigned int& p_intValue);
-void ClearReceiveArray(char* p_receiveArray, long long p_length)
-{
-	for (int i = 0; (p_receiveArray[i] != NULL) && i < p_length; ++i)
-	{
-		p_receiveArray[i] = NULL;
-	}
-}
+
 
 
 void ServerThread()
 {
 	NetAddress receiveAddress;
-	char	serverThreadArray[46]	= { 0 };
+	char	serverThreadArray[46] = { 0 };
 
-	Messages		identifier	= UnknownMessage;
-	unsigned int	intValue	= NULL;
-	unsigned char	rounds		= NULL;
-	unsigned char	gameTime	= NULL;
-	unsigned char	status		= NULL;
+	Messages		identifier = Messages::UnknownMessage;
+	unsigned int	intValue = NULL;
+	unsigned char	rounds = NULL;
+	unsigned char	gameTime = NULL;
+	unsigned char	status = NULL;
 
 
 	while (BCServer::sTheServer->m_serverRunning)
@@ -35,11 +30,11 @@ void ServerThread()
 			DecodeMessageServer(receiveAddress, serverThreadArray, rounds, gameTime, intValue);
 
 			ClearReceiveArray(serverThreadArray, sizeof(serverThreadArray));
-			intValue	= NULL;
-			rounds		= NULL;
-			gameTime	= NULL;
-			identifier	= UnknownMessage;
-			status		= NULL;
+			intValue = NULL;
+			rounds = NULL;
+			gameTime = NULL;
+			identifier = Messages::UnknownMessage;
+			status = NULL;
 		}
 	}
 
@@ -64,7 +59,10 @@ void HeartThread()
 	{
 		for (int i = 0; i < BCServer::sTheServer->m_clientIDList->size(); ++i)
 		{
-			BCServer::sTheServer->SendDataBCM(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, False, heartThreadArray);
+			if (BCServer::sTheServer->m_clientIDList->at(i).m_clientStatus != ClientStatus::Offline)
+			{
+				BCServer::sTheServer->SendDataBCM(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, SendType::False, heartThreadArray);
+			}
 		}
 
 		Println("Sleep 2sec");
@@ -84,22 +82,22 @@ void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, uns
 	{
 		switch (MessageOfIndex(p_receiveArray[0]))
 		{
-		case RoomRequest:
+		case Messages::RoomRequest:
 			BCServer::sTheServer->RoomRequest(p_receiveAddress, p_receiveArray, p_rounds, p_gameTime);
 			break;
-		case CreateRoom:
+		case Messages::CreateRoom:
 			BCServer::sTheServer->CreateRoom(p_receiveAddress, p_receiveArray, p_rounds, p_gameTime);
 			break;
-		case LeaveRoom:
+		case Messages::LeaveRoom:
 			BCServer::sTheServer->LeaveRoom(p_receiveAddress, p_receiveArray);
 			break;
-		case ElementChange:
+		case Messages::ElementChange:
 			BCServer::sTheServer->ElementChange(p_receiveAddress, p_receiveArray);
 			break;
-		case PauseGame:
+		case Messages::PauseGame:
 			BCServer::sTheServer->PauseGame(p_receiveAddress, p_receiveArray);
 			break;
-		case GameMessage:
+		case Messages::GameMessage:
 			BCServer::sTheServer->GameMessage(p_receiveAddress, p_receiveArray, p_intValue);
 			break;
 

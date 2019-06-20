@@ -10,6 +10,20 @@
 /**
  *
  */
+
+struct matchStats
+{
+	int player1Score = 0;
+	int player2Score = 0;
+};
+
+UENUM(BlueprintType)
+enum class EMatcheTypes : uint8 {
+	BestofOne UMETA(DisplayName = "BestofOne"),
+	BestofThree UMETA(DisplayName = "BestofThree"),
+	BestofFive UMETA(DisplayName = "BestofFive")
+};
+
 UCLASS()
 class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 {
@@ -24,7 +38,8 @@ public:
 	AMyStateMachProGameModeBase();
 	void SpawnSecondPlayer();
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MatchCount")
+		EMatcheTypes MatchCount;
 
 	// This will be spawned when the game starts.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -48,9 +63,17 @@ public:
 	UPROPERTY(EditAnywhere)
 		float roundTimer;
 
+	UPROPERTY()
+		float startTimer;	
+	
 	UPROPERTY(EditAnywhere)
-		float startTimer;
+		float prepTime = 3;
 
 	UPROPERTY()
-		UObjectLibrary* ColliderLibrary;
+		FVector2D matchStanding;
+
+	UFUNCTION()
+		void setupMatch();
+
+	matchStats Standings;
 };

@@ -252,6 +252,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		this->CrouchValues(isCrouching);
 		bIsBlocking = false;
 		InputStream.Add(InputDirection);
+
+	if(doJump)
+	{
+		DiagonalJump(DirectionInput.X, this->GetActorLocation(), DeltaSeconds, 1000.0F, 1000.0F);
+	}
 	//if (this == Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0))){	}
 	//else{	//InputStream = RecievedInputStream(10);}
 
@@ -647,18 +652,32 @@ void AFGDefaultPawn::ReadInputstream(unsigned short p_keyInput)
 }
 
 
-
-
-void AFGDefaultPawn::DiagonalJump(float direction)
+void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time, float jumpHeight, float jumpDistance)
 {
-	if(true)
+	float directionmodifier = FMath::Sign(direction);
+
+	if(!jumpInitializeFlag) // change to while ? 
 	{
-		
+		timeInJump = 0;
+		jumpTargetLocation = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
+		jumpInitializeFlag = true;
 	}else
 	{
-		
+		if (timeInJump < 1.0)
+		{
+			timeInJump += time;
+			float curveValue = DiagonalCurve->GetFloatValue(timeInJump);
+
+			this->SetActorLocation(FVector(jumpTargetLocation.X + (directionmodifier*jumpDistance * curveValue), jumpTargetLocation.Y, jumpTargetLocation.Z + (jumpHeight * curveValue)));
+		}else
+		{
+			jumpInitializeFlag = false;
+
+		}
 	}
-	if(direction < 0)
+	timeInJump += time;
+
+	if(direction < 0) // jump direction
 	{
 		
 	}else

@@ -1,5 +1,6 @@
 #include "NetworkSystem.h"
 #include "MyUserWidget.h"
+#include <array>
 
 NetworkSystem* NetworkSystem::NetSys = NULL;
 
@@ -12,7 +13,6 @@ bool NetworkSystem::StartingMessageReceiveThread()
 
 NetworkSystem::NetworkSystem()
 {
-
 }
 NetworkSystem::~NetworkSystem()
 {
@@ -99,7 +99,7 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 				inputValue |= (int)(p_receiveArray[1 + i * 2 + 3]);
 			}
 
-			if(receivedInputs.find(frameValue) != receivedInputs.end())
+			if (receivedInputs.find(frameValue) != receivedInputs.end())
 			{
 				receivedInputs.insert({ frameValue, inputValue });
 			}
@@ -122,6 +122,7 @@ void NetworkSystem::SendReceiveMessageClient()
 	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
 	ClearReceiveArray();
 }
+
 void NetworkSystem::ClearReceiveArray()
 {
 	int a = sizeof(sendArray) / sizeof(*sendArray);
@@ -132,15 +133,25 @@ void NetworkSystem::ClearReceiveArray()
 	}
 }
 
-void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FString& p_name)
+void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FString & p_name)
 {
 	UE_LOG(LogTemp, Warning, TEXT("RoomRequest"));
 	//charInput Name
 	char* result = TCHAR_TO_ANSI(*p_name);
+
 	for (int i = 0; i < 20; ++i)
 	{
-		sendArray[i] = result[i + 4];
+		if (i > p_name.Len() - 1)
+		{
+			sendArray[i + 4] = NULL;
+		}
+		else 
+		{
+			sendArray[i + 4] = result[i];
+		}
+		UE_LOG(LogTemp, Warning, TEXT("%c"), result[i]);
 	}
+
 	sendArray[0] = 0;
 	sendArray[1] = 0;
 
@@ -152,14 +163,22 @@ void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FStri
 	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
 
 }
-void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FString& p_name)
+void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FString & p_name)
 {
 	UE_LOG(LogTemp, Warning, TEXT("CreateRoom"));
 	char* result = TCHAR_TO_ANSI(*p_name);
 
 	for (int i = 0; i < 20; ++i)
 	{
-		sendArray[i] = result[i + 4];
+		if (i > p_name.Len() - 1)
+		{
+			sendArray[i + 4] = NULL;
+		}
+		else
+		{
+			sendArray[i + 4] = result[i];
+		}
+		UE_LOG(LogTemp, Warning, TEXT("%c"), result[i]);
 	}
 	sendArray[0] = 2;
 	sendArray[1] = 0;
@@ -199,7 +218,7 @@ void NetworkSystem::PauseGame(bool& stop)
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
-void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
+void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 {
 }
 
@@ -207,15 +226,15 @@ void NetworkSystem::RoomRequestAnswer(unsigned char& status, char* p_receiveArra
 {
 	if (status)
 	{
-		for (int i = 0; (i < 20) && (p_receiveArray[i + 2] != -52); i++)
+		for (int i = 0; (i < 20); i++)
 		{
-			opponentName[i] = p_receiveArray[i + 2];
+			opponentName[i] = p_receiveArray[i + 4];
+			UE_LOG(LogTemp, Warning, TEXT("%c"), opponentName[i]);
 		}
 
 		myRoomID = p_receiveArray[2];
 		clientID = p_receiveArray[3];
-		roomOwner = true;
-
+		
 		roomOwner = false;
 	}
 	else
@@ -227,12 +246,12 @@ void NetworkSystem::RoomRequestAnswer(unsigned char& status, char* p_receiveArra
 	UMyUserWidget::myUserWidget->JoinRoomMessage((bool)status, FString(UTF8_TO_TCHAR(opponentName)));
 
 }
-void NetworkSystem::RoomJoin(char* p_receiveArray)
+void NetworkSystem::RoomJoin(char* p_receiveArray)	
 {
-	sendArray[0] = identifier;
-	for (int i = 0; (i < 20) && (p_receiveArray[i + 1] != -52); i++)
+	for (int i = 0; (i < 20); i++)
 	{
-		opponentName[i] = p_receiveArray[i + 1];
+		opponentName[i] = p_receiveArray[i + 2];
+		UE_LOG(LogTemp, Warning, TEXT("%c"), p_receiveArray[i + 2]);
 	}
 	UMyUserWidget::myUserWidget->RivalJoinMessage(FString(UTF8_TO_TCHAR(opponentName)));
 	UE_LOG(LogTemp, Warning, TEXT("RivalJoinMessage"));
@@ -250,8 +269,8 @@ void NetworkSystem::CreateRoomAnswer(unsigned char& status, char* p_receiveArray
 	{
 		//failed room creation
 	}
-	if (UMyUserWidget::myUserWidget != NULL) {
-
+	if (UMyUserWidget::myUserWidget != NULL) 
+	{
 		UMyUserWidget::myUserWidget->CreateRoomMessage((bool)status);
 	}
 }

@@ -10,7 +10,7 @@ public:
 
 	NetSocketUDP						m_serverSocket;
 
-	std::map<unsigned int, BCRoom>*		m_roomIDList		= new std::map<unsigned int, BCRoom>();
+	std::map<unsigned int, BCRoom>*		m_roomIDList	= new std::map<unsigned int, BCRoom>();
 	std::map<unsigned int, BCClient>*	m_clientIDList	= new std::map<unsigned int, BCClient>();
 	std::map<unsigned int, BCMessage>*	m_messageIDList	= new std::map<unsigned int, BCMessage>();
 
@@ -21,7 +21,6 @@ public:
 
 	void deleteClient(BCClient* client, char* receiveArray);
 	void deleteRoom(BCRoom* room, char* receiveArray);
-	void deleteMessage(BCMessage* message, char* receiveArray);
 
 	//BCClient needed to add it to controllMessage
 	void SendDataBCM(unsigned int clientID, SendType status, char* dataArray);
