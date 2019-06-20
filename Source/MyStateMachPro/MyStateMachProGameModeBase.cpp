@@ -10,9 +10,9 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
-	roundTimer = 99.0F;
+	roundTimer = roundTime;
 	//startTimer = 3.0F;
-
+	MatchCount = EMatcheTypes::BestofOne;
 
 }
 
@@ -65,9 +65,49 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	player1->isStunned = false;
 	player2->isStunned = false;
 	roundTimer -= DeltaSeconds;
-	if(player1->GetActorLocation().X < player2->GetActorLocation().X)
+
+	CheckOnWhichSidePlayerIs();
+	
+	if(player1->RessourceComp->Health <= 0.0F)
 	{
-		if(player1->GetCharacterMovement()->IsMovingOnGround())
+		//player1->K2_DestroyActor();
+		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
+		//UGameplayStatics::SetGamePaused(this, true);
+		Standings.player1Score++;
+		++matchStanding.X;
+		SetupMatch();
+	}
+	if(player2->RessourceComp->Health <= 0.0F)
+	{
+		//player2->K2_DestroyActor();
+		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
+		//UGameplayStatics::SetGamePaused(this, true);
+		Standings.player2Score++;
+		++matchStanding.Y;
+		SetupMatch();
+	}
+}
+
+
+void AMyStateMachProGameModeBase::SetupMatch()
+{
+	startTimer = prepTime;
+	roundTimer = roundTime;
+	player1->RessourceComp->SetHealth(1.0F);
+	player2->RessourceComp->SetHealth(1.0F);
+	player1->RessourceComp->SetStunMeter(0.0F);
+	player2->RessourceComp->SetStunMeter(0.0F);
+
+	// position need to be changable values in the engine 
+	player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
+	player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
+}
+
+void AMyStateMachProGameModeBase::CheckOnWhichSidePlayerIs()
+{
+	if (player1->GetActorLocation().X < player2->GetActorLocation().X)
+	{
+		if (player1->GetCharacterMovement()->IsMovingOnGround())
 		{
 			player1->isOnLeftSide = true;
 		}
@@ -75,7 +115,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		{
 			player2->isOnLeftSide = false;
 		}
-	}else
+	}
+	else
 	{
 		if (player1->GetCharacterMovement()->IsMovingOnGround())
 		{
@@ -86,36 +127,45 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			player2->isOnLeftSide = true;
 		}
 	}
-	if(player1->RessourceComp->Health <= 0.0F)
-	{
-		//player1->K2_DestroyActor();
-		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
-		//UGameplayStatics::SetGamePaused(this, true);
-		Standings.player1Score++;
-		++matchStanding.X;
-		setupMatch();
-	}
-	if(player2->RessourceComp->Health <= 0.0F)
-	{
-		//player2->K2_DestroyActor();
-		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
-		//UGameplayStatics::SetGamePaused(this, true);
-		Standings.player2Score++;
-		++matchStanding.Y;
-		setupMatch();
-	}
 }
 
-
-void AMyStateMachProGameModeBase::setupMatch()
+void AMyStateMachProGameModeBase::DetermineMatchWinner()
 {
-	startTimer = prepTime;
-	player1->RessourceComp->SetHealth(1.0F);
-	player2->RessourceComp->SetHealth(1.0F);
-	player1->RessourceComp->SetStunMeter(0.0F);
-	player2->RessourceComp->SetStunMeter(0.0F);
 
-	// position need to be changable values in the engine 
-	player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
-	player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
+	switch (MatchCount)
+	{
+		case EMatcheTypes::BestofOne:
+			if(Standings.player1Score == 1)
+			{
+				//player 1 wins Complete Match
+			}
+			if(Standings.player2Score == 1)
+			{
+				//player 2 wins Complete Match
+			}
+			break;
+		case EMatcheTypes::BestofThree:
+			if (Standings.player1Score == 3)
+			{
+				//player 1 wins Complete Match
+			}
+			if (Standings.player2Score == 3)
+			{
+				//player 2 wins Complete Match
+			}
+			break;
+		case EMatcheTypes::BestofFive:
+			if (Standings.player1Score == 5)
+			{
+				//player 1 wins Complete Match
+			}
+			if (Standings.player2Score == 5)
+			{
+				//player 2 wins Complete Match
+			}
+			break;
+		default:
+				break;
+	}
+
 }

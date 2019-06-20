@@ -41,6 +41,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MatchCount")
 		EMatcheTypes MatchCount;
 
+	UPROPERTY(EditAnywhere)
+		float roundTime;
 	// This will be spawned when the game starts.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		ACameraActor* MainGameCamera;
@@ -73,7 +75,14 @@ public:
 		FVector2D matchStanding;
 
 	UFUNCTION()
-		void setupMatch();
+		void SetupMatch();
+
+
+	UFUNCTION()
+		void CheckOnWhichSidePlayerIs();
+
+	UFUNCTION()
+		void DetermineMatchWinner();
 
 	matchStats Standings;
 };

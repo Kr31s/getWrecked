@@ -104,22 +104,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 	this->SetRotationOfPlayer();
 
+	HandleStun(DeltaSeconds); // player got stunned 
 	// Process input
-	if (isStunned || gotHit)
-	{
-		DisableInput(Cast<APlayerController>(this));
-		stunTimer += DeltaSeconds;
-		if (stunTimer >= 2.0F)
-		{
-			gotHit = false;
-			stunTimer = 0.0F;
-		}
-		return;
-	}
-	else
-	{
-		EnableInput(Cast<APlayerController>(this));
-	}
+
 	// Add one atom for stick direction
 	const float DirectionThreshold = 0.5f;
 	UFGDirectionalInputAtom* InputDirection = nullptr;
@@ -686,6 +673,25 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 	}
 
 
+}
+
+void AFGDefaultPawn::HandleStun(float deltaSeconds)
+{
+	if (isStunned || gotHit)
+	{
+		DisableInput(Cast<APlayerController>(this));
+		stunTimer += deltaSeconds;
+		if (stunTimer >= 2.0F)
+		{
+			gotHit = false;
+			stunTimer = 0.0F;
+		}
+		return;
+	}
+	else
+	{
+		EnableInput(Cast<APlayerController>(this));
+	}
 }
 
 void AFGDefaultPawn::CrouchValues(bool inCrouch)

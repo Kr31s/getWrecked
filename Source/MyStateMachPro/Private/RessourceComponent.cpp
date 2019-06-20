@@ -59,8 +59,9 @@ void URessourceComponent::IncreasePowerMeter(AActor* actor, int32 value)
 void URessourceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-
+	if(FMath::FloorToInt(this->GetWorld()->TimeSeconds) % 2 == 0 && StunMeter >= 0.01F){
+		StunMeter -= 0.01F;
+	}
 	// ...
 }
 

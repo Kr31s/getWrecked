@@ -8,7 +8,7 @@
 #include "MyHitBoxComponent.generated.h"
 
 /**
- * 
+ * try to use here forward declaration
  */
 UENUM(BlueprintType)
 enum class EBoxType : uint8 {

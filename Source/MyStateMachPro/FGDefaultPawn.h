@@ -207,6 +207,8 @@ private:
 
 	std::bitset<12> SendInputStream;
 
+	UFUNCTION()
+		void HandleStun(float deltaSeconds);
 
 	void CrouchValues(bool inCrouch);
 
