@@ -187,13 +187,14 @@ void BCServer::RoomRequest(NetAddress & p_receiveAddress, char* p_receiveArray, 
 			if (!BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_full)
 			{
 				//Found Room
-
-				//add the person who reqested to the room
-				BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->AddRival(&BCServer::sTheServer->m_clientIDList->at(BCClient(p_receiveAddress, p_receiveArray).m_clientID));
-
 				//write message to tell the requested the status of his message
 				p_receiveArray[0] = 0;
-				p_receiveArray[1] = BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
+				p_receiveArray[3] = BCClient(p_receiveAddress, p_receiveArray).m_clientID;
+				p_receiveArray[2] = BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
+
+				//add the person who reqested to the room
+				BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).AddRival(&BCServer::sTheServer->m_clientIDList->at(p_receiveArray[3]));
+
 				CharArrayAddChar(p_receiveArray, 4, BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_nickname,0, 20);
 				SendData(BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Member->m_netaddress, SendType::True, p_receiveArray);
 
@@ -259,6 +260,7 @@ void BCServer::LeaveRoom(NetAddress & p_receiveAddress, char* p_receiveArray)
 }
 void BCServer::ElementChange(NetAddress & p_receiveAddress, char* p_receiveArray)
 {
+	Println(p_receiveArray[2]);
 	if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).FindClient(p_receiveAddress))
 	{
 		//net address is in room
@@ -269,10 +271,12 @@ void BCServer::ElementChange(NetAddress & p_receiveAddress, char* p_receiveArray
 			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Member == nullptr)
 				return;
 
-			p_receiveArray[3] = p_receiveArray[1];
-			p_receiveArray[1] = p_receiveArray[2];
+			p_receiveArray[40] = p_receiveArray[2];
 			p_receiveArray[0] = 7;
-			SendDataBCM(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[3]).m_Member->m_clientID, SendType::True, p_receiveArray);
+			p_receiveArray[1] = p_receiveArray[3];
+			p_receiveArray[2] = p_receiveArray[4];
+			p_receiveArray[3] = p_receiveArray[5];
+			SendDataBCM(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_clientID, SendType::True, p_receiveArray);
 		}
 		else
 		{
@@ -282,10 +286,12 @@ void BCServer::ElementChange(NetAddress & p_receiveAddress, char* p_receiveArray
 			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).m_Owner == nullptr)
 				return;
 
-			p_receiveArray[3] = p_receiveArray[1];
-			p_receiveArray[1] = p_receiveArray[2];
+			p_receiveArray[40] = p_receiveArray[2];
 			p_receiveArray[0] = 7;
-			SendDataBCM(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[3]).m_Owner->m_clientID, SendType::True, p_receiveArray);
+			p_receiveArray[1] = p_receiveArray[2];
+			p_receiveArray[2] = p_receiveArray[3];
+			p_receiveArray[3] = p_receiveArray[4];
+			SendDataBCM(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Owner->m_clientID, SendType::True, p_receiveArray);
 		}
 	}
 }

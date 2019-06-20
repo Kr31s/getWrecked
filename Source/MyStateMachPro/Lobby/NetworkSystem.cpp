@@ -205,10 +205,13 @@ void NetworkSystem::LeaveRoom()
 void NetworkSystem::ElementChanged(int& slot1Pos, int& slot2Pos, bool& ready)
 {
 	sendArray[0] = 6;
-	sendArray[1] = myRoomID;
-	sendArray[2] = slot1Pos;
-	sendArray[3] = slot2Pos;
-	sendArray[4] = ready;
+	sendArray[1] = 0;
+	UE_LOG(LogTemp, Warning, TEXT("%d"), (int)myRoomID);
+
+	sendArray[2] = myRoomID;
+	sendArray[3] = slot1Pos;
+	sendArray[4] = slot2Pos;
+	sendArray[5] = ready;
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
@@ -292,15 +295,7 @@ void NetworkSystem::Hearthbeat(char* p_receiveArray)
 }
 void NetworkSystem::ElementUpdate(char* p_receiveArray)
 {
-	sendArray[0] = identifier;
-	sendArray[1] = p_receiveArray[1] << 6;
-	sendArray[1] = sendArray[1] >> 6;
-	sendArray[2] = p_receiveArray[1] << 4;
-	sendArray[2] = sendArray[2] >> 6;
-	sendArray[3] = p_receiveArray[1] << 3;
-	sendArray[3] = sendArray[3] >> 7;
-
-	UMyUserWidget::myUserWidget->UpdateLobbyValues(roomOwner, (int)sendArray[1], (int)sendArray[2], (bool)sendArray[3]);
+	UMyUserWidget::myUserWidget->UpdateLobbyValues(roomOwner, (int)p_receiveArray[2], (int)p_receiveArray[3], (bool)p_receiveArray[4]);
 	SendReceiveMessageClient();
 }
 void NetworkSystem::PauseGameUpdate(unsigned char& status, char* p_receiveArray)
