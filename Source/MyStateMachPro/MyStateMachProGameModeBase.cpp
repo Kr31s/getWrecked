@@ -46,11 +46,11 @@ void AMyStateMachProGameModeBase::StartPlay() {
 
 	player1->Opponent = UGameplayStatics::GetPlayerCharacter(this, 1);
 	player2->Opponent = UGameplayStatics::GetPlayerCharacter(this, 0);
-	UE_LOG(LogTemp, Warning, TEXT("No initial move."));
 
 	player1->isOnLeftSide = true;
 	player2->isOnLeftSide = false;
-	startTimer = 3.0F;
+	startTimer = prepTime;
+	matchStanding = FVector2D(0, 0);
 
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
@@ -91,23 +91,31 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		//player1->K2_DestroyActor();
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
-		player1->RessourceComp->SetHealth(1.0F);
-		player2->RessourceComp->SetHealth(1.0F);
-		player1->RessourceComp->SetStunMeter(0.0F);
-		player2->RessourceComp->SetStunMeter(0.0F);
-		player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
-		player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
+		Standings.player1Score++;
+		++matchStanding.X;
+		setupMatch();
 	}
 	if(player2->RessourceComp->Health <= 0.0F)
 	{
 		//player2->K2_DestroyActor();
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
-		player1->RessourceComp->SetHealth(1.0F);
-		player2->RessourceComp->SetHealth(1.0F);
-		player1->RessourceComp->SetStunMeter(0.0F);
-		player2->RessourceComp->SetStunMeter(0.0F);
-		player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
-		player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
+		Standings.player2Score++;
+		++matchStanding.Y;
+		setupMatch();
 	}
+}
+
+
+void AMyStateMachProGameModeBase::setupMatch()
+{
+	startTimer = prepTime;
+	player1->RessourceComp->SetHealth(1.0F);
+	player2->RessourceComp->SetHealth(1.0F);
+	player1->RessourceComp->SetStunMeter(0.0F);
+	player2->RessourceComp->SetStunMeter(0.0F);
+
+	// position need to be changable values in the engine 
+	player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
+	player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
 }
