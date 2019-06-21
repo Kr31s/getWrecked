@@ -61,6 +61,9 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 	case 2:
 		this->CreateRoomAnswer(status, p_receiveArray);
 		break;
+	case 3:
+		this->LeaveRoomAnswer(status, p_receiveArray);
+		break;
 	case 4:
 		this->OpponentLeftRoom(p_receiveArray);
 		break;
@@ -74,7 +77,6 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 		this->PauseGameUpdate(status, p_receiveArray);
 		break;
 	case 10:
-		this->Hearthbeat(p_receiveArray);
 		break;
 	case 11:
 
@@ -119,6 +121,7 @@ void NetworkSystem::SendReceiveMessageClient()
 {
 	sendArray[0] = identifier;
 	sendArray[1] = 1;
+	sendArray[45] = m_receiveArray[45];
 	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
 	ClearReceiveArray();
 }
@@ -277,6 +280,13 @@ void NetworkSystem::CreateRoomAnswer(unsigned char& status, char* p_receiveArray
 		UMyUserWidget::myUserWidget->CreateRoomMessage((bool)status);
 	}
 }
+void NetworkSystem::LeaveRoomAnswer(unsigned char& status, char* p_receiveArray)
+{
+	if (UMyUserWidget::myUserWidget != NULL)
+	{
+		UMyUserWidget::myUserWidget->LeaveRoomMessage((bool)status);
+	}
+}
 void NetworkSystem::OpponentLeftRoom(char* p_receiveArray)
 {
 	sendArray[0] = identifier;
@@ -286,12 +296,7 @@ void NetworkSystem::OpponentLeftRoom(char* p_receiveArray)
 }
 void NetworkSystem::Hearthbeat(char* p_receiveArray)
 {
-	heartBeatArray[0] = p_receiveArray[45];
-	heartBeatArray[1] = 1;
-	UE_LOG(LogTemp, Warning, TEXT("Heartbeat received"));
-	UE_LOG(LogTemp, Warning, TEXT("%d"), (int)p_receiveArray[45]);
-
-	socketUDP.Send(serverAddress, (char*)heartBeatArray, 46).m_errorCode;
+	SendReceiveMessageClient();
 }
 void NetworkSystem::ElementUpdate(char* p_receiveArray)
 {

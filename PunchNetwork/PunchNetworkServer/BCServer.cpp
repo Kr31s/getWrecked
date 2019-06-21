@@ -114,19 +114,7 @@ void BCServer::SendData(NetAddress & p_netAddress, SendType p_status, char* p_da
 #endif
 }
 
-void BCServer::HeartBeat(NetAddress & p_receiveAddress, char* p_receiveArray)
-{
-	Println("Hearthbeat received");
 
-	if (BCServer::sTheServer->m_messageIDList->find(p_receiveArray[45]) == BCServer::sTheServer->m_messageIDList->end())
-	{
-		Println("Hearthbeat expired");
-		return;
-	}
-
-	m_clientIDList->at(p_receiveArray[2]).m_ping = m_messageIDList->at(p_receiveArray[45]).m_timeStamp - GetTimeInMilli();
-	BCServer::sTheServer->m_messageIDList->at(p_receiveArray[45]).m_finished = true;
-}
 void BCServer::RoomRequest(NetAddress & p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime)
 {
 	Print("Received \"search for room\" request from: ");
@@ -256,11 +244,11 @@ void BCServer::CreateRoom(NetAddress & p_receiveAddress, char* p_receiveArray, u
 }
 void BCServer::LeaveRoom(NetAddress & p_receiveAddress, char* p_receiveArray)
 {
+	SendData(p_receiveAddress, SendType::True, p_receiveArray);
 	m_roomIDList->at((int)p_receiveArray[2]).RemoveRival(p_receiveAddress, p_receiveArray);
 }
 void BCServer::ElementChange(NetAddress & p_receiveAddress, char* p_receiveArray)
 {
-	Println(p_receiveArray[2]);
 	if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).FindClient(p_receiveAddress))
 	{
 		//net address is in room
@@ -273,9 +261,9 @@ void BCServer::ElementChange(NetAddress & p_receiveAddress, char* p_receiveArray
 
 			p_receiveArray[40] = p_receiveArray[2];
 			p_receiveArray[0] = 7;
-			p_receiveArray[1] = p_receiveArray[3];
-			p_receiveArray[2] = p_receiveArray[4];
-			p_receiveArray[3] = p_receiveArray[5];
+			p_receiveArray[1] = p_receiveArray[2];
+			p_receiveArray[2] = p_receiveArray[3];
+			p_receiveArray[3] = p_receiveArray[4];
 			SendDataBCM(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_clientID, SendType::True, p_receiveArray);
 		}
 		else
