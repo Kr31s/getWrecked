@@ -6,8 +6,8 @@
 #include "BCMessage.h"
 
 
-void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime, unsigned int& p_intValue);
 
+void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime, unsigned int& p_intValue);
 
 
 void ServerThread()
@@ -57,6 +57,7 @@ void HeartThread()
 
 	while (BCServer::sTheServer->m_serverRunning)
 	{
+		sMutexClientIDList.lock();
 		for (int i = 0; i < BCServer::sTheServer->m_clientIDList->size(); ++i)
 		{
 			if (BCServer::sTheServer->m_clientIDList->at(i).m_clientStatus != ClientStatus::Offline)
@@ -64,6 +65,7 @@ void HeartThread()
 				BCServer::sTheServer->SendDataBCM(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, SendType::False, heartThreadArray);
 			}
 		}
+		sMutexClientIDList.unlock();
 
 		Println("Sleep 2sec");
 		std::this_thread::sleep_for(std::chrono::milliseconds(2000));

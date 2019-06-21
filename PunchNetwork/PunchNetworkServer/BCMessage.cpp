@@ -43,6 +43,7 @@ void BCMessage::CheckResendMessages(char* p_receiveArray)
 			BCServer::sTheServer->m_messageIDList->erase(i);
 			continue;
 		}
+		sMutexClientIDList.lock();
 		if ((BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_clientStatus != ClientStatus::Offline)
 			&& (GetTimeInMilli() - BCServer::sTheServer->m_messageIDList->at(i).m_timeStamp) > (BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping + (unsigned char)20))
 		{
@@ -56,6 +57,7 @@ void BCMessage::CheckResendMessages(char* p_receiveArray)
 			}
 			BCServer::sTheServer->m_messageIDList->at(i).m_finished = true;
 		}
+		sMutexClientIDList.unlock();
 	}
 }
 
@@ -66,9 +68,11 @@ void BCMessage::GetReplyMessage(unsigned int p_messageID)
 		Println("Reply message number unkown");
 		return;
 	}
+	sMutexClientIDList.lock();
 	BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(p_messageID).m_clientID).resetHeartBeats();
 	BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(p_messageID).m_clientID).m_ping = GetTimeInMilli() - BCServer::sTheServer->m_messageIDList->at(p_messageID).m_timeStamp;
 	Println("New Ping: " << (int)BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(p_messageID).m_clientID).m_ping);
+	sMutexClientIDList.unlock();
 	BCServer::sTheServer->m_messageIDList->at(p_messageID).m_finished = true;
 	Println("Reply message received");
 }
