@@ -79,38 +79,41 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 		{
 			if (Enemy && Owner)
 			{
-				switch (Etype)
+				if (Owner->Opponent == Enemy)
 				{
-				case EBoxType::Block:
-					// FIX COLLIDING WITH SELF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					switch (Etype)
+					{
+					case EBoxType::Block:
+						// FIX COLLIDING WITH SELF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 						Enemy->SetCanBlock(true);
 						GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("BlockBoxCollision"));
-					
-					break;
-				case EBoxType::Hit: // Damage Collider, Place to Apply Damage On the Enemy if isnt Blocking
-					
-						if(Owner->Opponent == Enemy && Owner->canApplyDamage)
+
+						break;
+					case EBoxType::Hit: // Damage Collider, Place to Apply Damage On the Enemy if isnt Blocking
+
+
+						if (!Enemy->bIsBlocking && Owner->canApplyDamage)
 						{
-							if (!Enemy->bIsBlocking)
-							{
-								Enemy->gotHit = true;
-								Enemy->RessourceComp->ReduceHealth(Owner->GetCurrentMove()->DamageValue);
-								Enemy->RessourceComp->IncreaseStunMeter(0.05F);
-								GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
+							Enemy->gotHit = true;
+							Enemy->RessourceComp->ReduceHealth(Owner->GetCurrentMove()->DamageValue);
+							Enemy->RessourceComp->IncreaseStunMeter(0.05F);
+							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
 
-								const FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
-								UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Owner->gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
-							}else
-							{
-								GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EnemyIsBlocking"));
-
-							}
+							const FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
+							UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Owner->gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
 						}
-					break;
-				case EBoxType::Hurt:
-					break;
-				default:
-					break;
+						else
+						{
+							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EnemyIsBlocking"));
+
+						}
+
+						break;
+					case EBoxType::Hurt:
+						break;
+					default:
+						break;
+					}
 				}
 			}
 		}
