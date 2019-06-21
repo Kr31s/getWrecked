@@ -66,6 +66,7 @@ public:
 	void RoomRequestAnswer(unsigned char& status, char* receiveArray);
 	void RoomJoin(char* receiveArray);
 	void CreateRoomAnswer(unsigned char& status, char* receiveArray);
+	void LeaveRoomAnswer(unsigned char& status, char* p_receiveArray);
 	void OpponentLeftRoom(char* receiveArray);
 	void Hearthbeat(char* receiveArray);
 	void ElementUpdate(char* receiveArray);

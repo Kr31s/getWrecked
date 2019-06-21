@@ -51,17 +51,18 @@ void URessourceComponent::IncreaseStunMeter(float value)
 
 }
 
-void URessourceComponent::IncreasePowerMeter(AActor* actor, int32 value)
+void URessourceComponent::IncreasePowerMeter(float value)
 {
-	PowerMeter += value;
+	PowerMeter = FMath::Clamp(PowerMeter+=value, 0.0F, 1.0F);
+	OnPowerMeterChanged.Broadcast(GetOwner(), this->PowerMeter);
 }
 // Called every frame
 void URessourceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if(FMath::FloorToInt(this->GetWorld()->TimeSeconds) % 2 == 0 && StunMeter >= 0.01F){
-		StunMeter -= 0.01F;
-	}
+		if (StunMeter >= 0.01F) {
+			IncreaseStunMeter(-0.0001F);
+		}
 	// ...
 }
 

@@ -109,7 +109,7 @@ void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, uns
 	}
 	else
 	{
-		BCMessage::GetReplyMessage((int)p_receiveArray[0]);
+		BCMessage::GetReplyMessage((int)p_receiveArray[45]);
 	}
 }
 

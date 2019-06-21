@@ -76,6 +76,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		Standings.player1Score++;
 		++matchStanding.X;
 		SetupMatch();
+		DetermineMatchWinner();
 	}
 	if(player2->RessourceComp->Health <= 0.0F)
 	{
@@ -85,6 +86,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		Standings.player2Score++;
 		++matchStanding.Y;
 		SetupMatch();
+		DetermineMatchWinner();
+
 	}
 }
 
