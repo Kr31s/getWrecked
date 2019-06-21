@@ -92,7 +92,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 					case EBoxType::Hit: // Damage Collider, Place to Apply Damage On the Enemy if isnt Blocking
 
 
-						if (!Enemy->bIsBlocking && Owner->canApplyDamage)
+						if (!Enemy->bIsBlocking/* && Owner->canApplyDamage*/)
 						{
 							Enemy->gotHit = true;
 							Enemy->RessourceComp->ReduceHealth(Owner->GetCurrentMove()->DamageValue);
