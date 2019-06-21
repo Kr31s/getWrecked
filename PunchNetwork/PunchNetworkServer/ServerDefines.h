@@ -7,6 +7,8 @@
 #include <thread>
 #include <chrono>
 #include <map>
+#include <mutex>
+
 
 #define DebugModus false;
 
@@ -14,6 +16,10 @@ class BCServer;
 class BCRoom;
 class BCClient;
 class BCMessage;
+
+
+static std::mutex sMutexClientIDList;
+
 
 enum class SendType
 {
