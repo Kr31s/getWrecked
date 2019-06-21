@@ -26,7 +26,6 @@ public:
 	void SendDataBCM(unsigned int clientID, SendType status, char* dataArray);
 	//Only address needed, no controllMessage
 	void SendData(NetAddress& netAddress, SendType status, char* dataArray);
-	void HeartBeat(NetAddress& receiveAddress, char* receiveArray);
 
 	void RoomRequest(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime);
 	void CreateRoom(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime);
