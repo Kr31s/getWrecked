@@ -42,7 +42,7 @@ void UHitBoxIDComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	{
 		for (USceneComponent* collider : ColliderComponents)
 		{
-			Cast<UPrimitiveComponent>(collider)->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			//Cast<UPrimitiveComponent>(collider)->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
 }
