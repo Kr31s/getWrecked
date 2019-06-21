@@ -65,7 +65,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	player1->isStunned = false;
 	player2->isStunned = false;
 	roundTimer -= DeltaSeconds;
-
+	//SetRoundTimer(DeltaSeconds);
 	CheckOnWhichSidePlayerIs();
 	
 	if(player1->RessourceComp->Health <= 0.0F)
@@ -88,6 +88,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		SetupMatch();
 		DetermineMatchWinner();
 
+	}
+	if(roundTimer <= 0.0F)
+	{
+		RoundTimeOver();
 	}
 }
 
@@ -134,7 +138,6 @@ void AMyStateMachProGameModeBase::CheckOnWhichSidePlayerIs()
 
 void AMyStateMachProGameModeBase::DetermineMatchWinner()
 {
-
 	switch (MatchCount)
 	{
 		case EMatcheTypes::BestofOne:
@@ -170,5 +173,32 @@ void AMyStateMachProGameModeBase::DetermineMatchWinner()
 		default:
 				break;
 	}
+}
 
+void AMyStateMachProGameModeBase::SetRoundTimer(float deltaSeconds)
+{
+	//roundTimer -= deltaSeconds;
+	OnTimeChanged.Broadcast(this->roundTimer);
+}
+
+void AMyStateMachProGameModeBase::RoundTimeOver()
+{
+	if(player1->RessourceComp->Health > player2->RessourceComp->Health)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
+		//UGameplayStatics::SetGamePaused(this, true);
+		Standings.player1Score++;
+		++matchStanding.X;
+		SetupMatch();
+		DetermineMatchWinner();
+	}else
+	{
+		//player2->K2_DestroyActor();
+		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
+		//UGameplayStatics::SetGamePaused(this, true);
+		Standings.player2Score++;
+		++matchStanding.Y;
+		SetupMatch();
+		DetermineMatchWinner();
+	}
 }
