@@ -74,17 +74,33 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool isStunned;
 
+	// jump Variables 
 	UPROPERTY()
 		bool jumpInitializeFlag = false;
 
 	UPROPERTY()
-		float timeInJump;
+		float timeInJump;	
+	
+	UPROPERTY(Editanywhere, BlueprintReadWrite)
+		float jumpDuration = 1.0F;
 
-	UPROPERTY()
+	UPROPERTY(Editanywhere, BlueprintReadWrite)
+		float jumpHeight = 275.0F;
+
+	UPROPERTY(Editanywhere, BlueprintReadWrite)
+		float jumpDistance = 275.0F;
+
+	UPROPERTY(Editanywhere, BlueprintReadWrite)
 		bool doJump;
 
 	UPROPERTY()
+		float directionmodifier;
+	
+	UPROPERTY()
 		FVector jumpTargetLocation;
+
+	UPROPERTY()
+		FVector jumpStartLocation;
 
 	UPROPERTY(BlueprintReadOnly)
 		AActor* Opponent;
@@ -212,7 +228,8 @@ private:
 
 	void CrouchValues(bool inCrouch);
 
-	void DiagonalJump(float direction, FVector position, float time, float jumpHeight, float jumpDistance);
+	UFUNCTION(BlueprintCallable)
+	void DiagonalJump(float direction, FVector position, float time, float Height, float Distance);
 	//UPROPERTY(VisibleInstanceOnly)
 	//TArray<USM_InputAtom*> RecievedInputStream;
 };
