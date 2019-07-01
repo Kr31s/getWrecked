@@ -10,6 +10,7 @@
 #include "PlayerComponents/ActorRotationComponent.h"
 #include "PlayerComponents/HBParentComp.h"
 #include <bitset>
+#include <chrono>
 #include "FGDefaultPawn.generated.h"
 
 
@@ -174,7 +175,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 		UBoxComponent* KickR;
 	// Input atoms are removed when they pass this age threshold. All moves must be executed in under this time.
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float InputExpirationTime;
 
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
@@ -236,4 +237,10 @@ private:
 	void DiagonalJump(float direction, FVector position, float time, float Height, float Distance);
 	//UPROPERTY(VisibleInstanceOnly)
 	//TArray<USM_InputAtom*> RecievedInputStream;
+	long long start;
 };
+
+static long long GetTimeInMilli()
+{
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
