@@ -11,10 +11,8 @@ bool NetworkSystem::StartingMessageReceiveThread()
 	return false;
 }
 
-NetworkSystem::NetworkSystem(AMyStateMachProGameModeBase* gameMode)
-{
-	this.gameMode = gamemode;
-}
+NetworkSystem::NetworkSystem(AMyStateMachProGameModeBase* p_gameMode) : m_gameMode{p_gameMode}
+{}
 NetworkSystem::~NetworkSystem()
 {
 }
