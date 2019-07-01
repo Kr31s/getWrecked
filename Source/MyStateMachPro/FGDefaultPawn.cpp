@@ -243,7 +243,10 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 	}
 		this->CrouchValues(isCrouching);
+	if(!bCanBlock)
+	{
 		bIsBlocking = false;
+	}
 		InputStream.Add(InputDirection);
 
 	if(doJump)
@@ -288,8 +291,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			// Remove everything before this, then exit the loop.
 			if (i > 0)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("InputStream[0]: %i"), InputStream[0]);
-				UE_LOG(LogTemp, Warning, TEXT("ButtonCount: %i"), (int32)EFGInputButtons::Count + 1);
+				UE_LOG(LogTemp, Warning, TEXT("InputStream[0]: %i"), InputTimeStamps[0]);
 				InputTimeStamps.RemoveAt(0, i, false);
 				InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
 			}
@@ -302,13 +304,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		UE_LOG(LogTemp, Warning, TEXT("Switching to state %s"), *MoveLinkToFollow.Link->Move->MoveName.ToString());
 		if (MoveLinkToFollow.Link->bClearInput || MoveLinkToFollow.Link->Move->bClearInputOnEntry || CurrentMove->bClearInputOnExit)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Orange, TEXT("MOVE"));
 			InputStream.Reset();
 			InputTimeStamps.Reset();
 		}
 		else if (MoveLinkToFollow.SMR.DataIndex)
 		{
 			//try {
+			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Orange, TEXT("MOVE"));
 
 			// Consume the input we used to get to this move.
 			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);

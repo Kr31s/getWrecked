@@ -67,9 +67,19 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		startTimer -= DeltaSeconds;
 		player1->isStunned = true;
 		player2->isStunned = true;
+		player1->AddMovementInput(player1->GetActorForwardVector(), 0.0F);
+		player2->AddMovementInput(player2->GetActorForwardVector(), 0.0F);
+		player1->doJump = false;
+		player2->doJump = false;
+		player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
+		player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
+		roundTimer = roundTime;
+		player1->SetDirectionInputX(0.0F);
+		player2->SetDirectionInputX(0.0F);
 		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Magenta, FString::SanitizeFloat(startTimer));
 		return;
 	}
+
 	player1->isStunned = false;
 	player2->isStunned = false;
 	//roundTimer -= DeltaSeconds;
