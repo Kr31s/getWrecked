@@ -13,11 +13,16 @@
 #include <bitset>
 #include <map>
 
+
+class AMyStateMachProGameModeBase;
+
 class NetworkSystem
 {
 public:
 	static NetworkSystem* NetSys;
 
+
+	AMyStateMachProGameModeBase* m_gameMode;
 	NetSocketUDP socketUDP;
 	NetAddress serverAddress;
 	FMessageReceiveThread* MessageReceiveThread;
@@ -44,6 +49,8 @@ public:
 
 	NetworkSystem();
 	~NetworkSystem();
+
+	void setGameMode(AMyStateMachProGameModeBase* gameMode);
 
 	void TaskMessageReceiveThread(char* receivearray);
 	//void TaskResendMessageThread(char* receivearray);

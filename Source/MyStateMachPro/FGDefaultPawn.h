@@ -44,6 +44,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Id;
 
+
 	UPROPERTY(EditAnywhere)
 		bool CanMoveInRightDirection;
 
@@ -55,6 +56,9 @@ public:
 
 	UFUNCTION()
 	void SetCanBlock(bool blockState) { this->bCanBlock = blockState; }
+
+	UFUNCTION()
+		void SetDirectionInputX(float value) { this->DirectionInput.X = value; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool bIsBlocking;

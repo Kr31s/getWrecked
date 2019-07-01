@@ -30,9 +30,8 @@ void UMovementRestrictionComponent::BeginPlay()
 
 
 // Called every frame
-void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UMovementRestrictionComponent::TickComponent()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if (Self && Enemy)
 	{
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Self) };
