@@ -22,6 +22,8 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	//MyMainMenu = CreateWidget<UUserWidget>(GetWorld(), wMainMenu);
 
 	//MyMainMenu->AddToViewport();
+	
+	//networkSystem = NetworkSystem(this);
 
 	if (UWorld * World = GetWorld())
 	{

@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "FGDefaultPawn.h"
+#include "Lobby/NetworkSystem.h"
 #include "MyStateMachProGameModeBase.generated.h"
+
 
 /**
  *
@@ -34,6 +36,9 @@ public:
 
 	virtual void StartPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+
+
+	NetworkSystem networkSystem;
 
 	AMyStateMachProGameModeBase();
 	void SpawnSecondPlayer();
