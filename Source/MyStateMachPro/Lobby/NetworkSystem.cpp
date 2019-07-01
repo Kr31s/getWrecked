@@ -11,9 +11,8 @@ bool NetworkSystem::StartingMessageReceiveThread()
 	return false;
 }
 
-NetworkSystem::NetworkSystem()
-{
-}
+NetworkSystem::NetworkSystem(AMyStateMachProGameModeBase* p_gameMode) : m_gameMode{p_gameMode}
+{}
 NetworkSystem::~NetworkSystem()
 {
 }
@@ -79,8 +78,6 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 	case 10:
 		break;
 	case 11:
-
-
 		for (int i = 0; i < 14; ++i)
 		{
 			if (i % 2 == 0)
@@ -224,8 +221,9 @@ void NetworkSystem::PauseGame(bool& stop)
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
-void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
+void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
 {
+
 }
 
 void NetworkSystem::RoomRequestAnswer(unsigned char& status, char* p_receiveArray)
