@@ -44,6 +44,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Id;
 
+
 	UPROPERTY(EditAnywhere)
 		bool CanMoveInRightDirection;
 
