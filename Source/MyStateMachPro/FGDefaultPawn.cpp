@@ -60,9 +60,9 @@ void AFGDefaultPawn::BeginPlay()
 		Element->GetName();
 		//MoveColliderParents[CurrentMove](TEXT("NALP");
 	}
-	if(CurrentMove->GetName() == "NA_LP")
+	if (CurrentMove->GetName() == "NA_LP")
 	{
-		
+
 	}
 
 
@@ -102,6 +102,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+
 	this->SetRotationOfPlayer();
 
 	HandleStun(DeltaSeconds); // player got stunned 
@@ -135,7 +136,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			if (this->isOnLeftSide)
 			{
-				if(bCanBlock)
+				if (bCanBlock)
 				{
 					bIsBlocking = true;
 				}
@@ -151,6 +152,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 			if (CanMoveInLeftDirection && !bIsBlocking) {
 				this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
+				MovementRestrictionComp->TickComponent();
+
 			}
 		}
 		else
@@ -174,7 +177,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionNeutralAtom; // Idle
-			
+
 			isCrouching = false;
 		}
 		else
@@ -198,7 +201,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			{
 				InputDirection = DirectionDownForwardAtom; // Crouch + Forward on LeftSide
 				UE_LOG(LogTemp, Warning, TEXT("i want to crouchForward"));
-			}else
+			}
+			else
 			{
 				if (bCanBlock)
 				{
@@ -218,10 +222,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			}
 			else
 			{
-				if(bCanBlock)
+				if (bCanBlock)
 				{
 					bIsBlocking = true;
-				}else
+				}
+				else
 				{
 					InputDirection = DirectionBackAtom; // Back on RightSide
 				}
@@ -230,6 +235,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 			if (CanMoveInRightDirection && !bIsBlocking) {
 				this->AddMovementInput(this->GetActorForwardVector(), 100.0F);
+				MovementRestrictionComp->TickComponent();
 			}
 		}
 		else
@@ -242,13 +248,14 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			}
 		}
 	}
-		this->CrouchValues(isCrouching);
-		bIsBlocking = false;
-		InputStream.Add(InputDirection);
+	this->CrouchValues(isCrouching);
+	bIsBlocking = false;
+	InputStream.Add(InputDirection);
 
-	if(doJump)
+	if (doJump)
 	{
 		DiagonalJump(DirectionInput.X, this->GetActorLocation(), DeltaSeconds, jumpHeight, jumpDistance);
+		MovementRestrictionComp->TickComponent();
 	}
 	//if (this == Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0))){	}
 	//else{	//InputStream = RecievedInputStream(10);}
@@ -334,7 +341,7 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent * OverlappedComponent, AActor
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
-		
+
 		if (OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
 		{
 			if (this->canApplyDamage)
@@ -394,7 +401,7 @@ void AFGDefaultPawn::ReadXAxis(float Value)
 	// Don't care about clamping. We just need to know negative, zero, or positive.
 	DirectionInput.X = Value;
 
-	if(Value > 0.5)
+	if (Value > 0.5)
 	{
 		SendInputStream.set(11);
 		SendInputStream.reset(10);
@@ -403,7 +410,8 @@ void AFGDefaultPawn::ReadXAxis(float Value)
 	{
 		SendInputStream.set(10);
 		SendInputStream.reset(11);
-	}else
+	}
+	else
 	{
 		SendInputStream.reset(11);
 		SendInputStream.reset(10);
@@ -550,104 +558,103 @@ void AFGDefaultPawn::UseGameCamera()
 	// Try again next frame. Currently, there's no limit to how many times we'll do this.
 	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
 
-/*
- *
-void AFGDefaultPawn::ReadInputstream(unsigned short p_keyInput)
-{
-	std::bitset<12> inputArray(p_keyInput);
-	if (inputArray[0])
+	/*
+	 *
+	void AFGDefaultPawn::ReadInputstream(unsigned short p_keyInput)
 	{
-		this->LeftButtonPressed();
+		std::bitset<12> inputArray(p_keyInput);
+		if (inputArray[0])
+		{
+			this->LeftButtonPressed();
+		}
+		else {
+			this->LeftButtonReleased();
+		}
+		if (inputArray[1])
+		{
+			this->TopButtonPressed();
+		}
+		else {
+			this->TopButtonReleased();
+		}
+		if (inputArray[2])
+		{
+			this->RightButtonPressed();
+		}
+		else {
+			this->RightButtonReleased();
+		}
+		if (inputArray[3])
+		{
+			this->BottomButtonPressed();
+		}
+		else {
+			this->BottomButtonReleased();
+		}
+		if (inputArray[4])
+		{
+			this->BumperLeftPressed();
+		}
+		else {
+			this->BumperLeftReleased();
+		}
+		if (inputArray[5])
+		{
+			this->TriggerLeftPressed();
+		}
+		else {
+			this->TriggerLeftReleased();
+		}
+		if (inputArray[6])
+		{
+			this->BumperRightPressed()
+		}
+		else {
+			this->BumperRightReleased()
+		}
+		if (inputArray[7])
+		{
+			this->TriggerRightPressed()
+		}
+		else {
+			this->TriggerRightReleased()
+		}
+		if (inputArray[8])
+		{
+			this->ReadYAxis(1)
+		}
+		else {
+			this->ReadYAxis(0)
+		}
+		if (inputArray[9])
+		{
+			this->ReadYAxis(-1)
+		}
+		else {
+			this->ReadYAxis(0)
+		}
+		if (inputArray[10])
+		{
+			this->ReadXAxis(1)
+		}
+		else {
+			this->ReadXAxis(0)
+		}
+		if (inputArray[11])
+		{
+			this->ReadXAxis(-1)
+		}
+		else {
+			this->ReadXAxis(0)
+		}
 	}
-	else {
-		this->LeftButtonReleased();
-	}
-	if (inputArray[1])
-	{
-		this->TopButtonPressed();
-	}
-	else {
-		this->TopButtonReleased();
-	}
-	if (inputArray[2])
-	{
-		this->RightButtonPressed();
-	}
-	else {
-		this->RightButtonReleased();
-	}
-	if (inputArray[3])
-	{
-		this->BottomButtonPressed();
-	}
-	else {
-		this->BottomButtonReleased();
-	}
-	if (inputArray[4])
-	{
-		this->BumperLeftPressed();
-	}
-	else {
-		this->BumperLeftReleased();
-	}
-	if (inputArray[5])
-	{
-		this->TriggerLeftPressed();
-	}
-	else {
-		this->TriggerLeftReleased();
-	}
-	if (inputArray[6])
-	{
-		this->BumperRightPressed()
-	}
-	else {
-		this->BumperRightReleased()
-	}
-	if (inputArray[7])
-	{
-		this->TriggerRightPressed()
-	}
-	else {
-		this->TriggerRightReleased()
-	}
-	if (inputArray[8])
-	{
-		this->ReadYAxis(1)
-	}
-	else {
-		this->ReadYAxis(0)
-	}
-	if (inputArray[9])
-	{
-		this->ReadYAxis(-1)
-	}
-	else {
-		this->ReadYAxis(0)
-	}
-	if (inputArray[10])
-	{
-		this->ReadXAxis(1)
-	}
-	else {
-		this->ReadXAxis(0)
-	}
-	if (inputArray[11])
-	{
-		this->ReadXAxis(-1)
-	}
-	else {
-		this->ReadXAxis(0)
-	}
-}
- */
+	 */
 
 }
 
 
 void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time, float Height, float Distance)
 {
-
 	if (gotHit) // jump direction
 	{
 		jumpInitializeFlag = false;
@@ -655,7 +662,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		return;
 	}
 
-	if(!jumpInitializeFlag) // change to while ? 
+	if (!jumpInitializeFlag) // change to while ? 
 	{
 		timeInJump = 0;
 		jumpStartLocation = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
@@ -663,26 +670,31 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 
 		jumpInitializeFlag = true;
 	}
-		if (timeInJump <= jumpDuration)
-		{
-			timeInJump += time;
-			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(timeInJump/jumpDuration));
-			float curveValue = DiagonalCurve->GetFloatValue(timeInJump/jumpDuration);
+	if (timeInJump <= jumpDuration)
+	{
+		timeInJump += time;
+		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(timeInJump / jumpDuration));
+		float curveValue = DiagonalCurve->GetFloatValue(timeInJump / jumpDuration);
 
-			jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
+
+		jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
+
+		if (this->CanMoveInLeftDirection && this->CanMoveInRightDirection) 
+		{
 			this->SetActorLocation(FVector(jumpTargetLocation.X, jumpStartLocation.Y, jumpStartLocation.Z + (jumpHeight * curveValue)));
-		}else
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset"));
-
-			jumpInitializeFlag = false;
-			doJump = false;
-
 		}
-	//timeInJump += time;
+		else 
+		{
+			this->SetActorLocation(FVector(this->GetActorLocation().X, jumpStartLocation.Y, jumpStartLocation.Z + (jumpHeight * curveValue)));
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset"));
 
-
-
+		jumpInitializeFlag = false;
+		doJump = false;
+	}
 }
 
 void AFGDefaultPawn::HandleStun(float deltaSeconds)
@@ -706,14 +718,15 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 
 void AFGDefaultPawn::CrouchValues(bool inCrouch)
 {
-	if(inCrouch)
+	if (inCrouch)
 	{
 		this->GetCapsuleComponent()->SetCapsuleRadius(34.0F, true);
 		this->Crouch();
-	}else
+	}
+	else
 	{
 		this->UnCrouch();
-		GetCapsuleComponent()->SetCapsuleRadius(40.0F,true);
+		GetCapsuleComponent()->SetCapsuleRadius(40.0F, true);
 	}
 }
 
