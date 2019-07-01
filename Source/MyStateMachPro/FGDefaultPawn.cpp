@@ -158,7 +158,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			InputDirection = DirectionUpBackAtom; // Jump + Back
 			if (this->GetMovementComponent()->IsMovingOnGround())
 			{
-				this->GetMovementComponent()->Velocity = (FVector(-600.0F, 0.0F, 600.0F));
+				//this->GetMovementComponent()->Velocity = (FVector(-600.0F, 0.0F, 600.0F));
+				doJump = true;
 			}
 		}
 	} // Neutral Movement
@@ -181,7 +182,12 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 			InputDirection = DirectionUpAtom; // Jump
 			UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
-			this->Jump();
+			//this->Jump();
+			if (this->GetMovementComponent()->IsMovingOnGround())
+			{
+				//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
+				doJump = true;
+			}
 		}
 	}
 	else// Forward Movement
@@ -231,8 +237,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			InputDirection = DirectionUpForwardAtom; // Jump Forward
 			if (this->GetMovementComponent()->IsMovingOnGround())
 			{
-				this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
-
+				//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
+				doJump = true;
 			}
 		}
 	}
@@ -242,7 +248,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 	if(doJump)
 	{
-		DiagonalJump(DirectionInput.X, this->GetActorLocation(), DeltaSeconds, 1000.0F, 1000.0F);
+		DiagonalJump(DirectionInput.X, this->GetActorLocation(), DeltaSeconds, jumpHeight, jumpDistance);
 	}
 	//if (this == Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0))){	}
 	//else{	//InputStream = RecievedInputStream(10);}
@@ -639,38 +645,42 @@ void AFGDefaultPawn::ReadInputstream(unsigned short p_keyInput)
 }
 
 
-void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time, float jumpHeight, float jumpDistance)
+void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time, float Height, float Distance)
 {
-	float directionmodifier = FMath::Sign(direction);
+
+	if (gotHit) // jump direction
+	{
+		jumpInitializeFlag = false;
+		doJump = false;
+		return;
+	}
 
 	if(!jumpInitializeFlag) // change to while ? 
 	{
 		timeInJump = 0;
-		jumpTargetLocation = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
+		jumpStartLocation = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
+		directionmodifier = FMath::Sign(direction);
+
 		jumpInitializeFlag = true;
-	}else
-	{
-		if (timeInJump < 1.0)
+	}
+		if (timeInJump <= jumpDuration)
 		{
 			timeInJump += time;
-			float curveValue = DiagonalCurve->GetFloatValue(timeInJump);
+			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(timeInJump/jumpDuration));
+			float curveValue = DiagonalCurve->GetFloatValue(timeInJump/jumpDuration);
 
-			this->SetActorLocation(FVector(jumpTargetLocation.X + (directionmodifier*jumpDistance * curveValue), jumpTargetLocation.Y, jumpTargetLocation.Z + (jumpHeight * curveValue)));
+			jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
+			this->SetActorLocation(FVector(jumpTargetLocation.X, jumpStartLocation.Y, jumpStartLocation.Z + (jumpHeight * curveValue)));
 		}else
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset"));
+
 			jumpInitializeFlag = false;
+			doJump = false;
 
 		}
-	}
-	timeInJump += time;
+	//timeInJump += time;
 
-	if(direction < 0) // jump direction
-	{
-		
-	}else
-	{
-		
-	}
 
 
 }

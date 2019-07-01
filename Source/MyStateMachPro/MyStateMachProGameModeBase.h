@@ -85,4 +85,15 @@ public:
 		void DetermineMatchWinner();
 
 	matchStats Standings;
+
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTimeChangedSignature, float, newTime);
+	UPROPERTY(BlueprintAssignable)
+		FOnTimeChangedSignature OnTimeChanged;
+
+	UFUNCTION()
+	void SetRoundTimer(float deltaSeconds);
+
+	UFUNCTION()
+		void RoundTimeOver();
 };

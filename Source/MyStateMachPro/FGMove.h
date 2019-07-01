@@ -79,6 +79,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		float StunValue = 0.0F;
 
+	UPROPERTY(EditAnywhere)
+		float PowerMeterRaiseValue = 0.0F;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		EMoveType Movetype;
 

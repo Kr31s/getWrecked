@@ -18,10 +18,12 @@ public:
 
 
 	const float GetHealth() { return Health; }
-	void SetHealth(float health) { this->Health = health; }
+	void SetHealth(float health) { this->Health = health; OnHealthChanged.Broadcast(GetOwner(), this->Health);
+	}
  
 	const float GetStunMeter() { return StunMeter; }
-	void SetStunMeter(float stunMeter) { this->StunMeter = stunMeter; }	
+	void SetStunMeter(float stunMeter) { this->StunMeter = stunMeter; OnStunMeterChanged.Broadcast(GetOwner(), this->StunMeter);
+	}
 	
 	const float GetPowerMeter() { return PowerMeter; }
 	void SetPowerMeter(float powerMeter) { this->PowerMeter= powerMeter; }

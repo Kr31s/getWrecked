@@ -30,6 +30,12 @@ public:
 		float MaxDistanceFromMiddle;
 
 	UPROPERTY(EditAnywhere)
+		float LeftMapEnd = -900.0F;
+
+	UPROPERTY(EditAnywhere)
+		float RightMapEnd = 900.0F;
+
+	UPROPERTY(EditAnywhere)
 		float YValueForPlayer;
 protected:
 	// Called when the game starts

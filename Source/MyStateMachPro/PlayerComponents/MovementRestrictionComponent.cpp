@@ -40,8 +40,7 @@ void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick Ti
 		FVector P2L = Enemy->GetActorLocation();
 		float playerDistance = Self->GetDistanceTo(Enemy);
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Green, FString::SanitizeFloat(playerDistance));
-
-
+		FMath::Clamp(P1L.X, -300.0F, 300.0F);
 		if (P1L.X < P2L.X && playerDistance >= MaxDistanceFromMiddle) {
 			float LeftEdge = ((P1L.X + P2L.X) * 0.5F) - ((MaxDistanceFromMiddle) / 2);
 			pAsPawn->CanMoveInLeftDirection = false;
@@ -69,6 +68,7 @@ void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick Ti
 		{
 			Self->SetActorLocation(FVector(Self->GetActorLocation().X, 0.0F, Self->GetActorLocation().Z));
 		}
+		Self->SetActorLocation(FVector(FMath::Clamp(Self->GetActorLocation().X, LeftMapEnd, RightMapEnd), Self->GetActorLocation().Y, Self->GetActorLocation().Z));
 	}
 	
 	

@@ -64,8 +64,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	}
 	player1->isStunned = false;
 	player2->isStunned = false;
-	roundTimer -= DeltaSeconds;
-
+	//roundTimer -= DeltaSeconds;
+	SetRoundTimer(DeltaSeconds);
 	CheckOnWhichSidePlayerIs();
 	
 	if(player1->RessourceComp->Health <= 0.0F)
@@ -89,6 +89,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		DetermineMatchWinner();
 
 	}
+	if(roundTimer <= 0.0F)
+	{
+		RoundTimeOver();
+	}
 }
 
 
@@ -100,7 +104,13 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	player2->RessourceComp->SetHealth(1.0F);
 	player1->RessourceComp->SetStunMeter(0.0F);
 	player2->RessourceComp->SetStunMeter(0.0F);
-
+	//Reset UI Healthbar
+//	player1->RessourceComp->OnHealthChanged.Broadcast(player1, player1->RessourceComp->Health);
+//	player2->RessourceComp->OnHealthChanged.Broadcast(player2, player2->RessourceComp->Health);
+//
+//	//Reset UI StunBar
+//	player1->RessourceComp->OnStunMeterChanged.Broadcast(player1, player1->RessourceComp->StunMeter);
+//	player2->RessourceComp->OnStunMeterChanged.Broadcast(player2, player2->RessourceComp->StunMeter);
 	// position need to be changable values in the engine 
 	player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
 	player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
@@ -134,7 +144,6 @@ void AMyStateMachProGameModeBase::CheckOnWhichSidePlayerIs()
 
 void AMyStateMachProGameModeBase::DetermineMatchWinner()
 {
-
 	switch (MatchCount)
 	{
 		case EMatcheTypes::BestofOne:
@@ -170,5 +179,32 @@ void AMyStateMachProGameModeBase::DetermineMatchWinner()
 		default:
 				break;
 	}
+}
 
+void AMyStateMachProGameModeBase::SetRoundTimer(float deltaSeconds)
+{
+	roundTimer -= deltaSeconds;
+	OnTimeChanged.Broadcast(this->roundTimer);
+}
+
+void AMyStateMachProGameModeBase::RoundTimeOver()
+{
+	if(player1->RessourceComp->Health > player2->RessourceComp->Health)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
+		//UGameplayStatics::SetGamePaused(this, true);
+		Standings.player1Score++;
+		++matchStanding.X;
+		SetupMatch();
+		DetermineMatchWinner();
+	}else
+	{
+		//player2->K2_DestroyActor();
+		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
+		//UGameplayStatics::SetGamePaused(this, true);
+		Standings.player2Score++;
+		++matchStanding.Y;
+		SetupMatch();
+		DetermineMatchWinner();
+	}
 }
