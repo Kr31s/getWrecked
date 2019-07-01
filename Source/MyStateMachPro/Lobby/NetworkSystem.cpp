@@ -1,21 +1,28 @@
 #include "NetworkSystem.h"
 #include "MyUserWidget.h"
+#include "MyStateMachProGameModeBase.h"
+
 #include <array>
 
 NetworkSystem* NetworkSystem::NetSys = NULL;
 
-bool NetworkSystem::StartingMessageReceiveThread()
-{
+bool NetworkSystem::StartingMessageReceiveThread(){
 	MessageReceiveThread = FMessageReceiveThread::InitThread(&socketUDP, m_receiveArray);
 
 	return false;
 }
 
-NetworkSystem::NetworkSystem(AMyStateMachProGameModeBase* p_gameMode) : m_gameMode{p_gameMode}
-{}
-NetworkSystem::~NetworkSystem()
+
+NetworkSystem::NetworkSystem()
 {
+	
 }
+
+void NetworkSystem::setGameMode(AMyStateMachProGameModeBase* p_gameMode)
+{
+	m_gameMode = p_gameMode;
+}
+
 bool NetworkSystem::InitNetSystem()
 {
 	this->serverAddress = NetAddress(127, 0, 0, 1, 4405);

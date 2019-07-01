@@ -34,7 +34,11 @@ bool UMyUserWidget::LeaveRoom()
 bool  UMyUserWidget::CreateClient()
 {
 	UMyUserWidget::myUserWidget = this;
-	NetworkSystem::NetSys = new NetworkSystem();
+
+	if (NetworkSystem::NetSys == nullptr) {
+		NetworkSystem::NetSys = new NetworkSystem();
+	}
+
 	UE_LOG(LogTemp, Warning, TEXT("CreateClient"));
 
 	return NetworkSystem::NetSys->InitNetSystem();

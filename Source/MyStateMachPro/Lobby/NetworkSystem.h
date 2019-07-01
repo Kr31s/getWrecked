@@ -10,9 +10,11 @@
 #include "MessageReceiveThread.h"
 #include "ResendMessageThread.h"
 #include "../../../Plugins/StateMachine/Source/StateMachine/Classes/SM_State.h"
-#include "MyStateMachProGameModeBase.h"
 #include <bitset>
 #include <map>
+
+
+class AMyStateMachProGameModeBase;
 
 class NetworkSystem
 {
@@ -20,7 +22,7 @@ public:
 	static NetworkSystem* NetSys;
 
 
-	AMyStateMachProGameModeBase* gameMode;
+	AMyStateMachProGameModeBase* m_gameMode;
 	NetSocketUDP socketUDP;
 	NetAddress serverAddress;
 	FMessageReceiveThread* MessageReceiveThread;
@@ -45,8 +47,10 @@ public:
 	bool StartingMessageReceiveThread();
 	//bool StartingResendMessageThread();
 
-	NetworkSystem(AMyStateMachProGameModeBase* gameMode);
+	NetworkSystem();
 	~NetworkSystem();
+
+	void setGameMode(AMyStateMachProGameModeBase* gameMode);
 
 	void TaskMessageReceiveThread(char* receivearray);
 	//void TaskResendMessageThread(char* receivearray);

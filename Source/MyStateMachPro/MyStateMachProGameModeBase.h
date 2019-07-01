@@ -38,8 +38,6 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 
-	NetworkSystem networkSystem;
-
 	AMyStateMachProGameModeBase();
 	void SpawnSecondPlayer();
 

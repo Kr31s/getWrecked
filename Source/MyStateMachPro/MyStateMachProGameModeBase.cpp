@@ -11,10 +11,16 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	roundTimer = roundTime;
+	if(NetworkSystem::NetSys != nullptr)
+	{
+		NetworkSystem::NetSys->setGameMode(this);
+	}
+	
 	//startTimer = 3.0F;
 	MatchCount = EMatcheTypes::BestofOne;
 
 }
+
 
 void AMyStateMachProGameModeBase::StartPlay() {
 
