@@ -287,7 +287,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
 	InputTimeStamps.Add(CurrentTime);
 
-	// Prune penis old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
+	// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
 	for (int32 i = 0; i < InputStream.Num(); ++i)
 	{
 		if ((InputTimeStamps[i] + InputExpirationTime) >= CurrentTime)
@@ -295,6 +295,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			// Remove everything before this, then exit the loop.
 			if (i > 0)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("InputStream[0]: %i"), InputStream[0]);
+				UE_LOG(LogTemp, Warning, TEXT("ButtonCount: %i"), (int32)EFGInputButtons::Count + 1);
 				InputTimeStamps.RemoveAt(0, i, false);
 				InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
 			}
@@ -307,6 +309,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		UE_LOG(LogTemp, Warning, TEXT("Switching to state %s"), *MoveLinkToFollow.Link->Move->MoveName.ToString());
 		if (MoveLinkToFollow.Link->bClearInput || MoveLinkToFollow.Link->Move->bClearInputOnEntry || CurrentMove->bClearInputOnExit)
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Orange, TEXT("MOVE"));
 			InputStream.Reset();
 			InputTimeStamps.Reset();
 		}
