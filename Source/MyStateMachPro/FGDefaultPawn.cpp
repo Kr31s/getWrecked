@@ -159,7 +159,15 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else
 		{
-			InputDirection = DirectionUpBackAtom; // Jump + Back
+			if (this->isOnLeftSide)
+			{
+				InputDirection = DirectionUpBackAtom; // Jump + Back
+			}
+			else
+			{
+				InputDirection = DirectionUpForwardAtom; // Jump Forward
+
+			}
 			if (this->GetMovementComponent()->IsMovingOnGround())
 			{
 				//this->GetMovementComponent()->Velocity = (FVector(-600.0F, 0.0F, 600.0F));
@@ -241,7 +249,14 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else
 		{
-			InputDirection = DirectionUpForwardAtom; // Jump Forward
+			if (this->isOnLeftSide)
+			{
+				InputDirection = DirectionUpForwardAtom; // Jump Forward
+			}
+			else
+			{
+				InputDirection = DirectionUpBackAtom; // Jump Back
+			}
 			if (this->GetMovementComponent()->IsMovingOnGround())
 			{
 				//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
