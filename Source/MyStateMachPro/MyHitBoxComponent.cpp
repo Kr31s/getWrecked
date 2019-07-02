@@ -71,6 +71,11 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 {
 	auto* targetCollider = Cast<UMyHitBoxComponent>(OtherComp);
 	Owner = Cast<AFGDefaultPawn>(OverlappedComponent->GetOwner()->GetAttachParentActor());
+	if(!Owner)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HaveNoOwner"));
+
+	}
 	//
 	if (targetCollider) // Check for Valid Cast to UMyHitBoxComponent
 	{
