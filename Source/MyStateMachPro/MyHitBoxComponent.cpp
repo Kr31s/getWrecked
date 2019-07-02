@@ -70,7 +70,17 @@ void UMyHitBoxComponent::PostEditChangeProperty(struct FPropertyChangedEvent& Pr
 void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	auto* targetCollider = Cast<UMyHitBoxComponent>(OtherComp);
-	Owner = Cast<AFGDefaultPawn>(OverlappedComponent->GetOwner()->GetAttachParentActor());
+	if(Cast<AFGDefaultPawn>(OverlappedComponent->GetOwner()->GetAttachParentActor()))
+	{
+		Owner = Cast<AFGDefaultPawn>(OverlappedComponent->GetOwner()->GetAttachParentActor());
+
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, Owner->GetName());
+
+	}else
+	{
+		
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, Owner->GetName());
+	}
 	//
 	if (targetCollider) // Check for Valid Cast to UMyHitBoxComponent
 	{

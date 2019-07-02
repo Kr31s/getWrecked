@@ -62,15 +62,19 @@ void UMovementRestrictionComponent::TickComponent()
 			pAsPawn->CanMoveInRightDirection = true;
 
 		}
-		
-		if(Self->GetActorLocation().Y != 0.0F)
-		{
-			Self->SetActorLocation(FVector(Self->GetActorLocation().X, 0.0F, Self->GetActorLocation().Z));
-		}
-		Self->SetActorLocation(FVector(FMath::Clamp(Self->GetActorLocation().X, LeftMapEnd, RightMapEnd), Self->GetActorLocation().Y, Self->GetActorLocation().Z));
+	
 	}
 	
 	
 	// ...
+}
+
+void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
+{
+	if(Self && Enemy)
+	{
+		Self->SetActorLocation(FVector(FMath::Clamp(Self->GetActorLocation().X, LeftMapEnd, RightMapEnd), 0.0F, Self->GetActorLocation().Z));
+	}
 }
 

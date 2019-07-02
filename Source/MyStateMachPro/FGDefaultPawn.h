@@ -84,6 +84,9 @@ public:
 		bool jumpInitializeFlag = false;
 
 	UPROPERTY()
+		bool bCollisionWithOppenent;
+
+	UPROPERTY()
 		float timeInJump;	
 	
 	UPROPERTY(Editanywhere, BlueprintReadWrite)
@@ -131,6 +134,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		UFGMove* GetCurrentMove();
 
+	UFUNCTION()
+		void SetRotationOfPlayer();
+
 	void MoveColliderSwitch();
 	//UFUNCTION()
 	//	void ReadInputstream();
@@ -166,14 +172,16 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UFGMove* CurrentMove;
 
-	UPROPERTY(VisibleAnywhere)
-		UBoxComponent* PunchL;	
-	UPROPERTY(VisibleAnywhere)
-		UBoxComponent* PunchR;	
-	UPROPERTY(VisibleAnywhere)
-		UBoxComponent* KickL;	
-	UPROPERTY(VisibleAnywhere)
-		UBoxComponent* KickR;
+	//UPROPERTY(VisibleAnywhere)
+	//	UBoxComponent* PunchL;	
+	//UPROPERTY(VisibleAnywhere)
+	//	UBoxComponent* PunchR;	
+	//UPROPERTY(VisibleAnywhere)
+	//	UBoxComponent* KickL;	
+	//UPROPERTY(VisibleAnywhere)
+	//	UBoxComponent* KickR;
+
+
 	// Input atoms are removed when they pass this age threshold. All moves must be executed in under this time.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float InputExpirationTime;
@@ -216,7 +224,8 @@ protected:
 		void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-		void SetRotationOfPlayer();
+		void ExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 
 private:
 	//~ This array relates to InputStream. InputStream must not be updated without this stream being updated as well.
