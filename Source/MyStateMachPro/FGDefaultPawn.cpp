@@ -22,7 +22,7 @@ AFGDefaultPawn::AFGDefaultPawn()
 	MovementRestrictionComp = CreateDefaultSubobject<UMovementRestrictionComponent>(TEXT("MovementRestrictionComp"));//NewObject<UActorComponent>(this, "RessourceComp");
 	PlayerRotationComp = CreateDefaultSubobject<UActorRotationComponent>(TEXT("PlayerRotationComp"));//NewObject<UActorComponent>(this, "RessourceComp");
 
-	PunchL = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchL"), true);
+	/*PunchL = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchL"), true);
 	PunchR = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchR"), true);
 	KickL = CreateDefaultSubobject<UBoxComponent>(TEXT("KickL"), true);
 	KickR = CreateDefaultSubobject<UBoxComponent>(TEXT("KickR"), true);
@@ -38,6 +38,7 @@ AFGDefaultPawn::AFGDefaultPawn()
 	PunchR->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
 	KickL->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
 	KickR->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
+	*/
 }
 
 void AFGDefaultPawn::BeginPlay()
@@ -45,13 +46,14 @@ void AFGDefaultPawn::BeginPlay()
 	Super::BeginPlay();
 	AMyStateMachProGameModeBase* GM = Cast<AMyStateMachProGameModeBase>(UGameplayStatics::GetGameMode(this));
 
-
 	CanMoveInLeftDirection = true;
 	CanMoveInRightDirection = true;
-	PunchR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
-	PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
-	KickL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
-	KickR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	//PunchR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	//PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	//KickL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	//KickR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	this->GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	//this->GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AFGDefaultPawn::ExitOverlap);
 
 	this->GetAllChildActors(ColliderParentsArray, false);
 	for (AActor* Element : ColliderParentsArray)
@@ -102,10 +104,10 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 
-	this->SetRotationOfPlayer();
 
 	HandleStun(DeltaSeconds); // player got stunned
 	// Process input
+	this->SetRotationOfPlayer();
 
 	// Add one atom for stick direction
 	const float DirectionThreshold = 0.5f;
@@ -346,22 +348,22 @@ void AFGDefaultPawn::OnOverlap(UPrimitiveComponent * OverlappedComponent, AActor
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
+		bCollisionWithOppenent = true;
+		GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Orange, TEXT("ColBEGIN"));
 
-		if (OtherComp->GetCollisionProfileName() == pAsPawn->GetCapsuleComponent()->GetCollisionProfileName())
-		{
-			if (this->canApplyDamage)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Collision is Happening"));
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Orange, TEXT("ColBEGIN"));
 
-				//pAsPawn->gotHit = true;
-				//pAsPawn->RessourceComp->ReduceHealth(CurrentMove->DamageValue);
-				//pAsPawn->RessourceComp->IncreaseStunMeter(0.05F);
-				////pAsPawn->gotHit = false;
-				//FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
-				//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
 
-			}
-		}
+}
+
+
+void AFGDefaultPawn::ExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor == Opponent) {
+		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
+		bCollisionWithOppenent = false;
+		GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Orange, TEXT("ColEND"));
 	}
 
 }
@@ -679,7 +681,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 	if (timeInJump <= jumpDuration)
 	{
 		timeInJump += time;
-		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(timeInJump / jumpDuration));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(timeInJump / jumpDuration));
 		float curveValue = DiagonalCurve->GetFloatValue(timeInJump / jumpDuration);
 
 
@@ -687,16 +689,16 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 
 		if (this->CanMoveInLeftDirection && this->CanMoveInRightDirection)
 		{
-			this->SetActorLocation(FVector(jumpTargetLocation.X, jumpStartLocation.Y, jumpStartLocation.Z + (jumpHeight * curveValue)));
+			this->SetActorLocation(FVector(jumpTargetLocation.X, 0.0F, jumpStartLocation.Z + (jumpHeight * curveValue)));
 		}
 		else
 		{
-			this->SetActorLocation(FVector(this->GetActorLocation().X, jumpStartLocation.Y, jumpStartLocation.Z + (jumpHeight * curveValue)));
+			this->SetActorLocation(FVector(this->GetActorLocation().X, 0.0F, jumpStartLocation.Z + (jumpHeight * curveValue)));
 		}
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset"));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset"));
 
 		jumpInitializeFlag = false;
 		doJump = false;

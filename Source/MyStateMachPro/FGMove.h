@@ -73,7 +73,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	uint32 bClearInputOnExit : 1;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		float DamageValue = 0.0F;
 
 	UPROPERTY(EditAnywhere)
