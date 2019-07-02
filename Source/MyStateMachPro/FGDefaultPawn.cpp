@@ -14,7 +14,6 @@
 AFGDefaultPawn::AFGDefaultPawn()
 {
 	// This is ridiculously long, but we ll use it to make a point.
-	InputExpirationTime = 0.75f;
 	stunTimer = 0.0F;
 
 	//MovementComponent = CreateDefaultSubobject<UPawnMovementComponent>(ADefaultPawn::MovementComponentName);
@@ -298,7 +297,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			// Remove everything before this, then exit the loop.
 			if (i > 0)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("InputStream[0]: %i"), InputTimeStamps[0]);
 				InputTimeStamps.RemoveAt(0, i, false);
 				InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
 			}
@@ -334,6 +332,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		CurrentMove = MoveLinkToFollow.Link->Move;
 		TimeInCurrentMove = 0.0f;
 		DoMove(CurrentMove);
+		start -= GetTimeInMilli();
+		UE_LOG(LogTemp, Warning, TEXT("%lld"), start);
 	}
 	else
 	{
@@ -448,6 +448,7 @@ void AFGDefaultPawn::ReadYAxis(float Value)
 void AFGDefaultPawn::LeftButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::LeftFace);
+	start = GetTimeInMilli();
 	SendInputStream.set(0);
 }
 
