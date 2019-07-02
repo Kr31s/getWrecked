@@ -1,22 +1,28 @@
 #include "NetworkSystem.h"
 #include "MyUserWidget.h"
+#include "MyStateMachProGameModeBase.h"
+
 #include <array>
 
 NetworkSystem* NetworkSystem::NetSys = NULL;
 
-bool NetworkSystem::StartingMessageReceiveThread()
-{
+bool NetworkSystem::StartingMessageReceiveThread(){
 	MessageReceiveThread = FMessageReceiveThread::InitThread(&socketUDP, m_receiveArray);
 
 	return false;
 }
 
+
 NetworkSystem::NetworkSystem()
 {
+	
 }
-NetworkSystem::~NetworkSystem()
+
+void NetworkSystem::setGameMode(AMyStateMachProGameModeBase* p_gameMode)
 {
+	m_gameMode = p_gameMode;
 }
+
 bool NetworkSystem::InitNetSystem()
 {
 	this->serverAddress = NetAddress(127, 0, 0, 1, 4405);
@@ -79,8 +85,6 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 	case 10:
 		break;
 	case 11:
-
-
 		for (int i = 0; i < 14; ++i)
 		{
 			if (i % 2 == 0)
@@ -224,8 +228,9 @@ void NetworkSystem::PauseGame(bool& stop)
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
-void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
+void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
 {
+
 }
 
 void NetworkSystem::RoomRequestAnswer(unsigned char& status, char* p_receiveArray)
