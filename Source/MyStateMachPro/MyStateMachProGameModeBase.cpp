@@ -73,6 +73,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player2->doJump = false;
 		player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
 		player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
+		player1->isOnLeftSide = true;
+		player2->isOnLeftSide = false;
+		//player1->GetMesh()->SetRelativeScale3D(FVector(1.0F, -1.0F, 1.0F));
+		//player2->GetMesh()->SetRelativeScale3D(FVector(1.0F, 1.0F, 1.0F));
 		roundTimer = roundTime;
 		player1->SetDirectionInputX(0.0F);
 		player2->SetDirectionInputX(0.0F);

@@ -40,12 +40,12 @@ public:
 	void CollisionEndEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	                       int32 OtherBodyIndex);
 
-private:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 		AFGDefaultPawn* Owner;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 		AFGDefaultPawn* Enemy;
+private:
 
 #if WITH_EDITOR
 

@@ -45,5 +45,5 @@ public:
 	// Called every frame
 	void TickComponent();
 
-		
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };
