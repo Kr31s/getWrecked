@@ -117,6 +117,10 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 					case EBoxType::Block:
 						// FIX COLLIDING WITH SELF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 						Enemy->SetCanBlock(true);
+
+						//if(this->GetOwner()->GetAttachParentActor() != Owner){						}
+
+
 						//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("BlockBoxCollision"));
 
 						break;
@@ -146,17 +150,20 @@ void UMyHitBoxComponent::CollisionEndEvent(UPrimitiveComponent* OverlappedCompon
 
 			if (Enemy && Owner)
 			{
-				switch (Etype)
+				if (Owner->Opponent == Enemy) // check if atk collider owner opponent is, targeted collider owner 
 				{
-				case EBoxType::Block:
+					switch (Etype)
+					{
+					case EBoxType::Block:
 						Enemy->SetCanBlock(false);
 						GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EndOverlapCollision"));
-					break;
+						break;
 
-				case EBoxType::Hurt:
-					break;
-				default:
-					break;
+					case EBoxType::Hurt:
+						break;
+					default:
+						break;
+					}
 				}
 
 			}
