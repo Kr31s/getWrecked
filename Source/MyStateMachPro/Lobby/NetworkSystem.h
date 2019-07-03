@@ -20,7 +20,9 @@ struct GameMessageData
 	unsigned short m_time;
 	unsigned short m_input;
 
-	explicit GameMessageData(unsigned short p_time, unsigned short p_input) : m_time{ p_time }, m_input{ p_input }{};
+	GameMessageData(unsigned short p_time, unsigned short p_input) : m_time{ p_time }, m_input{ p_input }{};
+	GameMessageData(GameMessageData&& gmd) : m_time{ gmd.m_time }, m_input{ gmd.m_input }{};
+	
 };
 
 class AMyStateMachProGameModeBase;
