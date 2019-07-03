@@ -6,6 +6,8 @@
 #include "Public/MyCameraActor.h"
 #include "Kismet/GameplayStatics.h"
 
+unsigned int AMyStateMachProGameModeBase::sFrameCounter = 0;
+
 AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -63,6 +65,9 @@ void AMyStateMachProGameModeBase::StartPlay() {
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
+
+	++AMyStateMachProGameModeBase::sFrameCounter;
+
 	if(startTimer >= 0){
 		startTimer -= DeltaSeconds;
 		player1->isStunned = true;

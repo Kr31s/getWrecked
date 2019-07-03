@@ -34,6 +34,8 @@ class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 
 public:
 
+	static unsigned int sFrameCounter;
+
 	virtual void StartPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 

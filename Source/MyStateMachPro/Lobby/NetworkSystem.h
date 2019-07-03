@@ -11,8 +11,17 @@
 #include "ResendMessageThread.h"
 #include "../../../Plugins/StateMachine/Source/StateMachine/Classes/SM_State.h"
 #include <bitset>
+#include <vector>
 #include <map>
 
+
+struct GameMessageData
+{
+	unsigned short m_time;
+	unsigned short m_input;
+
+	explicit GameMessageData(unsigned short p_time, unsigned short p_input) : m_time{ p_time }, m_input{ p_input }{};
+};
 
 class AMyStateMachProGameModeBase;
 
@@ -31,7 +40,6 @@ public:
 	char m_receiveArray[46];
 	char sendArray[46];
 	char heartBeatArray[46];
-	std::map<unsigned int, unsigned short> receivedInputs;
 
 	unsigned char opponentName[20];
 	int myRoomID = -1;
@@ -40,6 +48,8 @@ public:
 	unsigned char status = NULL;
 	unsigned short frameValue = 0;
 	unsigned short inputValue = 0;
+	std::vector<GameMessageData> gameMessagesRivale{9};
+	std::vector<GameMessageData> gameMessagesPlayer{9};
 
 	bool roomOwner;
 
@@ -48,7 +58,7 @@ public:
 	//bool StartingResendMessageThread();
 
 	NetworkSystem();
-	~NetworkSystem();
+	~NetworkSystem() = default;
 
 	void setGameMode(AMyStateMachProGameModeBase* gameMode);
 

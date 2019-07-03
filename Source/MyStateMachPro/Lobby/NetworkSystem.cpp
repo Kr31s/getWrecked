@@ -230,7 +230,7 @@ void NetworkSystem::PauseGame(bool& stop)
 }
 void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
 {
-
+	gameMessagesPlayer.insert(gameMessagesPlayer.begin, GameMessageData(AMyStateMachProGameModeBase::sFrameCounter, (unsigned short)inputStream.to_ulong()));
 }
 
 void NetworkSystem::RoomRequestAnswer(unsigned char& status, char* p_receiveArray)
@@ -313,31 +313,35 @@ void NetworkSystem::PauseGameUpdate(unsigned char& status, char* p_receiveArray)
 }
 void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 {
-	for (int i = 0; i < 14; ++i)
+	unsigned short inputVal;
+	unsigned short timeVal = p_receiveArray[2];
+
+	timeVal |= p_receiveArray[3] >> 8;
+	int i = 0;
+
+	if(timeVal-1 != gameMessagesRivale[0].m_time)
 	{
-		if (i % 2 == 0)
+		for (i = 1; i < 9; ++i)
 		{
-			frameValue = ((short)p_receiveArray[1 + i * 2] << 4);
-			frameValue |= (short)(p_receiveArray[1 + i * 2 + 1] >> 4);
+			timeVal = p_receiveArray[2 + 4* i];
+			timeVal |= p_receiveArray[3 + 4* i] << 8;
 
-			inputValue = (short)(p_receiveArray[1 + i * 2 + 1] << 4);
-			inputValue |= (short)(p_receiveArray[1 + i * 2 + 2]);
-		}
-		else
-		{
-			frameValue = ((short)p_receiveArray[1 + i * 2 + 1] << 4);
-			frameValue |= (short)(p_receiveArray[1 + i * 2 + 2] >> 4);
-
-			inputValue = ((short)p_receiveArray[1 + i * 2 + 2] >> 4);
-			inputValue = inputValue << 4;
-			inputValue |= (short)(p_receiveArray[1 + i * 2 + 3]);
+			if(timeVal - 1 == gameMessagesRivale[0].m_time)
+			{
+				break;
+			}
 		}
 
-		if (receivedInputs.find(frameValue) != receivedInputs.end())
+		for (; i != -1; --i)
 		{
-			receivedInputs.insert({ frameValue, inputValue });
+			timeVal = p_receiveArray[2 + 4 * i];
+			timeVal |= p_receiveArray[3 + 4 * i] << 8;
+
+			inputVal = p_receiveArray[4 + 4 * i];
+			inputVal |= p_receiveArray[5 + 4 * i] << 8;
+
+			gameMessagesRivale.insert(gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
 		}
 	}
 
-	SendReceiveMessageClient();
 }
