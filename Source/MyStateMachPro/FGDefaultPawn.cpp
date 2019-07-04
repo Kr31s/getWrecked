@@ -7,7 +7,6 @@
 #include "FGMoveLink.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Public/MyCameraActor.h"
-#include "Engine/World.h"
 #include "MyStateMachProGameModeBase.h"
 
 
@@ -304,7 +303,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted && GetCharacterMovement()->IsMovingOnGround())
 	{
+
 		UE_LOG(LogTemp, Warning, TEXT("Switching to state %s"), *MoveLinkToFollow.Link->Move->MoveName.ToString());
+		
 		if (MoveLinkToFollow.Link->bClearInput || MoveLinkToFollow.Link->Move->bClearInputOnEntry || CurrentMove->bClearInputOnExit)
 		{
 			InputStream.Reset();
@@ -328,6 +329,12 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 		// Set and start the new move.
 		CurrentMove = MoveLinkToFollow.Link->Move;
+		if(this == UGameplayStatics::GetPlayerCharacter(this, 0))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("CurrentMove: %s"), *CurrentMove->MoveName.ToString());
+			UE_LOG(LogTemp, Warning, TEXT("CurrentMove: %s"), *CurrentMove->GetName());
+		}
+	
 		TimeInCurrentMove = 0.0f;
 		DoMove(CurrentMove);
 	}
