@@ -21,6 +21,11 @@ class MYSTATEMACHPRO_API UMyUserWidget : public UUserWidget
 public:
 	static UMyUserWidget* myUserWidget;
 
+		static bool threadDestroyFlag;
+
+	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
+		bool ActivateThreadDestroyFlag();
+
 	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)

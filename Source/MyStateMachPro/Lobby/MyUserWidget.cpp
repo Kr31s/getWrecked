@@ -5,12 +5,19 @@
 #include "NetworkSystem.h"
 
 UMyUserWidget* UMyUserWidget::myUserWidget = NULL;
-
+bool  UMyUserWidget::threadDestroyFlag = true;
+bool UMyUserWidget::ActivateThreadDestroyFlag()
+{
+	return UMyUserWidget::threadDestroyFlag = false;
+}
 void UMyUserWidget::BeginDestroy()
 {
 	Super::BeginDestroy();
-	FMessageReceiveThread::threadRuning = false;
-	NetworkSystem::NetSys->MessageReceiveThread->Shutdown();
+	UE_LOG(LogTemp, Warning, TEXT("threadDestroyFlag: %s"), (UMyUserWidget::threadDestroyFlag ? TEXT("True") : TEXT("False")));
+
+	if (UMyUserWidget::threadDestroyFlag && NetworkSystem::NetSys != nullptr) {
+		NetworkSystem::NetSys->ShutdownNetwork();
+	}
 }
 
 bool UMyUserWidget::CreateRoom(int p_timeValue, int p_roundValue, const FString& p_Name)

@@ -41,8 +41,8 @@ uint32 FMessageReceiveThread::Run()
 			UE_LOG(LogTemp, Warning, TEXT("Received Data"));
 			NetworkSystem::NetSys->TaskMessageReceiveThread(m_receiveArray);
 		}
+	FPlatformProcess::Sleep(0.0083333);
 	}
-	FPlatformProcess::Sleep(0.03);
 	return 0;
 }
 
