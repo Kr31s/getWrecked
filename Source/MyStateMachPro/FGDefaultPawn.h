@@ -26,6 +26,10 @@ class MYSTATEMACHPRO_API AFGDefaultPawn : public ACharacter
 	GENERATED_BODY()
 	
 public: 
+
+	std::bitset<12> SendInputStream;
+
+
 	AFGDefaultPawn();
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -235,7 +239,6 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<USM_InputAtom*> InputStream;
 
-	std::bitset<12> SendInputStream;
 
 	UFUNCTION()
 		void HandleStun(float deltaSeconds);
