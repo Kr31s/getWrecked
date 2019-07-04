@@ -12,12 +12,9 @@ UMyHitBoxComponent::UMyHitBoxComponent() {
 	this->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	this->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	if(!IsTemplate()) // 
+	if(!IsTemplate()) // IsTemplate avoids calling this code on CDOs (Default Objects)
 	{
-		this->OnComponentBeginOverlap.AddDynamic(this, &UMyHitBoxComponent::CollisionEvent);
-		this->OnComponentEndOverlap.AddDynamic(this, &UMyHitBoxComponent::CollisionEndEvent);
-		TArray<UPrimitiveComponent*> overlaps;
-		GetOverlappingComponents(overlaps);
+		
 	}
 	// PostInitProperties() --> start straight after constructor (CDO?)
 }
@@ -33,6 +30,10 @@ void UMyHitBoxComponent::PostInitProperties()
 	{
 	}
 
+	this->OnComponentBeginOverlap.AddDynamic(this, &UMyHitBoxComponent::CollisionEvent);
+	this->OnComponentEndOverlap.AddDynamic(this, &UMyHitBoxComponent::CollisionEndEvent);
+	TArray<UPrimitiveComponent*> overlaps;
+	GetOverlappingComponents(overlaps);
 }
 
 #if WITH_EDITOR
@@ -66,7 +67,7 @@ void UMyHitBoxComponent::PostEditChangeProperty(struct FPropertyChangedEvent& Pr
 // hit Collision applies damage
 // block Collision --> opponent can block react 
 
-
+#pragma optimize("", off)
 void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	auto* targetCollider = Cast<UMyHitBoxComponent>(OtherComp);
@@ -171,3 +172,4 @@ void UMyHitBoxComponent::CollisionEndEvent(UPrimitiveComponent* OverlappedCompon
 		}
 	}
 }
+#pragma optimize("", on)

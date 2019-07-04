@@ -11,7 +11,9 @@ bool NetworkSystem::StartingMessageReceiveThread(){
 
 	return false;
 }
-
+NetworkSystem::~NetworkSystem() 
+{
+}
 
 NetworkSystem::NetworkSystem()
 {
@@ -105,10 +107,10 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 				inputValue |= (int)(p_receiveArray[1 + i * 2 + 3]);
 			}
 
-			if (receivedInputs.find(frameValue) != receivedInputs.end())
+			/*if (receivedInputs.find(frameValue) != receivedInputs.end())
 			{
 				receivedInputs.insert({ frameValue, inputValue });
-			}
+			}*/
 		}
 
 		SendReceiveMessageClient();
@@ -121,6 +123,14 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 
 }
 
+void NetworkSystem::ShutdownNetwork() 
+{
+	FMessageReceiveThread::threadRuning = false;
+	NetworkSystem::NetSys->MessageReceiveThread->Shutdown();
+	delete(NetworkSystem::NetSys);
+	NetworkSystem::NetSys = nullptr;
+	UE_LOG(LogTemp, Warning, TEXT("Thread Shutdown"));
+}
 void NetworkSystem::SendReceiveMessageClient()
 {
 	sendArray[0] = identifier;
@@ -230,7 +240,13 @@ void NetworkSystem::PauseGame(bool& stop)
 }
 void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
 {
-	gameMessagesPlayer.insert(gameMessagesPlayer.begin, GameMessageData(AMyStateMachProGameModeBase::sFrameCounter, (unsigned short)inputStream.to_ulong()));
+	sendArray[0] = 10;
+	sendArray[1] = myRoomID;
+
+	gameMessagesPlayer.insert(gameMessagesPlayer.begin(), GameMessageData(AMyStateMachProGameModeBase::sFrameCounter, (unsigned short)inputStream.to_ulong()));
+	gameMessagesPlayer.resize(9);
+
+	socketUDP.Send(serverAddress, (char*)sendArray, 50);
 }
 
 void NetworkSystem::RoomRequestAnswer(unsigned char& status, char* p_receiveArray)
@@ -343,5 +359,7 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 			gameMessagesRivale.insert(gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
 		}
 	}
+
+	gameMessagesRivale.resize(9);
 
 }

@@ -52,6 +52,9 @@ public:
 	//Which direction we re describing with this atom.
 	UPROPERTY(EditAnywhere)
 		EFGInputDirections InputDirections;
+
+	UPROPERTY(EditAnywhere)
+		EFGButtonState DirectionButtonState;
 };
 
 UCLASS()

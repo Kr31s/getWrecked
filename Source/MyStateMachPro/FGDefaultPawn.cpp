@@ -16,29 +16,10 @@ AFGDefaultPawn::AFGDefaultPawn()
 	// This is ridiculously long, but we ll use it to make a point.
 	stunTimer = 0.0F;
 
-	//MovementComponent = CreateDefaultSubobject<UPawnMovementComponent>(ADefaultPawn::MovementComponentName);
-	//MovementComponent->UpdatedComponent = GetCollisionComponent();
 	RessourceComp = CreateDefaultSubobject<URessourceComponent>(TEXT("RComp"));//NewObject<UActorComponent>(this, "RessourceComp");
 	MovementRestrictionComp = CreateDefaultSubobject<UMovementRestrictionComponent>(TEXT("MovementRestrictionComp"));//NewObject<UActorComponent>(this, "RessourceComp");
 	PlayerRotationComp = CreateDefaultSubobject<UActorRotationComponent>(TEXT("PlayerRotationComp"));//NewObject<UActorComponent>(this, "RessourceComp");
 
-	/*PunchL = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchL"), true);
-	PunchR = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchR"), true);
-	KickL = CreateDefaultSubobject<UBoxComponent>(TEXT("KickL"), true);
-	KickR = CreateDefaultSubobject<UBoxComponent>(TEXT("KickR"), true);
-
-
-	PunchL->SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));
-	PunchR->SetupAttachment(this->GetMesh(), TEXT("HandRSocket"));
-	KickL->SetupAttachment(this->GetMesh(), TEXT("FootLSocket"));
-	KickR->SetupAttachment(this->GetMesh(), TEXT("FootRSocket"));
-
-	//OnActorBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
-	PunchL->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
-	PunchR->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
-	KickL->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
-	KickR->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
-	*/
 }
 
 void AFGDefaultPawn::BeginPlay()
@@ -48,10 +29,7 @@ void AFGDefaultPawn::BeginPlay()
 
 	CanMoveInLeftDirection = true;
 	CanMoveInRightDirection = true;
-	//PunchR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
-	//PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
-	//KickL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
-	//KickR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+
 	this->GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 	//this->GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AFGDefaultPawn::ExitOverlap);
 
@@ -61,11 +39,6 @@ void AFGDefaultPawn::BeginPlay()
 		Element->GetName();
 		//MoveColliderParents[CurrentMove](TEXT("NALP");
 	}
-	if (CurrentMove->GetName() == "NA_LP")
-	{
-
-	}
-
 
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
@@ -122,6 +95,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
+					//CurrentMove = CrouchBlockMove;
 				}
 				else
 				{
@@ -140,6 +114,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
+					//CurrentMove = BlockMove;
+					InputDirection = DirectionBackAtom; // Back on Leftside
+
 				}
 				else
 				{
@@ -216,6 +193,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
+					//CurrentMove = CrouchBlockMove;
 				}
 				else
 				{
@@ -234,6 +212,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
+					//CurrentMove = BlockMove;
+					InputDirection = DirectionBackAtom; // Back on RightSide
+
 				}
 				else
 				{
@@ -349,8 +330,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		CurrentMove = MoveLinkToFollow.Link->Move;
 		TimeInCurrentMove = 0.0f;
 		DoMove(CurrentMove);
-		start -= GetTimeInMilli();
-		UE_LOG(LogTemp, Warning, TEXT("%lld"), start);
 	}
 	else
 	{
@@ -465,7 +444,6 @@ void AFGDefaultPawn::ReadYAxis(float Value)
 void AFGDefaultPawn::LeftButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::LeftFace);
-	start = GetTimeInMilli();
 	SendInputStream.set(0);
 }
 

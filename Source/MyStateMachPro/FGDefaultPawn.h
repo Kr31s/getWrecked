@@ -26,6 +26,10 @@ class MYSTATEMACHPRO_API AFGDefaultPawn : public ACharacter
 	GENERATED_BODY()
 	
 public: 
+
+	std::bitset<12> SendInputStream;
+
+
 	AFGDefaultPawn();
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -116,8 +120,11 @@ public:
 	UPROPERTY()
 		TArray<AActor*> ColliderParentsArray;
 
-	UPROPERTY(EditAnywhere)
-		TMap<UFGMove*, FString> MoveColliderParents;
+	UPROPERTY(EditAnywhere, Category = "Moves")
+		UFGMove* BlockMove;
+
+	UPROPERTY(EditAnywhere, Category = "Moves")
+		UFGMove* CrouchBlockMove;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		URessourceComponent* RessourceComp;
@@ -169,7 +176,7 @@ protected:
 	float TimeInCurrentMove;
 
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Moves")
 	UFGMove* CurrentMove;
 
 	//UPROPERTY(VisibleAnywhere)
@@ -235,7 +242,6 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<USM_InputAtom*> InputStream;
 
-	std::bitset<12> SendInputStream;
 
 	UFUNCTION()
 		void HandleStun(float deltaSeconds);
