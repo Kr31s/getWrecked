@@ -1,1 +1,5 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.Cpp.Platform.targets(67,5): error MSB8020: Die Buildtools für v142 (Plattformtoolset = "v142") wurden nicht gefunden. Installieren Sie zum Erstellen mithilfe der v142-Buildtools die v142-Buildtools. Alternativ können Sie ein Upgrade auf die aktuellen Visual Studio-Tools durchführen, indem Sie das Menü "Projekt" auswählen oder mit der rechten Maustaste auf die Projektmappe klicken und dann "Projektmappe neu zuweisen" auswählen.
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(411,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (PunchNetwork.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  mainServer.cpp
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20): warning C4305: 'initializing': truncation from 'int' to 'unsigned char'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20): warning C4309: 'initializing': truncation of constant value
+  PunchNetwork.vcxproj -> E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe

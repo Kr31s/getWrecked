@@ -10,5 +10,7 @@ public class MyStateMachProTarget : TargetRules
 		Type = TargetType.Game;
 
 		ExtraModuleNames.AddRange( new string[] { "MyStateMachPro" } );
-	}
+
+        bUseUnityBuild = false;
+    }
 }
