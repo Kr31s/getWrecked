@@ -10,6 +10,21 @@
 #include "MyStateMachProGameModeBase.h"
 
 
+void AFGDefaultPawn::DoMovesFromInputStream(std::bitset<12> inputStream)
+{
+	(inputStream[0]) ? this->LeftButtonPressed() : this->LeftButtonReleased();
+	(inputStream[1]) ? this->TopButtonPressed() : this->TopButtonReleased();
+	(inputStream[2]) ? this->RightButtonPressed() : this->RightButtonReleased();
+	(inputStream[3]) ? this->BottomButtonPressed() : this->BottomButtonReleased();
+	(inputStream[4]) ? this->BumperLeftPressed() : this->BumperLeftReleased();
+	(inputStream[5]) ? this->TriggerLeftPressed() : this->TriggerLeftReleased();
+	(inputStream[6]) ? this->BumperRightPressed() : this->BumperRightReleased();
+	(inputStream[7]) ? this->TriggerRightPressed() : this->TriggerRightReleased();
+
+	(inputStream[8]) ? this->ReadYAxis(1) : (inputStream[9]) ? this->ReadYAxis(-1) : this->ReadYAxis(0);
+	(inputStream[10]) ? this->ReadXAxis(-1) : (inputStream[11]) ? this->ReadXAxis(1) : this->ReadXAxis(0);
+}
+
 AFGDefaultPawn::AFGDefaultPawn()
 {
 	// This is ridiculously long, but we ll use it to make a point.
@@ -244,12 +259,12 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			}
 		}
 	}
-		this->CrouchValues(isCrouching);
-	if(!bCanBlock)
+	this->CrouchValues(isCrouching);
+	if (!bCanBlock)
 	{
 		bIsBlocking = false;
 	}
-		InputStream.Add(InputDirection);
+	InputStream.Add(InputDirection);
 
 	if (doJump)
 	{
@@ -345,7 +360,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 
-void AFGDefaultPawn::OnOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
@@ -388,7 +403,7 @@ void AFGDefaultPawn::SetRotationOfPlayer()
 	}
 }
 
-void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent * InInputComponent)
+void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent)
 {
 	Super::SetupPlayerInputComponent(InInputComponent);
 

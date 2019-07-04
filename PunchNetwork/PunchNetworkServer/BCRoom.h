@@ -8,6 +8,7 @@ public:
 
 	bool m_full = false;
 	unsigned short m_roomID;
+	unsigned int m_currentFrame{ 0 };
 
 	bool m_gamePaused = false;
 

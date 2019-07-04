@@ -84,6 +84,7 @@ void NonServerMessage()
 
 void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime, unsigned int& p_intValue)
 {
+	Print(p_receiveArray[0]);
 	if (p_receiveArray[1] == 0)
 	{
 		switch (MessageOfIndex(p_receiveArray[0]))
