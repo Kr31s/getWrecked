@@ -18,10 +18,15 @@ public:
 
 
 	const float GetHealth() { return Health; }
-	void SetHealth(float health) { this->Health = health; }
+	void SetHealth(float health) { this->Health = health; OnHealthChanged.Broadcast(GetOwner(), this->Health);
+	}
  
 	const float GetStunMeter() { return StunMeter; }
-	void SetStunMeter(float stunMeter) { this->StunMeter = stunMeter; }
+	void SetStunMeter(float stunMeter) { this->StunMeter = stunMeter; OnStunMeterChanged.Broadcast(GetOwner(), this->StunMeter);
+	}
+	
+	const float GetPowerMeter() { return PowerMeter; }
+	void SetPowerMeter(float powerMeter) { this->PowerMeter= powerMeter; }
 
 /*
 	const float GetPowerMeter() { return PowerMeter; }
@@ -33,7 +38,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float StunMeter;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 PowerMeter;
+		float PowerMeter;
 
 	UFUNCTION(BlueprintCallable)
 		void ReduceHealth(float damageValue);
@@ -42,7 +47,7 @@ public:
 		void IncreaseStunMeter(float value);
 
 	UFUNCTION(BlueprintCallable)
-		void IncreasePowerMeter(AActor* actor, int32 value);
+		void IncreasePowerMeter(float value);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSignature,AActor*, target, float, newHealth);
 	UPROPERTY(BlueprintAssignable)
@@ -52,6 +57,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 		FOnStunMeterChangedSignature OnStunMeterChanged;
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPowerMeterChangedSignature, AActor*, target, float, newPowerMeter);
+	UPROPERTY(BlueprintAssignable)
+		FOnPowerMeterChangedSignature OnPowerMeterChanged;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

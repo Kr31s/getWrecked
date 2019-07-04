@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
+#include "FGDefaultPawn.h"
 #include "MyHitBoxComponent.generated.h"
 
 /**
- * 
+ * try to use here forward declaration
  */
 UENUM(BlueprintType)
 enum class EBoxType : uint8 {
@@ -23,21 +24,33 @@ class MYSTATEMACHPRO_API UMyHitBoxComponent : public UBoxComponent
 	
 public:
 	UMyHitBoxComponent();
+	virtual void PostInitProperties() override;
 
 	UPROPERTY(EditAnywhere, Category = "Body")
 		uint8 someValue = 1;
 
-	UPROPERTY(EditAnywhere, Category = "Body")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite , Category = "Body")
 		EBoxType Etype;
 
 
+	UFUNCTION(BlueprintCallable)
+		void CollisionEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION(BlueprintCallable)
+	void CollisionEndEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                       int32 OtherBodyIndex);
+
+	UPROPERTY(BlueprintReadWrite)
+		AFGDefaultPawn* Owner;
+
+	UPROPERTY(BlueprintReadWrite)
+		AFGDefaultPawn* Enemy;
+private:
 
 #if WITH_EDITOR
 
 	virtual void PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent) override;
 #endif
-
 
 
 };

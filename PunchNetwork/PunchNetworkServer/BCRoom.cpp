@@ -4,26 +4,25 @@
 #include "ServerDefines.h"
 
 
-unsigned int BCRoom::totalRoomID = 0;
+unsigned int BCRoom::sTotalRoomID = 0;
 
 BCRoom::BCRoom(BCClient* p_client, unsigned char p_roundState, unsigned char p_timeState)
 {
 	m_Owner = p_client;
 	m_roundState = p_roundState;;
 	m_timeState = p_timeState;;
-	p_client->myRoom = this;
 	//add new room
-	for (int i = 0; i <= BCRoom::totalRoomID; ++i)
+	for (int i = 0; i <= BCRoom::sTotalRoomID; ++i)
 	{
-		if (BCServer::theServer->roomIDList->find(i) == BCServer::theServer->roomIDList->end())
+		if (BCServer::sTheServer->m_roomIDList->find(i) == BCServer::sTheServer->m_roomIDList->end())
 		{
 			m_roomID = i;
-			BCServer::theServer->roomIDList->insert({ i, *this });
-			BCServer::theServer->roomList[p_roundState * 3 + p_timeState].push_back(&BCServer::theServer->roomIDList->at(i));
-
-			if (i == BCRoom::totalRoomID)
+			BCServer::sTheServer->m_roomIDList->insert({ i, *this });
+			p_client->m_myRoom = &BCServer::sTheServer->m_roomIDList->at(i);
+			BCServer::sTheServer->m_roomList[p_roundState * 3 + p_timeState].push_back(&BCServer::sTheServer->m_roomIDList->at(i));
+			if (i == BCRoom::sTotalRoomID)
 			{
-				++BCRoom::totalRoomID;
+				++BCRoom::sTotalRoomID;
 			}
 			break;
 		}
@@ -33,95 +32,69 @@ BCRoom::BCRoom(BCClient* p_client, unsigned char p_roundState, unsigned char p_t
 void BCRoom::AddRival(BCClient* p_client)
 {
 	m_Member = p_client;
-	p_client->myRoom = this;
+	p_client->m_myRoom = this;
 	m_full = true;
 }
 
 void BCRoom::RemoveRival(NetAddress& netAddress, char* p_receiveArray)
 {
-	p_receiveArray[0] = 3 << 1;
-	this;
+	p_receiveArray[0] = 3;
 
-	if (m_Owner->m_netaddress == netAddress)
+	if (this->m_Owner->m_netaddress == netAddress)
 	{
-		if (m_full)
+		if (!m_full)
 		{
-			for (int i = 0; i < BCServer::theServer->roomList[(m_roundState-1) * 3 + (m_timeState-1)].size(); ++i)
-			{
-				if (BCServer::theServer->roomList[(m_roundState - 1) * 3 + (m_timeState - 1)].at(i)->m_roomID == m_roomID)
-				{
-					if(m_Owner != nullptr)
-						BCServer::theServer->SendData(m_Owner->m_netaddress, True, p_receiveArray, 1);
-
-					BCServer::theServer->roomList[(m_roundState - 1) * 3 + (m_timeState - 1)].erase(BCServer::theServer->roomList[(m_roundState - 1) * 3 + (m_timeState - 1)].begin() + i);
-
-					Println("One player left the room with the ID " << m_roomID);
-					Println("The room with the ID " << m_roomID << " was deleted");
-					BCServer::theServer->roomIDList->erase(m_roomID);
-					Println("printing after destroyed");
-					return;
-				}
-			}
+			BCServer::sTheServer->deleteClient(this->m_Owner, p_receiveArray);
+			BCServer::sTheServer->deleteRoom(this, p_receiveArray);
+			return;
 		}
 		else
 		{
 			if (m_Owner != nullptr)
-			BCServer::theServer->SendData(m_Owner->m_netaddress, True, p_receiveArray, 1);
-			p_receiveArray[0] = 4 << 1;
+				BCServer::sTheServer->SendData(m_Owner->m_netaddress, SendType::True, p_receiveArray);
+			p_receiveArray[0] = 4;
 			if (m_Member != nullptr)
-			BCServer::theServer->SendDataBCM(m_Member, True, p_receiveArray, 1);
+				BCServer::sTheServer->SendDataBCM(m_Member->m_clientID, SendType::True, p_receiveArray);
 
+			BCServer::sTheServer->deleteClient(this->m_Owner, p_receiveArray);
 			m_Owner = m_Member;
-			delete(m_Member);
+			m_Member = nullptr;
 			m_full = false;
 			Println("One player left the room with the ID " << m_roomID);
 		}
 		if (m_Owner != nullptr)
-			BCServer::theServer->SendData(m_Owner->m_netaddress, False, p_receiveArray, 1);
+			BCServer::sTheServer->SendData(m_Owner->m_netaddress, SendType::False, p_receiveArray);
 	}
 	else if (m_Member->m_netaddress == netAddress)
 	{
 		if (!m_full)
 		{
-			for (int i = 0; i < BCServer::theServer->roomList[(m_roundState - 1) * 3 + (m_timeState - 1)].size(); ++i)
-			{
-				if (BCServer::theServer->roomList[(m_roundState - 1) * 3 + (m_timeState - 1)].at(i)->m_roomID == m_roomID)
-				{
-					if (m_Member != nullptr)
-						BCServer::theServer->SendData(m_Member->m_netaddress, True, p_receiveArray, 1);
-
-					BCServer::theServer->roomList[(m_roundState - 1) * 3 + (m_timeState - 1)].erase(BCServer::theServer->roomList[(m_roundState - 1) * 3 + (m_timeState - 1)].begin() + i);
-					Println("One player left the room with the ID " << m_roomID);
-					Println("The room with the ID " << m_roomID << " was deleted");
-					BCServer::theServer->roomIDList->erase(m_roomID);
-					Println("printing after destroyed");
-					return;
-				}
-			}
+			Println("ERROR: Menber exist and room is not full")
+			BCServer::sTheServer->deleteClient(this->m_Member, p_receiveArray);
+			BCServer::sTheServer->deleteRoom(this, p_receiveArray);
+			return;
 		}
 		else
 		{
 			if (m_Member != nullptr)
-				BCServer::theServer->SendData(m_Member->m_netaddress, True, p_receiveArray, 1);
-			p_receiveArray[0] = 4 << 1;
+				BCServer::sTheServer->SendData(m_Member->m_netaddress, SendType::True, p_receiveArray);
+			p_receiveArray[0] = 4;
 			if (m_Owner != nullptr)
-				BCServer::theServer->SendDataBCM(m_Owner, True, p_receiveArray, 1);
+				BCServer::sTheServer->SendDataBCM(m_Owner->m_clientID, SendType::True, p_receiveArray);
 
-			delete(m_Member);
+			BCServer::sTheServer->deleteClient(this->m_Member, p_receiveArray);
 			m_full = false;
 			Print("One player left the room with the ID " << m_roomID);
 			return;
 		}
 		if (m_Member != nullptr)
-			BCServer::theServer->SendData(m_Member->m_netaddress, False, p_receiveArray, 1);
+			BCServer::sTheServer->SendData(m_Member->m_netaddress, SendType::False, p_receiveArray);
 	}
 }
 
-bool BCRoom::FindClient(NetAddress& p_netAddress)
+bool BCRoom::FindClient(NetAddress & p_netAddress)
 {
-	Println((p_netAddress == m_Owner->m_netaddress));
-
-	if(((m_Owner == nullptr) ? false : p_netAddress == m_Owner->m_netaddress) || ((m_Member == nullptr) ? false : p_netAddress == m_Member->m_netaddress))
+	if (((m_Owner == nullptr) ? false : p_netAddress == m_Owner->m_netaddress) || ((m_Member == nullptr) ? false : p_netAddress == m_Member->m_netaddress))
 	{
 		return true;
 	}
@@ -129,4 +102,42 @@ bool BCRoom::FindClient(NetAddress& p_netAddress)
 	{
 		return false;
 	}
+}
+
+bool BCRoom::IsOwner(NetAddress & p_netAddress)
+{
+	if (p_netAddress == m_Owner->m_netaddress)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+BCClient* BCRoom::GetClient(NetAddress & p_netAddress)
+{
+	if (m_Owner->m_netaddress == p_netAddress)
+	{
+		return m_Owner;
+	}
+	else if (m_Member->m_netaddress == p_netAddress)
+	{
+		return m_Member;
+	}
+}
+
+BCClient* BCRoom::GetRival(NetAddress & p_netAddress)
+{
+
+	if (m_Owner->m_netaddress == p_netAddress)
+	{
+		return m_Member;
+	}
+	else if (m_Member->m_netaddress == p_netAddress)
+	{
+		return m_Owner;
+	}
+
 }

@@ -5,11 +5,27 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "FGDefaultPawn.h"
+#include "Lobby/NetworkSystem.h"
 #include "MyStateMachProGameModeBase.generated.h"
+
 
 /**
  *
  */
+
+struct matchStats
+{
+	int player1Score = 0;
+	int player2Score = 0;
+};
+
+UENUM(BlueprintType)
+enum class EMatcheTypes : uint8 {
+	BestofOne UMETA(DisplayName = "BestofOne"),
+	BestofThree UMETA(DisplayName = "BestofThree"),
+	BestofFive UMETA(DisplayName = "BestofFive")
+};
+
 UCLASS()
 class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 {
@@ -18,14 +34,20 @@ class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 
 public:
 
+	static unsigned int sFrameCounter;
+
 	virtual void StartPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+
 
 	AMyStateMachProGameModeBase();
 	void SpawnSecondPlayer();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MatchCount")
+		EMatcheTypes MatchCount;
 
-
+	UPROPERTY(EditAnywhere)
+		float roundTime;
 	// This will be spawned when the game starts.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		ACameraActor* MainGameCamera;
@@ -48,6 +70,35 @@ public:
 	UPROPERTY(EditAnywhere)
 		float roundTimer;
 
+	UPROPERTY()
+		float startTimer;	
+	
 	UPROPERTY(EditAnywhere)
-		float startTimer;
+		float prepTime = 3;
+
+	UPROPERTY()
+		FVector2D matchStanding;
+
+	UFUNCTION()
+		void SetupMatch();
+
+
+	UFUNCTION()
+		void CheckOnWhichSidePlayerIs();
+
+	UFUNCTION()
+		void DetermineMatchWinner();
+
+	matchStats Standings;
+
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTimeChangedSignature, float, newTime);
+	UPROPERTY(BlueprintAssignable)
+		FOnTimeChangedSignature OnTimeChanged;
+
+	UFUNCTION()
+	void SetRoundTimer(float deltaSeconds);
+
+	UFUNCTION()
+		void RoundTimeOver();
 };

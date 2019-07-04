@@ -8,7 +8,9 @@
 #include "Public/RessourceComponent.h"
 #include "PlayerComponents/MovementRestrictionComponent.h"
 #include "PlayerComponents/ActorRotationComponent.h"
-
+#include "PlayerComponents/HBParentComp.h"
+#include <bitset>
+#include <chrono>
 #include "FGDefaultPawn.generated.h"
 
 
@@ -31,11 +33,18 @@ public:
 
 	FORCEINLINE float GetTimeInMove() const { return TimeInCurrentMove; }
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UCurveFloat* DiagonalCurve;
+
 	UPROPERTY(EditAnywhere)
 		bool CanMoveInLeftDirection;
 
 	UPROPERTY(EditAnywhere)
 		float stunTimer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int Id;
+
 
 	UPROPERTY(EditAnywhere)
 		bool CanMoveInRightDirection;
@@ -44,7 +53,16 @@ public:
 		bool isCrouching;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool isBlocking;
+		bool bCanBlock;
+
+	UFUNCTION()
+	void SetCanBlock(bool blockState) { this->bCanBlock = blockState; }
+
+	UFUNCTION()
+		void SetDirectionInputX(float value) { this->DirectionInput.X = value; }
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool bIsBlocking;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isInAir;
@@ -61,8 +79,45 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool isStunned;
 
+	// jump Variables 
+	UPROPERTY()
+		bool jumpInitializeFlag = false;
+
+	UPROPERTY()
+		bool bCollisionWithOppenent;
+
+	UPROPERTY()
+		float timeInJump;	
+	
+	UPROPERTY(Editanywhere, BlueprintReadWrite)
+		float jumpDuration = 1.0F;
+
+	UPROPERTY(Editanywhere, BlueprintReadWrite)
+		float jumpHeight = 275.0F;
+
+	UPROPERTY(Editanywhere, BlueprintReadWrite)
+		float jumpDistance = 275.0F;
+
+	UPROPERTY(Editanywhere, BlueprintReadWrite)
+		bool doJump;
+
+	UPROPERTY()
+		float directionmodifier;
+	
+	UPROPERTY()
+		FVector jumpTargetLocation;
+
+	UPROPERTY()
+		FVector jumpStartLocation;
+
 	UPROPERTY(BlueprintReadOnly)
-	AActor* Opponent;
+		AActor* Opponent;
+
+	UPROPERTY()
+		TArray<AActor*> ColliderParentsArray;
+
+	UPROPERTY(EditAnywhere)
+		TMap<UFGMove*, FString> MoveColliderParents;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		URessourceComponent* RessourceComp;
@@ -79,6 +134,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 		UFGMove* GetCurrentMove();
 
+	UFUNCTION()
+		void SetRotationOfPlayer();
+
+	void MoveColliderSwitch();
+	//UFUNCTION()
+	//	void ReadInputstream();
+
 protected:
 	void LeftButtonPressed();
 	void LeftButtonReleased();
@@ -88,6 +150,14 @@ protected:
 	void RightButtonReleased();
 	void BottomButtonPressed();
 	void BottomButtonReleased();
+	void TriggerLeftPressed();
+	void TriggerLeftReleased();
+	void TriggerRightPressed();
+	void TriggerRightReleased();
+	void BumperLeftPressed();
+	void BumperLeftReleased();
+	void BumperRightPressed();
+	void BumperRightReleased();
 	void ReadXAxis(float Value);
 	void ReadYAxis(float Value);
 
@@ -102,16 +172,18 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UFGMove* CurrentMove;
 
-	UPROPERTY(VisibleAnywhere)
-		UBoxComponent* PunchL;	
-	UPROPERTY(VisibleAnywhere)
-		UBoxComponent* PunchR;	
-	UPROPERTY(VisibleAnywhere)
-		UBoxComponent* KickL;	
-	UPROPERTY(VisibleAnywhere)
-		UBoxComponent* KickR;
+	//UPROPERTY(VisibleAnywhere)
+	//	UBoxComponent* PunchL;	
+	//UPROPERTY(VisibleAnywhere)
+	//	UBoxComponent* PunchR;	
+	//UPROPERTY(VisibleAnywhere)
+	//	UBoxComponent* KickL;	
+	//UPROPERTY(VisibleAnywhere)
+	//	UBoxComponent* KickR;
+
+
 	// Input atoms are removed when they pass this age threshold. All moves must be executed in under this time.
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float InputExpirationTime;
 
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
@@ -152,7 +224,8 @@ protected:
 		void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-		void SetRotationOfPlayer();
+		void ExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 
 private:
 	//~ This array relates to InputStream. InputStream must not be updated without this stream being updated as well.
@@ -162,4 +235,21 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<USM_InputAtom*> InputStream;
 
+	std::bitset<12> SendInputStream;
+
+	UFUNCTION()
+		void HandleStun(float deltaSeconds);
+
+	void CrouchValues(bool inCrouch);
+
+	UFUNCTION(BlueprintCallable)
+	void DiagonalJump(float direction, FVector position, float time, float Height, float Distance);
+	//UPROPERTY(VisibleInstanceOnly)
+	//TArray<USM_InputAtom*> RecievedInputStream;
+	long long start;
 };
+
+static long long GetTimeInMilli()
+{
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}

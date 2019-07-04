@@ -30,9 +30,8 @@ void UMovementRestrictionComponent::BeginPlay()
 
 
 // Called every frame
-void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UMovementRestrictionComponent::TickComponent()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if (Self && Enemy)
 	{
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Self) };
@@ -40,8 +39,7 @@ void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick Ti
 		FVector P2L = Enemy->GetActorLocation();
 		float playerDistance = Self->GetDistanceTo(Enemy);
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Green, FString::SanitizeFloat(playerDistance));
-
-
+		FMath::Clamp(P1L.X, -300.0F, 300.0F);
 		if (P1L.X < P2L.X && playerDistance >= MaxDistanceFromMiddle) {
 			float LeftEdge = ((P1L.X + P2L.X) * 0.5F) - ((MaxDistanceFromMiddle) / 2);
 			pAsPawn->CanMoveInLeftDirection = false;
@@ -64,14 +62,19 @@ void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick Ti
 			pAsPawn->CanMoveInRightDirection = true;
 
 		}
-		
-		if(Self->GetActorLocation().Y != 0.0F)
-		{
-			Self->SetActorLocation(FVector(Self->GetActorLocation().X, 0.0F, Self->GetActorLocation().Z));
-		}
+	
 	}
 	
 	
 	// ...
+}
+
+void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
+{
+	if(Self && Enemy)
+	{
+		Self->SetActorLocation(FVector(FMath::Clamp(Self->GetActorLocation().X, LeftMapEnd, RightMapEnd), 0.0F, Self->GetActorLocation().Z));
+	}
 }
 

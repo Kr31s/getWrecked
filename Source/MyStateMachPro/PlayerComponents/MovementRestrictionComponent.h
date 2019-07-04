@@ -30,6 +30,12 @@ public:
 		float MaxDistanceFromMiddle;
 
 	UPROPERTY(EditAnywhere)
+		float LeftMapEnd = -900.0F;
+
+	UPROPERTY(EditAnywhere)
+		float RightMapEnd = 900.0F;
+
+	UPROPERTY(EditAnywhere)
 		float YValueForPlayer;
 protected:
 	// Called when the game starts
@@ -37,7 +43,7 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void TickComponent();
 
-		
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };
