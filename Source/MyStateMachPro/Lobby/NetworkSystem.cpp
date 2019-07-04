@@ -105,10 +105,10 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 				inputValue |= (int)(p_receiveArray[1 + i * 2 + 3]);
 			}
 
-			if (receivedInputs.find(frameValue) != receivedInputs.end())
+			/*if (receivedInputs.find(frameValue) != receivedInputs.end())
 			{
 				receivedInputs.insert({ frameValue, inputValue });
-			}
+			}*/
 		}
 
 		SendReceiveMessageClient();
@@ -228,10 +228,10 @@ void NetworkSystem::PauseGame(bool& stop)
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
-void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
-{
-	gameMessagesPlayer.insert(gameMessagesPlayer.begin, GameMessageData(AMyStateMachProGameModeBase::sFrameCounter, (unsigned short)inputStream.to_ulong()));
-}
+//void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
+//{
+//	gameMessagesPlayer.insert(gameMessagesPlayer.begin, GameMessageData(AMyStateMachProGameModeBase::sFrameCounter, (unsigned short)inputStream.to_ulong()));
+//}
 
 void NetworkSystem::RoomRequestAnswer(unsigned char& status, char* p_receiveArray)
 {
@@ -311,37 +311,37 @@ void NetworkSystem::ElementUpdate(char* p_receiveArray)
 void NetworkSystem::PauseGameUpdate(unsigned char& status, char* p_receiveArray)
 {
 }
-void NetworkSystem::OppentGameMessage(char* p_receiveArray)
-{
-	unsigned short inputVal;
-	unsigned short timeVal = p_receiveArray[2];
-
-	timeVal |= p_receiveArray[3] >> 8;
-	int i = 0;
-
-	if(timeVal-1 != gameMessagesRivale[0].m_time)
-	{
-		for (i = 1; i < 9; ++i)
-		{
-			timeVal = p_receiveArray[2 + 4* i];
-			timeVal |= p_receiveArray[3 + 4* i] << 8;
-
-			if(timeVal - 1 == gameMessagesRivale[0].m_time)
-			{
-				break;
-			}
-		}
-
-		for (; i != -1; --i)
-		{
-			timeVal = p_receiveArray[2 + 4 * i];
-			timeVal |= p_receiveArray[3 + 4 * i] << 8;
-
-			inputVal = p_receiveArray[4 + 4 * i];
-			inputVal |= p_receiveArray[5 + 4 * i] << 8;
-
-			gameMessagesRivale.insert(gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
-		}
-	}
-
-}
+//void NetworkSystem::OppentGameMessage(char* p_receiveArray)
+//{
+//	unsigned short inputVal;
+//	unsigned short timeVal = p_receiveArray[2];
+//
+//	timeVal |= p_receiveArray[3] >> 8;
+//	int i = 0;
+//
+//	if(timeVal-1 != gameMessagesRivale[0].m_time)
+//	{
+//		for (i = 1; i < 9; ++i)
+//		{
+//			timeVal = p_receiveArray[2 + 4* i];
+//			timeVal |= p_receiveArray[3 + 4* i] << 8;
+//
+//			if(timeVal - 1 == gameMessagesRivale[0].m_time)
+//			{
+//				break;
+//			}
+//		}
+//
+//		for (; i != -1; --i)
+//		{
+//			timeVal = p_receiveArray[2 + 4 * i];
+//			timeVal |= p_receiveArray[3 + 4 * i] << 8;
+//
+//			inputVal = p_receiveArray[4 + 4 * i];
+//			inputVal |= p_receiveArray[5 + 4 * i] << 8;
+//
+//			gameMessagesRivale.insert(gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
+//		}
+//	}
+//
+//}

@@ -24,14 +24,13 @@ public:
 		int m_state;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		AActor* m_ColliderActor;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		TMap<UFGMove*, ADemoFrameActor*> m_MoveToCollider;
+		TMap<UFGMove*, TSubclassOf<AActor>> m_MoveToCollider;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		UChildActorComponent* ChildColliderActorRef;
 	 
+	UPROPERTY()
+		TArray<AActor*> ChildActor;
 
 protected:
 	// Called when the game starts
@@ -45,11 +44,11 @@ public:
 		void StartAnim(UFGMove* CurrentMove);
 	
 	UFUNCTION(BlueprintCallable)
-		void NextColliderSetup(TArray<UHitBoxIDComp*> ColliderIdComponents, int moveId);
+		void NextColliderSetup();
 
 	UFUNCTION(BlueprintCallable)
-		void DeOrActivateComponents();
+		void DeOrActivateComponents(TArray<UHitBoxIDComp*> ColliderIdComponents, int moveId);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void RemoveCurrentChildActor();
 };
