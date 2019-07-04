@@ -8,7 +8,7 @@ USM_State* UFGInputBranch::TryBranch(const UObject* RefObject, const TArray<USM_
 	int32 DataIndex, int32 &OutDataIndex) 
 {
 	OutDataIndex = DataIndex;
-	if (RequiredButtons & ForbiddenButtons)
+	if (RequiredButtons & ForbiddenButtons/* & RequiredDirections*/)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Impassable condition: Required button is also forbidden."));
 		return nullptr;
@@ -70,8 +70,42 @@ USM_State* UFGInputBranch::TryBranch(const UObject* RefObject, const TArray<USM_
 			return nullptr;
 		}
 	}
+	//for (int32 i = 0; i < (int32)EFGInputDirections::UpForward; ++i, ++OutDataIndex)
+	//{
+	//	if (UFGDirectionalInputAtom * DirectionButtonAtom = Cast<UFGDirectionalInputAtom>(DataSource[OutDataIndex]))
+	//	{
+	//		if (RequiredButtons & (1 << i))
+	//		{
+	//			if (DirectionButtonAtom->DirectionButtonState == EFGButtonState::JustPressed)
+	//			{
+	//				bRequiredButtonPressed = true;
+	//				continue;
+	//			}
+	//			else if (DirectionButtonAtom->DirectionButtonState == EFGButtonState::HeldDown)
+	//			{
+	//				continue;
+	//			}
+	//			return nullptr;
+	//		}
+	//		else if (ForbiddenButtons & (1 << i))
+	//		{
+	//			// Any state other than having just pressed the forbidden button is OK, even holding it down.
+	//			if (DirectionButtonAtom->DirectionButtonState != EFGButtonState::JustPressed)
+	//			{
+	//				continue;
+	//			}
+	//			return nullptr;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		UE_LOG(LogTemp, Warning, TEXT("Error: Expected %i directionButton inputs, only found %i."), (int32)EFGInputDirections::UpForward, i);
+	//		return nullptr;
+	//	}
+	//}
+
 	// If there were any required buttons, make sure at least one of them was just pressed.
-	if (RequiredButtons && !bRequiredButtonPressed)
+	if ((RequiredButtons/* || RequiredDirections*/) && !bRequiredButtonPressed)
 	{
 		return nullptr;
 	}

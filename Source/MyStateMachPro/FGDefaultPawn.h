@@ -116,8 +116,11 @@ public:
 	UPROPERTY()
 		TArray<AActor*> ColliderParentsArray;
 
-	UPROPERTY(EditAnywhere)
-		TMap<UFGMove*, FString> MoveColliderParents;
+	UPROPERTY(EditAnywhere, Category = "Moves")
+		UFGMove* BlockMove;
+
+	UPROPERTY(EditAnywhere, Category = "Moves")
+		UFGMove* CrouchBlockMove;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		URessourceComponent* RessourceComp;
@@ -169,7 +172,7 @@ protected:
 	float TimeInCurrentMove;
 
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Moves")
 	UFGMove* CurrentMove;
 
 	//UPROPERTY(VisibleAnywhere)

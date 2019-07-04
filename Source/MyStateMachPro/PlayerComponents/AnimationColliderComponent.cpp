@@ -60,7 +60,7 @@ void UAnimationColliderComponent::DeOrActivateComponents(TArray<UHitBoxIDComp*> 
 			for(UMyHitBoxComponent* Collider : CastedToBoxColliderPerID)
 			{
 				Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-				Collider->AddRelativeLocation(FVector(0.5F, 0.0F, 0.0F));
+				//Collider->AddRelativeLocation(FVector(0.5F, 0.0F, 0.0F));
 			}
 		}else
 		{

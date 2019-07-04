@@ -26,6 +26,9 @@ protected:
 	UPROPERTY(EditAnywhere, Meta = (Bitmask, BitmaskEnum = "EFGInputButtons"))
 		int32 RequiredButtons;
 
+	UPROPERTY(EditAnywhere, Meta = (Bitmask, BitmaskEnum = "EFGInputDirections"))
+		int32 RequiredDirections;
+
 	// These buttons must all be Up.
 	UPROPERTY(EditAnywhere, Meta = (Bitmask, BitmaskEnum = "EFGInputButtons"))
 		int32 ForbiddenButtons;
