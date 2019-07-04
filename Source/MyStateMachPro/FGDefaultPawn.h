@@ -28,7 +28,7 @@ class MYSTATEMACHPRO_API AFGDefaultPawn : public ACharacter
 public: 
 
 	std::bitset<12> SendInputStream;
-
+	void DoMovesFromInputStream(std::bitset<12> inputStream);
 
 	AFGDefaultPawn();
 	virtual void BeginPlay() override;
