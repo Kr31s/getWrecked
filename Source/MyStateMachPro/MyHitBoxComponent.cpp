@@ -134,7 +134,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 							}
 							else
 							{
-								GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EnemyIsBlocking"));
+								GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EnemyIsBlocking Or Just Received Damage"));
 
 							}
 
