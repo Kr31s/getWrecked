@@ -80,7 +80,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool isOnLeftSide;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isStunned;
 
 	// jump Variables 
