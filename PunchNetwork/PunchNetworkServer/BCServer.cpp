@@ -311,14 +311,14 @@ void BCServer::GameMessage(NetAddress & p_receiveAddress, char* p_receiveArray, 
 		p_intValue = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 + 4 * i])) << 8;
 		p_intValue |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3 + 4 * i]));
 
-		if (p_intValue - 1  == BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).m_currentFrame)
+		if (p_intValue - 1  == BCServer::sTheServer->m_clientIDList->at(p_receiveArray[1]).m_lastClientFrame)
 		{
-			Println("Correct GameMessage");
-			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).m_currentFrame = p_intValue;
-			Println("Max Frame: " << p_intValue);
+			p_intValue = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2])) << 8;
+			p_intValue |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3]));
+			BCServer::sTheServer->m_clientIDList->at(p_receiveArray[1]).m_lastClientFrame = p_intValue;
+			Println("Difference player Frame: "<< static_cast<int>(BCServer::sTheServer->m_clientIDList->at(1).m_lastClientFrame) - static_cast<int>(BCServer::sTheServer->m_clientIDList->at(0).m_lastClientFrame));
 			p_receiveArray[0] = 11;
-			//BCServer::sTheServer->SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).GetRival(p_receiveAddress)->m_netaddress, SendType::None, p_receiveArray);
-			BCServer::sTheServer->SendData(p_receiveAddress, SendType::None, p_receiveArray);
+			BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(p_receiveArray[1]).m_myRoom->GetRival(p_receiveAddress)->m_netaddress, SendType::None, p_receiveArray);
 			return;
 		}
 	}
