@@ -27,7 +27,7 @@ void NetworkSystem::setGameMode(AMyStateMachProGameModeBase* p_gameMode)
 
 bool NetworkSystem::InitNetSystem()
 {
-	this->serverAddress = NetAddress(127, 0, 0, 1, 4405);
+	this->serverAddress = NetAddress(93, 201, 72, 34, 4023);
 
 	BWNet::InitializeSocketLayer();
 
@@ -214,7 +214,7 @@ void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 {
 	unsigned short temp;
 	sendArray[0] = 10;
-	sendArray[1] = myRoomID;
+	sendArray[1] = clientID;
 
 	gameMessagesPlayer.insert(gameMessagesPlayer.begin(), GameMessageData(AMyStateMachProGameModeBase::sFrameCounter, (unsigned short)inputStream.to_ulong()));
 	gameMessagesPlayer.resize(9);
@@ -330,7 +330,6 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 		{
 			for (; i > -1; --i)
 			{
-			UE_LOG(LogTemp, Warning, TEXT("timeVal %d"), (int)timeVal);
 				gameMessagesRivale.insert(gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
 			}
 			break;

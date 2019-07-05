@@ -80,15 +80,15 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 		++AMyStateMachProGameModeBase::sFrameCounter;
 		
-				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[0].m_time));
-		for(int i = 0; i<9;++i)
+				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[0].m_input));
+		/*for(int i = 0; i<9;++i)
 		{
 			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter) {
 				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_time));
 			}
 			break;
 		}
-				UE_LOG(LogTemp, Warning, TEXT("error"));
+				UE_LOG(LogTemp, Warning, TEXT("error"));*/
 	}
 	if (startTimer >= 0) {
 		startTimer -= DeltaSeconds;
