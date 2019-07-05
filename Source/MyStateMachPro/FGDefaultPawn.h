@@ -28,7 +28,7 @@ class MYSTATEMACHPRO_API AFGDefaultPawn : public ACharacter
 public: 
 
 	std::bitset<12> SendInputStream;
-
+	void DoMovesFromInputStream(std::bitset<12> inputStream);
 
 	AFGDefaultPawn();
 	virtual void BeginPlay() override;
@@ -80,7 +80,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool isOnLeftSide;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isStunned;
 
 	// jump Variables 
@@ -148,6 +148,8 @@ public:
 	//UFUNCTION()
 	//	void ReadInputstream();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Moves")
+		UFGMove* CurrentMove;
 protected:
 	void LeftButtonPressed();
 	void LeftButtonReleased();
@@ -176,8 +178,7 @@ protected:
 	float TimeInCurrentMove;
 
 
-	UPROPERTY(EditAnywhere, Category = "Moves")
-	UFGMove* CurrentMove;
+
 
 	//UPROPERTY(VisibleAnywhere)
 	//	UBoxComponent* PunchL;	
@@ -233,14 +234,14 @@ protected:
 	UFUNCTION()
 		void ExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+		TArray<USM_InputAtom*> InputStream;
 
 private:
 	//~ This array relates to InputStream. InputStream must not be updated without this stream being updated as well.
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<float> InputTimeStamps;
 
-	UPROPERTY(VisibleInstanceOnly)
-	TArray<USM_InputAtom*> InputStream;
 
 
 	UFUNCTION()

@@ -84,6 +84,13 @@ void NonServerMessage()
 
 void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime, unsigned int& p_intValue)
 {
+	if (MessageOfIndex(p_receiveArray[0]) == Messages::GameMessage)
+	{
+		BCServer::sTheServer->GameMessage(p_receiveAddress, p_receiveArray, p_intValue);
+		return;
+	}
+
+
 	if (p_receiveArray[1] == 0)
 	{
 		switch (MessageOfIndex(p_receiveArray[0]))
@@ -103,10 +110,6 @@ void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, uns
 		case Messages::PauseGame:
 			BCServer::sTheServer->PauseGame(p_receiveAddress, p_receiveArray);
 			break;
-		case Messages::GameMessage:
-			BCServer::sTheServer->GameMessage(p_receiveAddress, p_receiveArray, p_intValue);
-			break;
-
 
 		default:
 			NonServerMessage();
@@ -133,7 +136,7 @@ unsigned long long GetTriangleNummber(unsigned long long value)
 int main()
 {
 
-	BCServer::sTheServer = new BCServer(4405, true);
+	BCServer::sTheServer = new BCServer(4023, true);
 
 	std::thread t1(ServerThread);
 	std::thread t2(MessageThread);

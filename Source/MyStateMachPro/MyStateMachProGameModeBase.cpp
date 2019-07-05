@@ -6,7 +6,7 @@
 #include "Public/MyCameraActor.h"
 #include "Kismet/GameplayStatics.h"
 
-unsigned int AMyStateMachProGameModeBase::sFrameCounter = 0;
+unsigned int AMyStateMachProGameModeBase::sFrameCounter = 1;
 
 AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 {
@@ -25,6 +25,16 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 }
 
 
+void AMyStateMachProGameModeBase::BeginDestroy() {
+	Super::BeginDestroy();
+	GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("startdown"));
+	AMyStateMachProGameModeBase::sFrameCounter = 1;
+	if (NetworkSystem::NetSys != nullptr) {
+
+		NetworkSystem::NetSys->ShutdownNetwork();
+		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("down"));
+	}
+}
 void AMyStateMachProGameModeBase::StartPlay() {
 
 	Super::StartPlay();
@@ -69,7 +79,16 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	{
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 		++AMyStateMachProGameModeBase::sFrameCounter;
-		
+
+		player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[0].m_input));
+		/*for(int i = 0; i<9;++i)
+		{
+			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter) {
+				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_time));
+			}
+			break;
+		}
+				UE_LOG(LogTemp, Warning, TEXT("error"));*/
 	}
 	if (startTimer >= 0) {
 		startTimer -= DeltaSeconds;
@@ -79,10 +98,21 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player2->AddMovementInput(player2->GetActorForwardVector(), 0.0F);
 		player1->doJump = false;
 		player2->doJump = false;
-		player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
-		player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
-		player1->isOnLeftSide = true;
-		player2->isOnLeftSide = false;
+		if (NetworkSystem::NetSys != nullptr && NetworkSystem::NetSys->roomOwner)
+		{
+
+			player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
+			player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
+			player1->isOnLeftSide = true;
+			player2->isOnLeftSide = false;
+		}
+		else {
+
+			player2->SetActorLocation(FVector(-230, 0.0F, 100.0F));
+			player1->SetActorLocation(FVector(230, 0.0F, 100.0F));
+			player2->isOnLeftSide = true;
+			player1->isOnLeftSide = false;
+		}
 		//player1->GetMesh()->SetRelativeScale3D(FVector(1.0F, -1.0F, 1.0F));
 		//player2->GetMesh()->SetRelativeScale3D(FVector(1.0F, 1.0F, 1.0F));
 		roundTimer = roundTime;
@@ -122,16 +152,6 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	if (roundTimer <= 0.0F)
 	{
 		RoundTimeOver();
-	}
-}
-void AMyStateMachProGameModeBase::BeginDestroy() {
-	Super::BeginDestroy();
-	GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("startdown"));
-
-	if (NetworkSystem::NetSys != nullptr) {
-
-		NetworkSystem::NetSys->ShutdownNetwork();
-		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("down"));
 	}
 }
 

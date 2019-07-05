@@ -306,18 +306,19 @@ void BCServer::PauseGame(NetAddress & p_receiveAddress, char* p_receiveArray)
 }
 void BCServer::GameMessage(NetAddress & p_receiveAddress, char* p_receiveArray, unsigned int& p_intValue)
 {
-	for (int i = 1; i < 9; ++i)
+	for (int i = 0; i < 9; ++i)
 	{
-		p_intValue = p_receiveArray[2 + 4 * i];
-		p_intValue |= p_receiveArray[3 + 4 * i] << 8;
+		p_intValue = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 + 4 * i])) << 8;
+		p_intValue |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3 + 4 * i]));
 
-		if (p_intValue - 1 == BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).m_timeState)
+		if (p_intValue - 1  == BCServer::sTheServer->m_clientIDList->at(p_receiveArray[1]).m_lastClientFrame)
 		{
-			Println("Input working");
-			p_intValue = p_receiveArray[2];
-			p_intValue |= p_receiveArray[3] << 8;
-			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).m_timeState = p_intValue;
-			Println("Max Frame: " << p_intValue);
+			p_intValue = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2])) << 8;
+			p_intValue |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3]));
+			BCServer::sTheServer->m_clientIDList->at(p_receiveArray[1]).m_lastClientFrame = p_intValue;
+			Println("Difference player Frame: "<< static_cast<int>(BCServer::sTheServer->m_clientIDList->at(1).m_lastClientFrame) - static_cast<int>(BCServer::sTheServer->m_clientIDList->at(0).m_lastClientFrame));
+			p_receiveArray[0] = 11;
+			BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(p_receiveArray[1]).m_myRoom->GetRival(p_receiveAddress)->m_netaddress, SendType::None, p_receiveArray);
 			return;
 		}
 	}
