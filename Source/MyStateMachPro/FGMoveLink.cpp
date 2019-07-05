@@ -18,6 +18,10 @@ FStateMachineResult UFGMoveLink::TryLink(const AFGDefaultPawn* RefObject, const 
 				break;
 			}
 		}
+		if(RefObject->gotHit)
+		{
+			return FStateMachineResult();
+		}
 		// If no cancel windows are provided, assume the move is always available.
 		if (bCanCancel || !CancelWindows.Num())
 		{

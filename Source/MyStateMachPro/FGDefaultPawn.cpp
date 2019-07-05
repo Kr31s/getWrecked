@@ -726,7 +726,9 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 	{
 		DisableInput(Cast<APlayerController>(this));
 		stunTimer += deltaSeconds;
-		if (stunTimer >= 2.0F)
+		InputStream.Reset();
+		InputTimeStamps.Reset();
+		if (stunTimer >= 2.0F || !isStunned)
 		{
 			gotHit = false;
 			stunTimer = 0.0F;
