@@ -172,7 +172,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			InputDirection = DirectionDownAtom; // Crouch
 			isCrouching = true;
-			UE_LOG(LogTemp, Warning, TEXT("i want to crouch"));
+			//UE_LOG(LogTemp, Warning, TEXT("i want to crouch"));
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
@@ -184,7 +184,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 
 			InputDirection = DirectionUpAtom; // Jump
-			UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
+			//UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
 			//this->Jump();
 			if (this->GetMovementComponent()->IsMovingOnGround())
 			{
