@@ -27,7 +27,7 @@ void NetworkSystem::setGameMode(AMyStateMachProGameModeBase* p_gameMode)
 
 bool NetworkSystem::InitNetSystem()
 {
-	this->serverAddress = NetAddress(93, 201, 72, 34, 4023);
+	this->serverAddress = NetAddress(127, 0, 0, 1, 4023);
 
 	BWNet::InitializeSocketLayer();
 
