@@ -67,7 +67,6 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	player1->Opponent = UGameplayStatics::GetPlayerCharacter(this, 1);
 	player2->Opponent = UGameplayStatics::GetPlayerCharacter(this, 0);
 
-	
 	player1->isOnLeftSide = true;
 	player2->isOnLeftSide = false;
 	startTimer = prepTime;
@@ -80,8 +79,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	{
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 		++AMyStateMachProGameModeBase::sFrameCounter;
-		
-				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[0].m_input));
+
+		player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[0].m_input));
 		/*for(int i = 0; i<9;++i)
 		{
 			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter) {
@@ -99,13 +98,13 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player2->AddMovementInput(player2->GetActorForwardVector(), 0.0F);
 		player1->doJump = false;
 		player2->doJump = false;
-		if(NetworkSystem::NetSys != nullptr && NetworkSystem::NetSys->roomOwner)
+		if (NetworkSystem::NetSys != nullptr && NetworkSystem::NetSys->roomOwner)
 		{
-		
-		player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
-		player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
-		player1->isOnLeftSide = true;
-		player2->isOnLeftSide = false;
+
+			player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
+			player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
+			player1->isOnLeftSide = true;
+			player2->isOnLeftSide = false;
 		}
 		else {
 

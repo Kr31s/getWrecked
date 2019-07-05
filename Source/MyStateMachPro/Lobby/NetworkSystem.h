@@ -90,6 +90,7 @@ public:
 	void OpponentLeftRoom(char* receiveArray);
 	void Hearthbeat(char* receiveArray);
 	void ElementUpdate(char* receiveArray);
+	void StartGame(char* receiveArray);
 	void PauseGameUpdate(unsigned char& status, char* receiveArray);
 	void OppentGameMessage(char* receiveArray);
 };
