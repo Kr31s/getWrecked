@@ -44,55 +44,64 @@ void BCRoom::RemoveRival(NetAddress& netAddress, char* p_receiveArray)
 	{
 		if (!m_full)
 		{
-			BCServer::sTheServer->deleteClient(this->m_Owner, p_receiveArray);
+			p_receiveArray[2] = true;
+			BCServer::sTheServer->SendData(m_Owner->m_clientID, SendType::Answer, p_receiveArray);
+
+			BCServer::sTheServer->deleteClient(this->m_Owner->m_clientID, p_receiveArray);
 			BCServer::sTheServer->deleteRoom(this, p_receiveArray);
 			return;
 		}
 		else
 		{
-			if (m_Owner != nullptr)
-				BCServer::sTheServer->SendData(m_Owner->m_netaddress, SendType::True, p_receiveArray);
-			p_receiveArray[0] = 4;
-			if (m_Member != nullptr)
-				BCServer::sTheServer->SendDataBCM(m_Member->m_clientID, SendType::True, p_receiveArray);
+			p_receiveArray[2] = true;
+			BCServer::sTheServer->SendData(m_Owner->m_clientID, SendType::Answer, p_receiveArray);
 
-			BCServer::sTheServer->deleteClient(this->m_Owner, p_receiveArray);
+
+			p_receiveArray[0] = 4;
+			BCServer::sTheServer->SendData(m_Member->m_clientID, SendType::NeedAnswer, p_receiveArray);
+
+			BCServer::sTheServer->deleteClient(this->m_Owner->m_clientID, p_receiveArray);
 			m_Owner = m_Member;
 			m_Member = nullptr;
 			m_full = false;
 			Println("One player left the room with the ID " << m_roomID);
+			return;
 		}
-		if (m_Owner != nullptr)
-			BCServer::sTheServer->SendData(m_Owner->m_netaddress, SendType::False, p_receiveArray);
+
+		p_receiveArray[2] = false;
+		BCServer::sTheServer->SendData(m_Owner->m_clientID, SendType::Answer, p_receiveArray);
 	}
 	else if (m_Member->m_netaddress == netAddress)
 	{
 		if (!m_full)
 		{
 			Println("ERROR: Menber exist and room is not full")
-			BCServer::sTheServer->deleteClient(this->m_Member, p_receiveArray);
+				p_receiveArray[2] = true;
+			BCServer::sTheServer->SendData(m_Member->m_clientID, SendType::Answer, p_receiveArray);
+
+			BCServer::sTheServer->deleteClient(this->m_Member->m_clientID, p_receiveArray);
 			BCServer::sTheServer->deleteRoom(this, p_receiveArray);
 			return;
 		}
 		else
 		{
-			if (m_Member != nullptr)
-				BCServer::sTheServer->SendData(m_Member->m_netaddress, SendType::True, p_receiveArray);
-			p_receiveArray[0] = 4;
-			if (m_Owner != nullptr)
-				BCServer::sTheServer->SendDataBCM(m_Owner->m_clientID, SendType::True, p_receiveArray);
+			p_receiveArray[2] = true;
+			BCServer::sTheServer->SendData(m_Member->m_clientID, SendType::Answer, p_receiveArray);
 
-			BCServer::sTheServer->deleteClient(this->m_Member, p_receiveArray);
+			p_receiveArray[0] = 4;
+			BCServer::sTheServer->SendData(m_Owner->m_clientID, SendType::NeedAnswer, p_receiveArray);
+
+			BCServer::sTheServer->deleteClient(this->m_Member->m_clientID, p_receiveArray);
 			m_full = false;
 			Print("One player left the room with the ID " << m_roomID);
 			return;
 		}
-		if (m_Member != nullptr)
-			BCServer::sTheServer->SendData(m_Member->m_netaddress, SendType::False, p_receiveArray);
+		p_receiveArray[2] = false;
+		BCServer::sTheServer->SendData(m_Member->m_clientID, SendType::Answer, p_receiveArray);
 	}
 }
 
-bool BCRoom::FindClient(NetAddress & p_netAddress)
+bool BCRoom::FindClient(NetAddress& p_netAddress)
 {
 	if (((m_Owner == nullptr) ? false : p_netAddress == m_Owner->m_netaddress) || ((m_Member == nullptr) ? false : p_netAddress == m_Member->m_netaddress))
 	{
@@ -104,7 +113,7 @@ bool BCRoom::FindClient(NetAddress & p_netAddress)
 	}
 }
 
-bool BCRoom::IsOwner(NetAddress & p_netAddress)
+bool BCRoom::IsOwner(NetAddress& p_netAddress)
 {
 	if (p_netAddress == m_Owner->m_netaddress)
 	{
@@ -116,7 +125,7 @@ bool BCRoom::IsOwner(NetAddress & p_netAddress)
 	}
 }
 
-BCClient* BCRoom::GetClient(NetAddress & p_netAddress)
+BCClient* BCRoom::GetClient(NetAddress& p_netAddress)
 {
 	if (m_Owner->m_netaddress == p_netAddress)
 	{
@@ -128,7 +137,7 @@ BCClient* BCRoom::GetClient(NetAddress & p_netAddress)
 	}
 }
 
-BCClient* BCRoom::GetRival(NetAddress & p_netAddress)
+BCClient* BCRoom::GetRival(NetAddress& p_netAddress)
 {
 
 	if (m_Owner->m_netaddress == p_netAddress)

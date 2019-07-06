@@ -64,10 +64,8 @@ void HeartThread()
 				continue;
 			}
 
-			if (BCServer::sTheServer->m_clientIDList->at(i).m_clientStatus != ClientStatus::Offline)
-			{
-				BCServer::sTheServer->SendDataBCM(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, SendType::False, heartThreadArray);
-			}
+			BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, SendType::Answer, heartThreadArray);
+
 		}
 		sMutexClientIDList.unlock();
 
