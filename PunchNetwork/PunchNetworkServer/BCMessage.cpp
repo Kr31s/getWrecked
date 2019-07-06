@@ -44,8 +44,7 @@ void BCMessage::CheckResendMessages(char* p_receiveArray)
 			continue;
 		}
 		sMutexClientIDList.lock();
-		if ((BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_clientStatus != ClientStatus::Offline)
-			&& (GetTimeInMilli() - BCServer::sTheServer->m_messageIDList->at(i).m_timeStamp) > (BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping + (unsigned char)20))
+		if ((GetTimeInMilli() - BCServer::sTheServer->m_messageIDList->at(i).m_timeStamp) > (BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping + (unsigned char)20))
 		{
 			Println("HearthAtk");
 			Println("first " << GetTimeInMilli() - BCServer::sTheServer->m_messageIDList->at(i).m_timeStamp);
@@ -53,7 +52,7 @@ void BCMessage::CheckResendMessages(char* p_receiveArray)
 				BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping = 2000000;
 			if (BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).lostHeartBeat(p_receiveArray))
 			{
-				BCServer::sTheServer->SendDataBCM(BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_clientID, SendType::None, BCServer::sTheServer->m_messageIDList->at(i).m_messageArray);
+				BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_clientID, SendType::NeedAnswer, BCServer::sTheServer->m_messageIDList->at(i).m_messageArray);
 			}
 			BCServer::sTheServer->m_messageIDList->at(i).m_finished = true;
 		}

@@ -217,7 +217,7 @@ void BCServer::CreateRoom(NetAddress& p_receiveAddress, char* p_receiveArray, un
 	sMutexClientIDList.lock();
 	p_receiveArray[4] = BCClient(p_receiveAddress, p_receiveArray).m_clientID;
 	sMutexClientIDList.unlock();
-	p_receiveArray[3] = BCRoom(&BCServer::sTheServer->m_clientIDList->at(p_receiveArray[3]), p_rounds, p_gameTime).m_roomID;
+	p_receiveArray[3] = BCRoom(&BCServer::sTheServer->m_clientIDList->at(p_receiveArray[4]), p_rounds, p_gameTime).m_roomID;
 	SendData(p_receiveArray[4], SendType::Answer, p_receiveArray);
 	Print("Room created with ID ");
 	Println((int)p_receiveArray[1]);

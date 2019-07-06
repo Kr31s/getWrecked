@@ -83,15 +83,15 @@ public:
 	void GameMessage(std::bitset<12>& inputStream);
 
 	//MessagesToReceive
-	void RoomRequestAnswer(unsigned char& status, char* receiveArray);
+	void RoomRequestAnswer(char* receiveArray);
 	void RoomJoin(char* receiveArray);
-	void CreateRoomAnswer(unsigned char& status, char* receiveArray);
-	void LeaveRoomAnswer(unsigned char& status, char* p_receiveArray);
+	void CreateRoomAnswer(char* receiveArray);
+	void LeaveRoomAnswer(char* p_receiveArray);
 	void OpponentLeftRoom(char* receiveArray);
 	void Hearthbeat(char* receiveArray);
 	void ElementUpdate(char* receiveArray);
-	void StartGame(char* receiveArray);
-	void PauseGameUpdate(unsigned char& status, char* receiveArray);
+	void PauseGameUpdate(char* receiveArray);
 	void OppentGameMessage(char* receiveArray);
+	void StartGame();
 };
 
