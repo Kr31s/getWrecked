@@ -43,7 +43,6 @@ bool BCClient::lostHeartBeat(char* p_receiveArray)
 	++m_leftHeartBeats;
 	if (m_leftHeartBeats >= sMaxLeftHeartBeats)
 	{
-		m_clientStatus = ClientStatus::Offline;
 		m_myRoom->RemoveRival(m_netaddress, p_receiveArray);
 		Println("clientIDList->size(): "<< BCServer::sTheServer->m_clientIDList->size());
 		Println("roomIDList->size(): " << BCServer::sTheServer->m_roomIDList->size());

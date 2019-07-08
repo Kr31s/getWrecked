@@ -60,14 +60,13 @@ void HeartThread()
 		sMutexClientIDList.lock();
 		for (int i = 0; i < BCServer::sTheServer->m_clientIDList->size(); ++i)
 		{
-			if (BCServer::sTheServer->m_clientIDList->find(i) == BCServer::sTheServer->m_clientIDList->end()) {
+			if (BCServer::sTheServer->m_clientIDList->find(i) == BCServer::sTheServer->m_clientIDList->end()) 
+			{
 				continue;
 			}
 
-			if (BCServer::sTheServer->m_clientIDList->at(i).m_clientStatus != ClientStatus::Offline)
-			{
-				BCServer::sTheServer->SendDataBCM(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, SendType::False, heartThreadArray);
-			}
+			BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, SendType::Answer, heartThreadArray);
+
 		}
 		sMutexClientIDList.unlock();
 
@@ -84,15 +83,26 @@ void NonServerMessage()
 
 void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime, unsigned int& p_intValue)
 {
-	if (MessageOfIndex(p_receiveArray[0]) == Messages::GameMessage)
+	switch (p_receiveArray[1])
 	{
-		BCServer::sTheServer->GameMessage(p_receiveAddress, p_receiveArray, p_intValue);
+	case 0:
+		break;
+
+	case 1:
+		//SendReceiveMessageClient();
+		break;
+	case 2:
+		BCMessage::GetReplyMessage((int)p_receiveArray[45]);
 		return;
+
+		break;
+
+	default:
+		break;
 	}
 
 
-	if (p_receiveArray[1] == 0)
-	{
+	
 		switch (MessageOfIndex(p_receiveArray[0]))
 		{
 		case Messages::RoomRequest:
@@ -110,16 +120,16 @@ void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, uns
 		case Messages::PauseGame:
 			BCServer::sTheServer->PauseGame(p_receiveAddress, p_receiveArray);
 			break;
+		case Messages::GameMessage:
+			BCServer::sTheServer->GameMessage(p_receiveAddress, p_receiveArray, p_intValue);
+			break;
 
 		default:
 			NonServerMessage();
 			break;
 		}
-	}
-	else
-	{
-		BCMessage::GetReplyMessage((int)p_receiveArray[45]);
-	}
+	
+	
 }
 
 unsigned long long GetTriangleNummber(unsigned long long value)

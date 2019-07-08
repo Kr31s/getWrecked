@@ -19,13 +19,11 @@ public:
 	BCServer(unsigned short port, bool enableNonBlocking);
 	~BCServer();
 
-	void deleteClient(BCClient* client, char* receiveArray);
+	void deleteClient(unsigned short& p_clientID, char* receiveArray);
 	void deleteRoom(BCRoom* room, char* receiveArray);
 
-	//BCClient needed to add it to controllMessage
-	void SendDataBCM(unsigned int clientID, SendType status, char* dataArray);
 	//Only address needed, no controllMessage
-	void SendData(NetAddress& netAddress, SendType status, char* dataArray);
+	void SendData(unsigned int clientID, SendType status, char* dataArray);
 
 	void RoomRequest(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime);
 	void CreateRoom(NetAddress& receiveAddress, char* receiveArray, unsigned char& rounds, unsigned char& gameTime);
