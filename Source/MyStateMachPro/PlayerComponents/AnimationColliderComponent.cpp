@@ -22,7 +22,7 @@ void UAnimationColliderComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	GetOwner()->GetAllChildActors(ChildActor, false);
-	AFGDefaultPawn* Owner = Cast<AFGDefaultPawn>(GetOwner());
+	Owner = Cast<AFGDefaultPawn>(GetOwner());
 	
 	ChildColliderActorRef = Cast<UChildActorComponent>(Owner->GetMesh()->GetChildComponent(0));
 	// ...
@@ -42,6 +42,16 @@ void UAnimationColliderComponent::DeOrActivateComponents(TArray<UHitBoxIDComp*> 
 {
 	for(UHitBoxIDComp* IDs : ColliderIdComponents)
 	{
+		if(Owner->gotHit)
+		{
+			if (ChildColliderActorRef)
+			{
+				ChildColliderActorRef->DestroyChildActor();
+				return;
+			}
+
+		}
+
 		if(IDs->GetMoveID() == moveId)
 		{
 			IDs->SetActive(true);
@@ -60,7 +70,7 @@ void UAnimationColliderComponent::DeOrActivateComponents(TArray<UHitBoxIDComp*> 
 			for(UMyHitBoxComponent* Collider : CastedToBoxColliderPerID)
 			{
 				Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-				Collider->AddRelativeLocation(FVector(0.5F, 0.0F, 0.0F));
+				//Collider->AddRelativeLocation(FVector(0.5F, 0.0F, 0.0F));
 			}
 		}else
 		{
@@ -123,6 +133,14 @@ void UAnimationColliderComponent::StartAnim(UFGMove* CurrentMove)
 void UAnimationColliderComponent::NextColliderSetup()
 {
 	m_state++;
+	if (Owner->gotHit)
+	{
+		if (ChildColliderActorRef)
+		{
+			ChildColliderActorRef->DestroyChildActor();
+			return;
+		}
+	}
 	TArray<UHitBoxIDComp*> idComponentsNext;
 	if (ChildColliderActorRef)
 	{

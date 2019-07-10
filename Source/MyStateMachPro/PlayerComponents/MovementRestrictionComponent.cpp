@@ -75,6 +75,7 @@ void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick Ti
 	if(Self && Enemy)
 	{
 		Self->SetActorLocation(FVector(FMath::Clamp(Self->GetActorLocation().X, LeftMapEnd, RightMapEnd), 0.0F, Self->GetActorLocation().Z));
+		TickComponent();
 	}
 }
 

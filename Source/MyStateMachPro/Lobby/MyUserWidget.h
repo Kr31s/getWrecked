@@ -21,6 +21,11 @@ class MYSTATEMACHPRO_API UMyUserWidget : public UUserWidget
 public:
 	static UMyUserWidget* myUserWidget;
 
+	static bool threadDestroyFlag;
+
+	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
+		bool ActivateThreadDestroyFlag();
+
 	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
@@ -36,19 +41,21 @@ public:
 
 
 
-	
 
-		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
-	void CreateRoomMessage(bool status);
-		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
-	void JoinRoomMessage(bool status, const FString& name);
-		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
-	void RivalJoinMessage(const FString& name);
-		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
-	void LeaveRoomMessage(bool status);
-		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
-	void RivalLeaveMessage();
-		UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
-	void UpdateLobbyValues(bool owner, int slot1Pos, int slot2Pos, bool ready);
-	
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
+		void CreateRoomMessage(bool status);
+	UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
+		void JoinRoomMessage(bool status, const FString& name);
+	UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
+		void RivalJoinMessage(const FString& name);
+	UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
+		void LeaveRoomMessage(bool status);
+	UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
+		void RivalLeaveMessage();
+	UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
+		void UpdateLobbyValues(bool owner, int slot1Pos, int slot2Pos, bool ready);
+	UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
+		void StartGame();
+
 };

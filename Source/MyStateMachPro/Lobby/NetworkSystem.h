@@ -15,15 +15,15 @@
 #include <map>
 
 
-//struct GameMessageData
-//{
-//	unsigned short m_time;
-//	unsigned short m_input;
-//
-//	GameMessageData(unsigned short p_time, unsigned short p_input) : m_time{ p_time }, m_input{ p_input }{};
-//	GameMessageData(GameMessageData&& gmd) : m_time{ gmd.m_time }, m_input{ gmd.m_input }{};
-//	
-//};
+struct GameMessageData
+{
+	unsigned short m_time;
+	unsigned short m_input;
+
+	GameMessageData() : m_time{ 0 }, m_input{ 0 }{};
+	GameMessageData(unsigned short p_time, unsigned short p_input) : m_time{ p_time }, m_input{ p_input }{};
+	GameMessageData(const GameMessageData& gmd) : m_time{ gmd.m_time }, m_input{ gmd.m_input }{};
+};
 
 class AMyStateMachProGameModeBase;
 
@@ -50,8 +50,8 @@ public:
 	unsigned char status = NULL;
 	unsigned short frameValue = 0;
 	unsigned short inputValue = 0;
-	//std::vector<GameMessageData> gameMessagesRivale{9};
-	//std::vector<GameMessageData> gameMessagesPlayer{9};
+	std::vector<GameMessageData> gameMessagesRivale{9};
+	std::vector<GameMessageData> gameMessagesPlayer{9};
 
 	bool roomOwner;
 
@@ -60,7 +60,7 @@ public:
 	//bool StartingResendMessageThread();
 
 	NetworkSystem();
-	~NetworkSystem() = default;
+	~NetworkSystem();
 
 	void setGameMode(AMyStateMachProGameModeBase* gameMode);
 
@@ -72,6 +72,7 @@ public:
 	void SendReceiveMessageClient();
 
 	void ClearReceiveArray();
+	void ShutdownNetwork();
 
 	//MessagesToSend
 	void RoomRequest(int& timeValue, int& roundValue, const FString& name);
@@ -82,14 +83,15 @@ public:
 	void GameMessage(std::bitset<12>& inputStream);
 
 	//MessagesToReceive
-	void RoomRequestAnswer(unsigned char& status, char* receiveArray);
+	void RoomRequestAnswer(char* receiveArray);
 	void RoomJoin(char* receiveArray);
-	void CreateRoomAnswer(unsigned char& status, char* receiveArray);
-	void LeaveRoomAnswer(unsigned char& status, char* p_receiveArray);
+	void CreateRoomAnswer(char* receiveArray);
+	void LeaveRoomAnswer(char* p_receiveArray);
 	void OpponentLeftRoom(char* receiveArray);
 	void Hearthbeat(char* receiveArray);
 	void ElementUpdate(char* receiveArray);
-	void PauseGameUpdate(unsigned char& status, char* receiveArray);
+	void PauseGameUpdate(char* receiveArray);
 	void OppentGameMessage(char* receiveArray);
+	void StartGame();
 };
 

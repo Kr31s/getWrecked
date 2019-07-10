@@ -6,16 +6,18 @@
 
 NetworkSystem* NetworkSystem::NetSys = NULL;
 
-bool NetworkSystem::StartingMessageReceiveThread(){
+bool NetworkSystem::StartingMessageReceiveThread() {
 	MessageReceiveThread = FMessageReceiveThread::InitThread(&socketUDP, m_receiveArray);
 
 	return false;
 }
-
+NetworkSystem::~NetworkSystem()
+{
+}
 
 NetworkSystem::NetworkSystem()
 {
-	
+
 }
 
 void NetworkSystem::setGameMode(AMyStateMachProGameModeBase* p_gameMode)
@@ -25,7 +27,7 @@ void NetworkSystem::setGameMode(AMyStateMachProGameModeBase* p_gameMode)
 
 bool NetworkSystem::InitNetSystem()
 {
-	this->serverAddress = NetAddress(127, 0, 0, 1, 4405);
+	this->serverAddress = NetAddress(127, 0, 0, 1, 4023);
 
 	BWNet::InitializeSocketLayer();
 
@@ -56,19 +58,38 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 	unsigned int frameValue = 0;
 	unsigned short inputValue = 0;
 
+	switch (status)
+	{
+	case 0:
+		break;
+
+	case 1:
+		SendReceiveMessageClient();
+		break;
+	case 2:
+		//the massage we are waiting for can be deleted
+
+		break;
+
+	default:
+		break;
+	}
+	
+
+
 	switch (identifier)
 	{
 	case 0:
-		this->RoomRequestAnswer(status, p_receiveArray);
+		this->RoomRequestAnswer(p_receiveArray);
 		break;
 	case 1:
 		this->RoomJoin(p_receiveArray);
 		break;
 	case 2:
-		this->CreateRoomAnswer(status, p_receiveArray);
+		this->CreateRoomAnswer(p_receiveArray);
 		break;
 	case 3:
-		this->LeaveRoomAnswer(status, p_receiveArray);
+		this->LeaveRoomAnswer(p_receiveArray);
 		break;
 	case 4:
 		this->OpponentLeftRoom(p_receiveArray);
@@ -80,38 +101,13 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 		this->ElementUpdate(p_receiveArray);
 		break;
 	case 9:
-		this->PauseGameUpdate(status, p_receiveArray);
-		break;
-	case 10:
+		this->PauseGameUpdate(p_receiveArray);
 		break;
 	case 11:
-		for (int i = 0; i < 14; ++i)
-		{
-			if (i % 2 == 0)
-			{
-				frameValue = ((int)p_receiveArray[1 + i * 2] << 4);
-				frameValue |= (int)(p_receiveArray[1 + i * 2 + 1] >> 4);
-
-				inputValue = (int)(p_receiveArray[1 + i * 2 + 1] << 4);
-				inputValue |= (int)(p_receiveArray[1 + i * 2 + 2]);
-			}
-			else
-			{
-				frameValue = ((int)p_receiveArray[1 + i * 2 + 1] << 4);
-				frameValue |= (int)(p_receiveArray[1 + i * 2 + 2] >> 4);
-
-				inputValue = ((int)p_receiveArray[1 + i * 2 + 2] >> 4);
-				inputValue = inputValue << 4;
-				inputValue |= (int)(p_receiveArray[1 + i * 2 + 3]);
-			}
-
-			/*if (receivedInputs.find(frameValue) != receivedInputs.end())
-			{
-				receivedInputs.insert({ frameValue, inputValue });
-			}*/
-		}
-
-		SendReceiveMessageClient();
+		this->OppentGameMessage(p_receiveArray);
+		break;
+	case 12:
+		this->StartGame();;
 		break;
 
 	default:
@@ -121,10 +117,18 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 
 }
 
+void NetworkSystem::ShutdownNetwork()
+{
+	FMessageReceiveThread::threadRuning = false;
+	NetworkSystem::NetSys->MessageReceiveThread->Shutdown();
+	delete(NetworkSystem::NetSys);
+	NetworkSystem::NetSys = nullptr;
+	UE_LOG(LogTemp, Warning, TEXT("Thread Shutdown"));
+}
 void NetworkSystem::SendReceiveMessageClient()
 {
 	sendArray[0] = identifier;
-	sendArray[1] = 1;
+	sendArray[1] = 2;
 	sendArray[45] = m_receiveArray[45];
 	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
 	ClearReceiveArray();
@@ -140,7 +144,7 @@ void NetworkSystem::ClearReceiveArray()
 	}
 }
 
-void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FString & p_name)
+void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FString& p_name)
 {
 	UE_LOG(LogTemp, Warning, TEXT("RoomRequest"));
 	//charInput Name
@@ -152,7 +156,7 @@ void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FStri
 		{
 			sendArray[i + 4] = NULL;
 		}
-		else 
+		else
 		{
 			sendArray[i + 4] = result[i];
 		}
@@ -170,7 +174,7 @@ void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FStri
 	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
 
 }
-void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FString & p_name)
+void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FString& p_name)
 {
 	UE_LOG(LogTemp, Warning, TEXT("CreateRoom"));
 	char* result = TCHAR_TO_ANSI(*p_name);
@@ -228,24 +232,41 @@ void NetworkSystem::PauseGame(bool& stop)
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
-//void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
-//{
-//	gameMessagesPlayer.insert(gameMessagesPlayer.begin, GameMessageData(AMyStateMachProGameModeBase::sFrameCounter, (unsigned short)inputStream.to_ulong()));
-//}
-
-void NetworkSystem::RoomRequestAnswer(unsigned char& status, char* p_receiveArray)
+void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 {
-	if (status)
+	unsigned short temp;
+	sendArray[0] = 10;
+	sendArray[1] = clientID;
+
+	gameMessagesPlayer.insert(gameMessagesPlayer.begin(), GameMessageData(AMyStateMachProGameModeBase::sFrameCounter, (unsigned short)inputStream.to_ulong()));
+	gameMessagesPlayer.resize(9);
+
+	for (int i = 0; i < 9; ++i)
+	{
+		sendArray[2 + 4 * i] = (gameMessagesPlayer[i].m_time) >> 8;
+		temp = (gameMessagesPlayer[i].m_time) << 8;
+		sendArray[3 + 4 * i] = temp >> 8;
+		sendArray[4 + 4 * i] = (gameMessagesPlayer[i].m_input) >> 8;
+		temp = (gameMessagesPlayer[i].m_input) << 8;
+		sendArray[5 + 4 * i] = temp >> 8;
+	}
+
+	socketUDP.Send(serverAddress, (char*)sendArray, 46);
+}
+
+void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
+{
+	if ((bool)p_receiveArray[2])
 	{
 		for (int i = 0; (i < 20); i++)
 		{
-			opponentName[i] = p_receiveArray[i + 4];
+			opponentName[i] = p_receiveArray[i + 5];
 			UE_LOG(LogTemp, Warning, TEXT("%c"), opponentName[i]);
 		}
 
-		myRoomID = p_receiveArray[2];
-		clientID = p_receiveArray[3];
-		
+		myRoomID = p_receiveArray[3];
+		clientID = p_receiveArray[4];
+
 		roomOwner = false;
 	}
 	else
@@ -257,7 +278,7 @@ void NetworkSystem::RoomRequestAnswer(unsigned char& status, char* p_receiveArra
 	UMyUserWidget::myUserWidget->JoinRoomMessage((bool)status, FString(UTF8_TO_TCHAR(opponentName)));
 
 }
-void NetworkSystem::RoomJoin(char* p_receiveArray)	
+void NetworkSystem::RoomJoin(char* p_receiveArray)
 {
 	for (int i = 0; (i < 20); i++)
 	{
@@ -268,9 +289,9 @@ void NetworkSystem::RoomJoin(char* p_receiveArray)
 	UE_LOG(LogTemp, Warning, TEXT("RivalJoinMessage"));
 	SendReceiveMessageClient();
 }
-void NetworkSystem::CreateRoomAnswer(unsigned char& status, char* p_receiveArray)
+void NetworkSystem::CreateRoomAnswer(char* p_receiveArray)
 {
-	if (status)
+	if ((bool)p_receiveArray[2])
 	{
 		myRoomID = p_receiveArray[2];
 		clientID = p_receiveArray[3];
@@ -280,16 +301,16 @@ void NetworkSystem::CreateRoomAnswer(unsigned char& status, char* p_receiveArray
 	{
 		//failed room creation
 	}
-	if (UMyUserWidget::myUserWidget != NULL) 
+	if (UMyUserWidget::myUserWidget != NULL)
 	{
 		UMyUserWidget::myUserWidget->CreateRoomMessage((bool)status);
 	}
 }
-void NetworkSystem::LeaveRoomAnswer(unsigned char& status, char* p_receiveArray)
+void NetworkSystem::LeaveRoomAnswer(char* p_receiveArray)
 {
 	if (UMyUserWidget::myUserWidget != NULL)
 	{
-		UMyUserWidget::myUserWidget->LeaveRoomMessage((bool)status);
+		UMyUserWidget::myUserWidget->LeaveRoomMessage((bool)p_receiveArray[2]);
 	}
 }
 void NetworkSystem::OpponentLeftRoom(char* p_receiveArray)
@@ -305,43 +326,42 @@ void NetworkSystem::Hearthbeat(char* p_receiveArray)
 }
 void NetworkSystem::ElementUpdate(char* p_receiveArray)
 {
-	UMyUserWidget::myUserWidget->UpdateLobbyValues(roomOwner, (int)p_receiveArray[2], (int)p_receiveArray[3], (bool)p_receiveArray[4]);
+	UMyUserWidget::myUserWidget->UpdateLobbyValues(roomOwner, (int)p_receiveArray[3], (int)p_receiveArray[4], (bool)p_receiveArray[5]);
 	SendReceiveMessageClient();
 }
-void NetworkSystem::PauseGameUpdate(unsigned char& status, char* p_receiveArray)
+void NetworkSystem::PauseGameUpdate(char* p_receiveArray)
 {
 }
-//void NetworkSystem::OppentGameMessage(char* p_receiveArray)
-//{
-//	unsigned short inputVal;
-//	unsigned short timeVal = p_receiveArray[2];
-//
-//	timeVal |= p_receiveArray[3] >> 8;
-//	int i = 0;
-//
-//	if(timeVal-1 != gameMessagesRivale[0].m_time)
-//	{
-//		for (i = 1; i < 9; ++i)
-//		{
-//			timeVal = p_receiveArray[2 + 4* i];
-//			timeVal |= p_receiveArray[3 + 4* i] << 8;
-//
-//			if(timeVal - 1 == gameMessagesRivale[0].m_time)
-//			{
-//				break;
-//			}
-//		}
-//
-//		for (; i != -1; --i)
-//		{
-//			timeVal = p_receiveArray[2 + 4 * i];
-//			timeVal |= p_receiveArray[3 + 4 * i] << 8;
-//
-//			inputVal = p_receiveArray[4 + 4 * i];
-//			inputVal |= p_receiveArray[5 + 4 * i] << 8;
-//
-//			gameMessagesRivale.insert(gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
-//		}
-//	}
-//
-//}
+void NetworkSystem::OppentGameMessage(char* p_receiveArray)
+{
+	unsigned short inputVal;
+	unsigned short timeVal = p_receiveArray[2];
+
+	timeVal |= p_receiveArray[3] >> 8;
+
+	for (int i = 0; i < 9; ++i)
+	{
+		timeVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 + 4 * i])) << 8;
+		timeVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3 + 4 * i]));
+
+		inputVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[4 + 4 * i])) << 8;
+		inputVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[5 + 4 * i]));
+
+		
+		if (timeVal - 1 == gameMessagesRivale[i].m_time)
+		{
+			for (; i > -1; --i)
+			{
+				gameMessagesRivale.insert(gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
+			}
+			break;
+		}
+	}
+
+	gameMessagesRivale.resize(9);
+
+}
+void NetworkSystem::StartGame()
+{
+	UMyUserWidget::myUserWidget->StartGame();
+}

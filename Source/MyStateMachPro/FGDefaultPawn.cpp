@@ -7,38 +7,33 @@
 #include "FGMoveLink.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Public/MyCameraActor.h"
-#include "Engine/World.h"
 #include "MyStateMachProGameModeBase.h"
 
+
+void AFGDefaultPawn::DoMovesFromInputStream(std::bitset<12> inputStream)
+{
+	(inputStream[0]) ? this->LeftButtonPressed() : this->LeftButtonReleased();
+	(inputStream[1]) ? this->TopButtonPressed() : this->TopButtonReleased();
+	(inputStream[2]) ? this->RightButtonPressed() : this->RightButtonReleased();
+	(inputStream[3]) ? this->BottomButtonPressed() : this->BottomButtonReleased();
+	(inputStream[4]) ? this->BumperLeftPressed() : this->BumperLeftReleased();
+	(inputStream[5]) ? this->TriggerLeftPressed() : this->TriggerLeftReleased();
+	(inputStream[6]) ? this->BumperRightPressed() : this->BumperRightReleased();
+	(inputStream[7]) ? this->TriggerRightPressed() : this->TriggerRightReleased();
+
+	(inputStream[8]) ? this->ReadYAxis(1) : (inputStream[9]) ? this->ReadYAxis(-1) : this->ReadYAxis(0);
+	(inputStream[10]) ? this->ReadXAxis(-1) : (inputStream[11]) ? this->ReadXAxis(1) : this->ReadXAxis(0);
+}
 
 AFGDefaultPawn::AFGDefaultPawn()
 {
 	// This is ridiculously long, but we ll use it to make a point.
 	stunTimer = 0.0F;
 
-	//MovementComponent = CreateDefaultSubobject<UPawnMovementComponent>(ADefaultPawn::MovementComponentName);
-	//MovementComponent->UpdatedComponent = GetCollisionComponent();
 	RessourceComp = CreateDefaultSubobject<URessourceComponent>(TEXT("RComp"));//NewObject<UActorComponent>(this, "RessourceComp");
 	MovementRestrictionComp = CreateDefaultSubobject<UMovementRestrictionComponent>(TEXT("MovementRestrictionComp"));//NewObject<UActorComponent>(this, "RessourceComp");
 	PlayerRotationComp = CreateDefaultSubobject<UActorRotationComponent>(TEXT("PlayerRotationComp"));//NewObject<UActorComponent>(this, "RessourceComp");
 
-	/*PunchL = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchL"), true);
-	PunchR = CreateDefaultSubobject<UBoxComponent>(TEXT("PunchR"), true);
-	KickL = CreateDefaultSubobject<UBoxComponent>(TEXT("KickL"), true);
-	KickR = CreateDefaultSubobject<UBoxComponent>(TEXT("KickR"), true);
-
-
-	PunchL->SetupAttachment(this->GetMesh(), TEXT("HandLSocket"));
-	PunchR->SetupAttachment(this->GetMesh(), TEXT("HandRSocket"));
-	KickL->SetupAttachment(this->GetMesh(), TEXT("FootLSocket"));
-	KickR->SetupAttachment(this->GetMesh(), TEXT("FootRSocket"));
-
-	//OnActorBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
-	PunchL->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
-	PunchR->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
-	KickL->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
-	KickR->SetRelativeScale3D(FVector(0.5F, 0.5F, 0.5F));
-	*/
 }
 
 void AFGDefaultPawn::BeginPlay()
@@ -48,10 +43,7 @@ void AFGDefaultPawn::BeginPlay()
 
 	CanMoveInLeftDirection = true;
 	CanMoveInRightDirection = true;
-	//PunchR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
-	//PunchL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
-	//KickL->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
-	//KickR->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+
 	this->GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 	//this->GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AFGDefaultPawn::ExitOverlap);
 
@@ -61,11 +53,6 @@ void AFGDefaultPawn::BeginPlay()
 		Element->GetName();
 		//MoveColliderParents[CurrentMove](TEXT("NALP");
 	}
-	if (CurrentMove->GetName() == "NA_LP")
-	{
-
-	}
-
 
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
@@ -122,6 +109,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
+					//CurrentMove = CrouchBlockMove;
 				}
 				else
 				{
@@ -140,6 +128,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
+					//CurrentMove = BlockMove;
+					InputDirection = DirectionBackAtom; // Back on Leftside
+
 				}
 				else
 				{
@@ -181,7 +172,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			InputDirection = DirectionDownAtom; // Crouch
 			isCrouching = true;
-			UE_LOG(LogTemp, Warning, TEXT("i want to crouch"));
+			//UE_LOG(LogTemp, Warning, TEXT("i want to crouch"));
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
@@ -193,7 +184,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 
 			InputDirection = DirectionUpAtom; // Jump
-			UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
+			//UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
 			//this->Jump();
 			if (this->GetMovementComponent()->IsMovingOnGround())
 			{
@@ -216,6 +207,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
+					//CurrentMove = CrouchBlockMove;
 				}
 				else
 				{
@@ -234,6 +226,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
+					//CurrentMove = BlockMove;
+					InputDirection = DirectionBackAtom; // Back on RightSide
+
 				}
 				else
 				{
@@ -264,12 +259,12 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			}
 		}
 	}
-		this->CrouchValues(isCrouching);
-	if(!bCanBlock)
+	this->CrouchValues(isCrouching);
+	if (!bCanBlock)
 	{
 		bIsBlocking = false;
 	}
-		InputStream.Add(InputDirection);
+	InputStream.Add(InputDirection);
 
 	if (doJump)
 	{
@@ -323,7 +318,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted && GetCharacterMovement()->IsMovingOnGround())
 	{
+
 		UE_LOG(LogTemp, Warning, TEXT("Switching to state %s"), *MoveLinkToFollow.Link->Move->MoveName.ToString());
+		
 		if (MoveLinkToFollow.Link->bClearInput || MoveLinkToFollow.Link->Move->bClearInputOnEntry || CurrentMove->bClearInputOnExit)
 		{
 			InputStream.Reset();
@@ -347,10 +344,14 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 		// Set and start the new move.
 		CurrentMove = MoveLinkToFollow.Link->Move;
+		if(this == UGameplayStatics::GetPlayerCharacter(this, 0))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("CurrentMove: %s"), *CurrentMove->MoveName.ToString());
+			UE_LOG(LogTemp, Warning, TEXT("CurrentMove: %s"), *CurrentMove->GetName());
+		}
+	
 		TimeInCurrentMove = 0.0f;
 		DoMove(CurrentMove);
-		start -= GetTimeInMilli();
-		UE_LOG(LogTemp, Warning, TEXT("%lld"), start);
 	}
 	else
 	{
@@ -359,7 +360,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 
-void AFGDefaultPawn::OnOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
@@ -402,7 +403,7 @@ void AFGDefaultPawn::SetRotationOfPlayer()
 	}
 }
 
-void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent * InInputComponent)
+void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent)
 {
 	Super::SetupPlayerInputComponent(InInputComponent);
 
@@ -465,7 +466,6 @@ void AFGDefaultPawn::ReadYAxis(float Value)
 void AFGDefaultPawn::LeftButtonPressed()
 {
 	ButtonsDown |= (1 << (int32)EFGInputButtons::LeftFace);
-	start = GetTimeInMilli();
 	SendInputStream.set(0);
 }
 
@@ -726,7 +726,9 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 	{
 		DisableInput(Cast<APlayerController>(this));
 		stunTimer += deltaSeconds;
-		if (stunTimer >= 2.0F)
+		InputStream.Reset();
+		InputTimeStamps.Reset();
+		if (stunTimer >= 2.0F || !isStunned)
 		{
 			gotHit = false;
 			stunTimer = 0.0F;

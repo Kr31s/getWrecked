@@ -23,15 +23,9 @@ static std::mutex sMutexClientIDList;
 
 enum class SendType
 {
-	None,
-	True,
-	False
-};
-
-enum class ClientStatus
-{
-	None,
-	Offline
+	NoAnswer,
+	NeedAnswer,
+	Answer
 };
 
 enum class Messages

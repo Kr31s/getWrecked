@@ -86,6 +86,29 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 	if (targetCollider) // Check for Valid Cast to UMyHitBoxComponent
 	{
 		Enemy = Cast<AFGDefaultPawn>(targetCollider->GetOwner()->GetAttachParentActor());
+
+
+		//Both player hitting at the same time --> no damage apply
+		if (targetCollider->Etype == EBoxType::Hit)
+		{
+			if (Enemy && Owner) // valid check
+			{
+				if (Owner->Opponent == Enemy) // check if atk collider owner opponent is, targeted collider owner 
+				{
+					if (this->Etype == EBoxType::Hit)
+					{
+						Enemy->gotHit = true;
+						Enemy->RessourceComp->ReduceHealth(0.0F);
+						const FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
+						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Owner->gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
+						GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("Both player hitting each other at the same time"));
+						return;
+					}
+				}
+			}
+
+		}
+
 		if (targetCollider->Etype == EBoxType::Hurt)
 		{
 			if (Enemy && Owner) // valid check
@@ -98,7 +121,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 					{
 					case EBoxType::Hit: // Damage Collider, Place to Apply Damage On the Enemy if isnt Blocking
 
-							if (!Enemy->bIsBlocking/* && Owner->canApplyDamage*/)
+							if (!Enemy->bIsBlocking && Owner->canApplyDamage)
 							{
 								Enemy->gotHit = true;
 								Enemy->RessourceComp->ReduceHealth(Owner->GetCurrentMove()->DamageValue);
@@ -107,10 +130,11 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 
 								const FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
 								UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Owner->gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
+								Owner->canApplyDamage = false;
 							}
 							else
 							{
-								GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EnemyIsBlocking"));
+								GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EnemyIsBlocking Or Just Received Damage"));
 
 							}
 
@@ -135,6 +159,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 				}
 			}
 		}
+
 	}
 }
 void UMyHitBoxComponent::CollisionEndEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
