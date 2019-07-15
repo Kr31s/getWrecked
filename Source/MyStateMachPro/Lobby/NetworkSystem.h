@@ -13,7 +13,13 @@
 #include <bitset>
 #include <vector>
 #include <map>
+#include <mutex>
+#include "BCMessage.h"
 
+static long long GetTimeInMilli()
+{
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
 
 struct GameMessageData
 {
@@ -31,11 +37,12 @@ class NetworkSystem
 {
 public:
 	static NetworkSystem* NetSys;
+	std::mutex sMutexMessageList;
+	std::map<unsigned int, BCMessage> m_messageIDList;
 
-
+	NetAddress serverAddress;
 	AMyStateMachProGameModeBase* m_gameMode;
 	NetSocketUDP socketUDP;
-	NetAddress serverAddress;
 	FMessageReceiveThread* MessageReceiveThread;
 	//FResendMessageThread* ResendMessageThread;
 
@@ -50,6 +57,7 @@ public:
 	unsigned char status = NULL;
 	unsigned short frameValue = 0;
 	unsigned short inputValue = 0;
+
 	std::vector<GameMessageData> gameMessagesRivale{9};
 	std::vector<GameMessageData> gameMessagesPlayer{9};
 
@@ -57,7 +65,7 @@ public:
 
 
 	bool StartingMessageReceiveThread();
-	//bool StartingResendMessageThread();
+	bool StartingResendMessageThread();
 
 	NetworkSystem();
 	~NetworkSystem();
@@ -65,7 +73,8 @@ public:
 	void setGameMode(AMyStateMachProGameModeBase* gameMode);
 
 	void TaskMessageReceiveThread(char* receivearray);
-	//void TaskResendMessageThread(char* receivearray);
+	void TaskResendMessageThread();
+	void GetAnswerMessage(short messageID);
 
 	bool InitNetSystem();
 

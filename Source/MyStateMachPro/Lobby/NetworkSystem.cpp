@@ -11,6 +11,11 @@ bool NetworkSystem::StartingMessageReceiveThread() {
 
 	return false;
 }
+bool NetworkSystem::StartingResendMessageThread()
+{
+	return false;
+}
+
 NetworkSystem::~NetworkSystem()
 {
 }
@@ -54,27 +59,17 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 	identifier = p_receiveArray[0];
 	status = p_receiveArray[1];
 
-	UE_LOG(LogTemp, Warning, TEXT("%d"), (int)identifier);
-	unsigned int frameValue = 0;
-	unsigned short inputValue = 0;
-
 	switch (status)
 	{
-	case 0:
-		break;
-
 	case 1:
 		SendReceiveMessageClient();
 		break;
 	case 2:
 		//the massage we are waiting for can be deleted
-
-		break;
-
-	default:
+		BCMessage::GetReplyMessage(p_receiveArray[45]);
 		break;
 	}
-	
+
 
 
 	switch (identifier)
@@ -117,6 +112,29 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 
 }
 
+void NetworkSystem::TaskResendMessageThread()
+{
+	for (unsigned int i = 0; i < BCMessage::sTotalMessageID; ++i)
+	{
+		sMutexMessageList.lock();
+		if (m_messageIDList.find(i) == m_messageIDList.end())
+		{
+			continue;
+		}
+		if (m_messageIDList.at(i).m_finished)
+		{
+			m_messageIDList.erase(i);
+			continue;
+		}
+		if (GetTimeInMilli() + 150 < m_messageIDList.at(i).m_timeStamp)
+		{
+			socketUDP.Send(serverAddress, m_messageIDList.at(i).m_messageArray, 46);
+			m_messageIDList.at(i).m_finished = true;
+		}
+		sMutexMessageList.unlock();
+	}
+}
+
 void NetworkSystem::ShutdownNetwork()
 {
 	FMessageReceiveThread::threadRuning = false;
@@ -125,6 +143,7 @@ void NetworkSystem::ShutdownNetwork()
 	NetworkSystem::NetSys = nullptr;
 	UE_LOG(LogTemp, Warning, TEXT("Thread Shutdown"));
 }
+
 void NetworkSystem::SendReceiveMessageClient()
 {
 	sendArray[0] = identifier;
@@ -170,6 +189,7 @@ void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FStri
 	sendArray[2] = p_roundValue;
 	//input time settings
 	sendArray[3] = p_timeValue;
+	sendArray[45] = BCMessage(sendArray).m_messageID;
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
 
@@ -198,6 +218,8 @@ void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FStrin
 	sendArray[2] = p_roundValue;
 	//input time settings
 	sendArray[3] = p_timeValue;
+	sendArray[45] = BCMessage(sendArray).m_messageID;
+
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
 
@@ -209,6 +231,7 @@ void NetworkSystem::LeaveRoom()
 		sendArray[0] = 3;
 		sendArray[1] = 0;
 		sendArray[2] = myRoomID;
+		sendArray[45] = BCMessage(sendArray).m_messageID;
 
 		socketUDP.Send(serverAddress, (char*)sendArray, 46);
 	}
@@ -223,16 +246,18 @@ void NetworkSystem::ElementChanged(int& slot1Pos, int& slot2Pos, bool& ready)
 	sendArray[3] = slot1Pos;
 	sendArray[4] = slot2Pos;
 	sendArray[5] = ready;
+	sendArray[45] = BCMessage(sendArray).m_messageID;
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
 void NetworkSystem::PauseGame(bool& stop)
 {
 	sendArray[0] = 8;
+	sendArray[45] = BCMessage(sendArray).m_messageID;
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
-void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
+void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
 {
 	unsigned short temp;
 	sendArray[0] = 10;
@@ -251,6 +276,7 @@ void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 		sendArray[5 + 4 * i] = temp >> 8;
 	}
 
+	sendArray[45] = BCMessage(sendArray).m_messageID;
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
 
@@ -347,7 +373,7 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 		inputVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[4 + 4 * i])) << 8;
 		inputVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[5 + 4 * i]));
 
-		
+
 		if (timeVal - 1 == gameMessagesRivale[i].m_time)
 		{
 			for (; i > -1; --i)

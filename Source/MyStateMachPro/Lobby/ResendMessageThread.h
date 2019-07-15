@@ -16,21 +16,19 @@ class MYSTATEMACHPRO_API FResendMessageThread : public FRunnable
 public:
 	static  FResendMessageThread* Runnable;
 
-	bool threadRuning = true;
+	static bool threadRuning;
 
 	FRunnableThread* Thread;
 
-	FResendMessageThread();
+	FResendMessageThread(NetSocketUDP* clientSocket, char* m_receiveArray);
 	virtual ~FResendMessageThread();
 
 	virtual bool Init();
 	virtual uint32 Run();
+	virtual void Stop();
 
 	void EnsureCompletion();
 
+	static FResendMessageThread* InitThread(NetSocketUDP* clientSocket, char* m_receiveArray);
 	static void Shutdown();
-
-	static bool IsThreadFinished();
-
-private:
 };
