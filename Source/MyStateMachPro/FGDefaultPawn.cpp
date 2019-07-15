@@ -8,6 +8,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Public/MyCameraActor.h"
 #include "MyStateMachProGameModeBase.h"
+#include "Lobby/NetworkSystem.h"
 
 
 void AFGDefaultPawn::DoMovesFromInputStream(std::bitset<12> inputStream)
@@ -20,7 +21,6 @@ void AFGDefaultPawn::DoMovesFromInputStream(std::bitset<12> inputStream)
 	(inputStream[5]) ? this->TriggerLeftPressed() : this->TriggerLeftReleased();
 	(inputStream[6]) ? this->BumperRightPressed() : this->BumperRightReleased();
 	(inputStream[7]) ? this->TriggerRightPressed() : this->TriggerRightReleased();
-
 	(inputStream[8]) ? this->ReadYAxis(1) : (inputStream[9]) ? this->ReadYAxis(-1) : this->ReadYAxis(0);
 	(inputStream[10]) ? this->ReadXAxis(-1) : (inputStream[11]) ? this->ReadXAxis(1) : this->ReadXAxis(0);
 }

@@ -88,7 +88,6 @@ void BCServer::SendData(unsigned int p_clientID, SendType p_status, char* p_data
 #endif
 }
 
-
 void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime)
 {
 	Print("Received \"search for room\" request from: ");

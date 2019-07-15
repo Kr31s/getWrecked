@@ -26,8 +26,6 @@ FMessageReceiveThread::~FMessageReceiveThread()
 //Init
 bool FMessageReceiveThread::Init()
 {
-	m_clientSocket = m_clientSocket;
-
 	return true;
 }
 
