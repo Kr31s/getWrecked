@@ -133,6 +133,10 @@ void UAnimationColliderComponent::StartAnim(UFGMove* CurrentMove)
 void UAnimationColliderComponent::NextColliderSetup()
 {
 	m_state++;
+	if(!Owner)
+	{
+		return;
+	}
 	if (Owner->gotHit)
 	{
 		if (ChildColliderActorRef)

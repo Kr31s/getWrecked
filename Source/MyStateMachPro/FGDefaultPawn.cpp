@@ -47,12 +47,12 @@ void AFGDefaultPawn::BeginPlay()
 	this->GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
 	//this->GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AFGDefaultPawn::ExitOverlap);
 
-	this->GetAllChildActors(ColliderParentsArray, false);
-	for (AActor* Element : ColliderParentsArray)
-	{
-		Element->GetName();
-		//MoveColliderParents[CurrentMove](TEXT("NALP");
-	}
+	//this->GetAllChildActors(ColliderParentsArray, false);
+	//for (AActor* Element : ColliderParentsArray)
+	//{
+	//	Element->GetName();
+	//	//MoveColliderParents[CurrentMove](TEXT("NALP");
+	//}
 
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
@@ -159,7 +159,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				InputDirection = DirectionUpForwardAtom; // Jump Forward
 
 			}
-			if (this->GetMovementComponent()->IsMovingOnGround())
+			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump)
 			{
 				//this->GetMovementComponent()->Velocity = (FVector(-600.0F, 0.0F, 600.0F));
 				doJump = true;
@@ -186,7 +186,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			InputDirection = DirectionUpAtom; // Jump
 			//UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
 			//this->Jump();
-			if (this->GetMovementComponent()->IsMovingOnGround())
+			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump)
 			{
 				//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
 				doJump = true;
@@ -252,7 +252,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			{
 				InputDirection = DirectionUpBackAtom; // Jump Back
 			}
-			if (this->GetMovementComponent()->IsMovingOnGround())
+			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump)
 			{
 				//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
 				doJump = true;
@@ -316,7 +316,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 	}
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
-	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted && GetCharacterMovement()->IsMovingOnGround())
+	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted/* && GetCharacterMovement()->IsMovingOnGround() -- check if everything works as intended*/)
 	{
 
 		UE_LOG(LogTemp, Warning, TEXT("Switching to state %s"), *MoveLinkToFollow.Link->Move->MoveName.ToString());
@@ -352,6 +352,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	
 		TimeInCurrentMove = 0.0f;
 		DoMove(CurrentMove);
+		this->RessourceComp->IncreasePowerMeter(CurrentMove->PowerMeterRaiseValue);
 	}
 	else
 	{
@@ -728,8 +729,9 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 		stunTimer += deltaSeconds;
 		InputStream.Reset();
 		InputTimeStamps.Reset();
-		if (stunTimer >= 2.0F || !isStunned)
+		if (stunTimer >= 2.0F/* || !isStunned*/)
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset GotHit"));
 			gotHit = false;
 			stunTimer = 0.0F;
 		}
