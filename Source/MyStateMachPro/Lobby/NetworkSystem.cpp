@@ -13,6 +13,7 @@ bool NetworkSystem::StartingMessageReceiveThread() {
 }
 bool NetworkSystem::StartingResendMessageThread()
 {
+	ResendMessageThread = FResendMessageThread::InitThread(&socketUDP, m_receiveArray);
 	return false;
 }
 

@@ -43,20 +43,20 @@ void BCMessage::CheckResendMessages(char* p_receiveArray)
 			BCServer::sTheServer->m_messageIDList->erase(i);
 			continue;
 		}
-		sMutexClientIDList.lock();
-		if ((GetTimeInMilli() - BCServer::sTheServer->m_messageIDList->at(i).m_timeStamp) > (BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping + (unsigned char)20))
+		if (BCServer::sTheServer->m_messageIDList->at(i).m_timeStamp + 150 < GetTimeInMilli())
 		{
+			sMutexClientIDList.lock();
 			Println("HearthAtk");
 			Println("first " << GetTimeInMilli() - BCServer::sTheServer->m_messageIDList->at(i).m_timeStamp);
 			Println("second " << (BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping + (unsigned char)20));
-				BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping = 2000000;
+			BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping = 2000000;
 			if (BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).lostHeartBeat(p_receiveArray))
 			{
 				BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_clientID, SendType::NeedAnswer, BCServer::sTheServer->m_messageIDList->at(i).m_messageArray);
 			}
 			BCServer::sTheServer->m_messageIDList->at(i).m_finished = true;
+			sMutexClientIDList.unlock();
 		}
-		sMutexClientIDList.unlock();
 	}
 }
 

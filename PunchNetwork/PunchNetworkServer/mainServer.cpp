@@ -58,14 +58,14 @@ void HeartThread()
 	while (BCServer::sTheServer->m_serverRunning)
 	{
 		sMutexClientIDList.lock();
-		for (int i = 0; i < BCServer::sTheServer->m_clientIDList->size(); ++i)
+		for (int i = 0; i < BCClient::sTotalClientID; ++i)
 		{
 			if (BCServer::sTheServer->m_clientIDList->find(i) == BCServer::sTheServer->m_clientIDList->end()) 
 			{
 				continue;
 			}
 
-			BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, SendType::Answer, heartThreadArray);
+			BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, SendType::NeedAnswer, heartThreadArray);
 
 		}
 		sMutexClientIDList.unlock();
@@ -89,15 +89,14 @@ void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, uns
 		break;
 
 	case 1:
-		//SendReceiveMessageClient();
+		//Go on and send answer
 		break;
 	case 2:
 		BCMessage::GetReplyMessage((int)p_receiveArray[45]);
 		return;
 
-		break;
-
 	default:
+		Println("Wrong message status")
 		break;
 	}
 

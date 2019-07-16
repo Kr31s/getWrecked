@@ -44,7 +44,7 @@ public:
 	AMyStateMachProGameModeBase* m_gameMode;
 	NetSocketUDP socketUDP;
 	FMessageReceiveThread* MessageReceiveThread;
-	//FResendMessageThread* ResendMessageThread;
+	FResendMessageThread* ResendMessageThread;
 
 	char m_receiveArray[46];
 	char sendArray[46];
