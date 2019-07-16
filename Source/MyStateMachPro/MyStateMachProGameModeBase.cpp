@@ -163,6 +163,8 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	player2->RessourceComp->SetHealth(1.0F);
 	player1->RessourceComp->SetStunMeter(0.0F);
 	player2->RessourceComp->SetStunMeter(0.0F);
+	player1->RessourceComp->SetPowerMeter(0.0F);
+	player2->RessourceComp->SetPowerMeter(0.0F);
 	//Reset UI Healthbar
 //	player1->RessourceComp->OnHealthChanged.Broadcast(player1, player1->RessourceComp->Health);
 //	player2->RessourceComp->OnHealthChanged.Broadcast(player2, player2->RessourceComp->Health);
@@ -199,6 +201,15 @@ void AMyStateMachProGameModeBase::CheckOnWhichSidePlayerIs()
 			player2->isOnLeftSide = true;
 		}
 	}
+	if(player1->bCollisionWithOppenent)
+	{
+		//player1->GetCharacterMovement()->Velocity.X = FMath::Clamp(player1->GetCharacterMovement()->Velocity.X + player2->GetCharacterMovement()->Velocity.X, -350.0F, 350.0F);
+	}
+	if(player2->bCollisionWithOppenent)
+	{
+		//player2->GetCharacterMovement()->Velocity.X = FMath::Clamp(player1->GetCharacterMovement()->Velocity.X + player2->GetCharacterMovement()->Velocity.X, -350.0F, 350.0F);
+	}
+
 }
 
 void AMyStateMachProGameModeBase::DetermineMatchWinner()
