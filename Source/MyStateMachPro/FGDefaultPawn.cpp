@@ -44,7 +44,7 @@ void AFGDefaultPawn::BeginPlay()
 	CanMoveInLeftDirection = true;
 	CanMoveInRightDirection = true;
 
-	this->GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AFGDefaultPawn::OnOverlap);
+	this->GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AFGDefaultPawn::OnHit);
 	//this->GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AFGDefaultPawn::ExitOverlap);
 
 	//this->GetAllChildActors(ColliderParentsArray, false);
@@ -361,21 +361,21 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 
-void AFGDefaultPawn::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AFGDefaultPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
 		bCollisionWithOppenent = true;
 		GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Orange, TEXT("ColBEGIN"));
 
+
+		//pAsPawn->GetCharacterMovement()->Velocity.X = FMath::Clamp(this->GetVelocity().X + pAsPawn->GetCharacterMovement()->Velocity.X, -350.0F, 350.0F);
+
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Orange, TEXT("ColBEGIN"));
-
-
 }
 
 
-void AFGDefaultPawn::ExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AFGDefaultPawn::ExitOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };

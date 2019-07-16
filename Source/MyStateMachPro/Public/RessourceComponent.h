@@ -26,7 +26,7 @@ public:
 	}
 	
 	const float GetPowerMeter() { return PowerMeter; }
-	void SetPowerMeter(float powerMeter) { this->PowerMeter= powerMeter; }
+	void SetPowerMeter(float powerMeter) { this->PowerMeter = powerMeter; OnPowerMeterChanged.Broadcast(GetOwner(), this->PowerMeter); }
 
 /*
 	const float GetPowerMeter() { return PowerMeter; }
