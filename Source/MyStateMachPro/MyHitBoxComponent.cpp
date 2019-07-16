@@ -137,11 +137,16 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 								GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EnemyIsBlocking Or Just Received Damage"));
 
 							}
+							if(Enemy->bIsBlocking)
+							{
+								Enemy->gotHit = true;
+							}
 
 						break;
 					case EBoxType::Block:
 						// FIX COLLIDING WITH SELF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 						Enemy->SetCanBlock(true);
+
 
 						//if(this->GetOwner()->GetAttachParentActor() != Owner){						}
 
