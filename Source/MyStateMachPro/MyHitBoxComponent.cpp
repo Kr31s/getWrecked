@@ -184,11 +184,9 @@ void UMyHitBoxComponent::CollisionEndEvent(UPrimitiveComponent* OverlappedCompon
 					switch (Etype)
 					{
 					case EBoxType::Block:
-						if (lastBlockCollider) {
 							Enemy->SetCanBlock(false);
 							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EndOverlapCollision"));
 							break;
-						}
 
 
 					case EBoxType::Hurt:

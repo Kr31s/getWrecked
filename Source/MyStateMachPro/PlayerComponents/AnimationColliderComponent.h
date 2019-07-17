@@ -27,7 +27,9 @@ public:
 		TMap<UFGMove*, TSubclassOf<AActor>> m_MoveToCollider;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		UChildActorComponent* ChildColliderActorRef;
+		UChildActorComponent* RealColliderActorRef;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		UChildActorComponent* ColliderHolderRef;
 	 
 	UPROPERTY()
 		TArray<AActor*> ChildActor;
