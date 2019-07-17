@@ -29,6 +29,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Body")
 		uint8 someValue = 1;
 
+	UPROPERTY(EditAnywhere)
+		bool lastBlockCollider = false;
+
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite , Category = "Body")
 		EBoxType Etype;
 
