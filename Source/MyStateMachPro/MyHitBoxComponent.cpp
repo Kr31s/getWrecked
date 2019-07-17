@@ -12,9 +12,9 @@ UMyHitBoxComponent::UMyHitBoxComponent() {
 	this->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	this->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	if(!IsTemplate()) // IsTemplate avoids calling this code on CDOs (Default Objects)
+	if (!IsTemplate()) // IsTemplate avoids calling this code on CDOs (Default Objects)
 	{
-		
+
 	}
 	// PostInitProperties() --> start straight after constructor (CDO?)
 }
@@ -23,10 +23,10 @@ void UMyHitBoxComponent::PostInitProperties()
 {
 
 	Super::PostInitProperties();
-	this->SetCollisionResponseToChannel(ECC_Visibility,::ECR_Overlap);
-	this->SetCollisionResponseToChannel(ECC_Camera,::ECR_Overlap);
-	this->SetCollisionResponseToChannel(ECC_WorldDynamic,::ECR_Overlap);
-	if (!IsTemplate()) // 
+	this->SetCollisionResponseToChannel(ECC_Visibility, ::ECR_Overlap);
+	this->SetCollisionResponseToChannel(ECC_Camera, ::ECR_Overlap);
+	this->SetCollisionResponseToChannel(ECC_WorldDynamic, ::ECR_Overlap);
+	if (!IsTemplate()) //
 	{
 	}
 
@@ -61,25 +61,26 @@ void UMyHitBoxComponent::PostEditChangeProperty(struct FPropertyChangedEvent& Pr
 
 
 #endif
-// physical collider Missing capsule not a good choice, because of resizing 
+// physical collider Missing capsule not a good choice, because of resizing
 
-// hurt Collision --> the target where everything is applied  
+// hurt Collision --> the target where everything is applied
 // hit Collision applies damage
-// block Collision --> opponent can block react 
+// block Collision --> opponent can block react
 
 #pragma optimize("", off)
 void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	auto* targetCollider = Cast<UMyHitBoxComponent>(OtherComp);
-	if(Cast<AFGDefaultPawn>(OverlappedComponent->GetOwner()->GetAttachParentActor()))
+	if (Cast<AFGDefaultPawn>(OverlappedComponent->GetOwner()->GetAttachParentActor()))
 	{
 		Owner = Cast<AFGDefaultPawn>(OverlappedComponent->GetOwner()->GetAttachParentActor());
 
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, Owner->GetName());
 
-	}else
+	}
+	else
 	{
-		
+
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, Owner->GetName());
 	}
 	//
@@ -93,7 +94,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 		{
 			if (Enemy && Owner) // valid check
 			{
-				if (Owner->Opponent == Enemy) // check if atk collider owner opponent is, targeted collider owner 
+				if (Owner->Opponent == Enemy) // check if atk collider owner opponent is, targeted collider owner
 				{
 					if (this->Etype == EBoxType::Hit)
 					{
@@ -113,33 +114,34 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 		{
 			if (Enemy && Owner) // valid check
 			{
-				if (Owner->Opponent == Enemy) // check if atk collider owner opponent is, targeted collider owner 
+				if (Owner->Opponent == Enemy) // check if atk collider owner opponent is, targeted collider owner
 				{
 
 
 					switch (this->Etype)
 					{
 					case EBoxType::Hit: // Damage Collider, Place to Apply Damage On the Enemy if isnt Blocking
-							if (!Enemy->bIsBlocking && Owner->canApplyDamage)
-							{
-								Enemy->gotHit = true;
-								Enemy->RessourceComp->ReduceHealth(Owner->GetCurrentMove()->DamageValue);
-								Enemy->RessourceComp->IncreaseStunMeter(0.05F);
-								GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
 
-								const FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
-								UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Owner->gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
-								Owner->canApplyDamage = false;
-							}
-							else
-							{
-								GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EnemyIsBlocking Or Just Received Damage"));
+						if (!Enemy->bIsBlocking && Owner->canApplyDamage)
+						{
+							Enemy->gotHit = true;
+							Enemy->RessourceComp->ReduceHealth(Owner->GetCurrentMove()->DamageValue);
+							Enemy->RessourceComp->IncreaseStunMeter(0.05F);
+							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
 
-							}
-							if(Enemy->bIsBlocking)
-							{
-								Enemy->gotHit = true;
-							}
+							const FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
+							UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Owner->gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
+							Owner->canApplyDamage = false;
+						}
+						else
+						{
+							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EnemyIsBlocking Or Just Received Damage"));
+
+						}
+						if (Enemy->bIsBlocking)
+						{
+							Enemy->gotHit = true;
+						}
 
 						break;
 					case EBoxType::Block:
@@ -149,7 +151,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 						//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("BlockBoxCollision"));
 
 						break;
-					
+
 					case EBoxType::Hurt:
 
 						break;
@@ -176,20 +178,25 @@ void UMyHitBoxComponent::CollisionEndEvent(UPrimitiveComponent* OverlappedCompon
 
 			if (Enemy && Owner)
 			{
-				if (Owner->Opponent == Enemy) // check if atk collider owner opponent is, targeted collider owner 
+				if (Owner->Opponent == Enemy) // check if atk collider owner opponent is, targeted collider owner
 				{
+
 					switch (Etype)
 					{
 					case EBoxType::Block:
-						Enemy->SetCanBlock(false);
-						GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EndOverlapCollision"));
-						break;
+						if (lastBlockCollider) {
+							Enemy->SetCanBlock(false);
+							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EndOverlapCollision"));
+							break;
+						}
+
 
 					case EBoxType::Hurt:
 						break;
 					default:
 						break;
 					}
+
 				}
 
 			}

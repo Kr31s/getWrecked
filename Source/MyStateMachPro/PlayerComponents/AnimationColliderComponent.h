@@ -50,7 +50,7 @@ public:
 		void NextColliderSetup();
 
 	UFUNCTION(BlueprintCallable)
-		void DeOrActivateComponents(TArray<UHitBoxIDComp*> ColliderIdComponents, int moveId);
+		void DeOrActivateComponents(UHitBoxIDComp* ColliderIdComponent);
 
 	UFUNCTION(BlueprintCallable)
 		void RemoveCurrentChildActor();

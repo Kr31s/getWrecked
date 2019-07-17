@@ -23,10 +23,12 @@ void UAnimationColliderComponent::BeginPlay()
 	Super::BeginPlay();
 	GetOwner()->GetAllChildActors(ChildActor, false);
 	Owner = Cast<AFGDefaultPawn>(GetOwner());
-	
+
 	ChildColliderActorRef = Cast<UChildActorComponent>(Owner->GetMesh()->GetChildComponent(0));
 	// ...
-	
+	if (!ChildColliderActorRef->GetChildActor()) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("NoChildActor"));
+	}
 }
 
 
@@ -38,101 +40,105 @@ void UAnimationColliderComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	// ...
 }
 
-void UAnimationColliderComponent::DeOrActivateComponents(TArray<UHitBoxIDComp*> ColliderIdComponents, int moveId)
+void UAnimationColliderComponent::DeOrActivateComponents(UHitBoxIDComp* ColliderIdComponent)
 {
-	for(UHitBoxIDComp* IDs : ColliderIdComponents)
+	TArray<AActor*> testo;
+	TArray<USceneComponent*> size;
+	TArray<UMyHitBoxComponent*> testo2;
+
+	ChildColliderActorRef->GetChildActor()->GetAllChildActors(testo, true);
+
+	for (int i = 0; i < testo.Num(); ++i)
 	{
-		if(Owner->gotHit)
+		if (Cast<UHitBoxIDComp>(testo[i]))
 		{
-			if (ChildColliderActorRef)
-			{
-				ChildColliderActorRef->DestroyChildActor();
-				return;
-			}
-
-		}
-
-		if(IDs->GetMoveID() == moveId)
-		{
-			IDs->SetActive(true);
-			TArray<USceneComponent*> NotCastedColliderPerID;
-			IDs->GetChildrenComponents(false, NotCastedColliderPerID);
-			TArray<UPrimitiveComponent*> ColliderPerID;
-			TArray<UMyHitBoxComponent*> CastedToBoxColliderPerID;
-			for (USceneComponent* Collider : NotCastedColliderPerID)
-			{
-				ColliderPerID.Add(Cast<UPrimitiveComponent>(Collider));
-			}
-			for (UPrimitiveComponent* Collider : ColliderPerID)
-			{
-				CastedToBoxColliderPerID.Add(Cast<UMyHitBoxComponent>(Collider));
-			}
-			for(UMyHitBoxComponent* Collider : CastedToBoxColliderPerID)
-			{
-				Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-				//Collider->AddRelativeLocation(FVector(0.5F, 0.0F, 0.0F));
-			}
-		}else
-		{
-			IDs->SetActive(false);
-			TArray<USceneComponent*> NotCastedColliderPerID;
-			IDs->GetChildrenComponents(false, NotCastedColliderPerID);
-			TArray<UPrimitiveComponent*> ColliderPerID;
-			for(USceneComponent* Collider : NotCastedColliderPerID)
-			{
-				ColliderPerID.Add(Cast<UPrimitiveComponent>(Collider));
-			}
-			for(UPrimitiveComponent* Collider : ColliderPerID)
-			{
-				Collider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			}
-			
+			AActor* boom = testo[i];
+			boom->GetAllChildActors(testo, false);
 		}
 	}
 
+	ColliderIdComponent->GetChildrenComponents(false, size);
 
+	for (int i = 0; i < testo.Num(); ++i)
+	{
+		testo2[i] = Cast<UMyHitBoxComponent>(testo[i]);
+	}
+
+	//hitCollider on 0
+	bool Coll = false;
+	for (int i = 0; i < size.Num(); ++i)
+	{
+		if (Cast<UMyHitBoxComponent>(ColliderIdComponent->GetChildComponent(i))->Etype == EBoxType::Hit)
+		{
+			testo2[0] = Cast<UMyHitBoxComponent>(size[i]);
+			Coll = true;
+			break;
+		}
+	}
+	if (!Coll)
+	{
+		testo2[0]->SetRelativeLocation(FVector(0, 2000, -2000));
+	}
+
+	//blockCollider on 1
+	Coll = false;
+	for (int i = 0; i < size.Num(); ++i)
+	{
+		if (Cast<UMyHitBoxComponent>(ColliderIdComponent->GetChildComponent(i))->Etype == EBoxType::Block)
+		{
+			testo2[1] = Cast<UMyHitBoxComponent>(size[i]);
+			Coll = true;
+			break;
+		}
+	}
+	if (!Coll)
+	{
+		testo2[1]->SetRelativeLocation(FVector(0, 2000, -2000));
+	}
+
+	//hurtCollider 2 to 12
+	int lastiD = 0;
+	int counter = 2;
+	for (int i = 0; i < size.Num(); ++i)
+	{
+		if (Cast<UMyHitBoxComponent>(ColliderIdComponent->GetChildComponent(i))->Etype == EBoxType::Hurt)
+		{
+			testo2[counter] = Cast<UMyHitBoxComponent>(size[i]);
+			++counter;
+		}
+		lastiD = i;
+	}
+
+	for (int i = ++lastiD; i < size.Num(); ++i)
+	{
+		testo2[i]->SetRelativeLocation(FVector(0, 2000, -2000));
+	}
 }
 
-void UAnimationColliderComponent::StartAnim(UFGMove* CurrentMove)
+void UAnimationColliderComponent::StartAnim(UFGMove * CurrentMove)
 {
-	if(!ChildColliderActorRef)
+	if (!ChildColliderActorRef)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Green, TEXT("FUCK"));
 		return;
 	}
 
 	this->m_state = 0;
-	auto* owner = Cast<AFGDefaultPawn>(GetOwner());
-	if(owner)
+
+	if (Cast<AFGDefaultPawn>(GetOwner()))
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Black, CurrentMove->MoveName.ToString());
-
-		if(m_MoveToCollider.Find(CurrentMove))
+		if (m_MoveToCollider.Find(CurrentMove))
 		{
-			
-
-			//TSubclassOf<AActor> temp = m_MoveToCollider.Find(CurrentMove);
-
-			ChildColliderActorRef->SetChildActorClass(*m_MoveToCollider.Find(CurrentMove));
-
-			TArray<UHitBoxIDComp*> idComponents;
-			if (ChildColliderActorRef)
-			{
-				for (UActorComponent* IDs : ChildColliderActorRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass()))
-				{
-					idComponents.Add(Cast<UHitBoxIDComp>(IDs));
-				}
-				DeOrActivateComponents(idComponents, m_state);
-			}
+			DeOrActivateComponents(Cast<UHitBoxIDComp>(Cast<AActor>(m_MoveToCollider.Find(CurrentMove)->GetDefaultObject())->GetComponentsByClass(UHitBoxIDComp::StaticClass())[this->m_state]));
 		}
-		
 	}
 }
 
 
 void UAnimationColliderComponent::NextColliderSetup()
 {
-	m_state++;
-	if(!Owner)
+	++m_state;
+	if (!Owner)
 	{
 		return;
 	}
@@ -144,21 +150,12 @@ void UAnimationColliderComponent::NextColliderSetup()
 			return;
 		}
 	}
-	TArray<UHitBoxIDComp*> idComponentsNext;
+
 	if (ChildColliderActorRef)
 	{
-		if(AActor* childActor = ChildColliderActorRef->GetChildActor())
-		{
-			TArray<UActorComponent*> temp = childActor->GetComponentsByClass(UHitBoxIDComp::StaticClass());
+		if (ChildColliderActorRef->GetChildActor()) {
 
-			for (UActorComponent* IDs : temp)
-			{
-				//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Green, TEXT("IFCASE TRUE"));
-
-				idComponentsNext.Add(Cast<UHitBoxIDComp>(IDs));
-			}
-
-			DeOrActivateComponents(idComponentsNext, m_state);
+			DeOrActivateComponents(Cast<UHitBoxIDComp>(ChildColliderActorRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[this->m_state]));
 		}
 	}
 }
