@@ -177,19 +177,6 @@ protected:
 	uint32 ButtonsDown_Old;
 	float TimeInCurrentMove;
 
-
-
-
-	//UPROPERTY(VisibleAnywhere)
-	//	UBoxComponent* PunchL;	
-	//UPROPERTY(VisibleAnywhere)
-	//	UBoxComponent* PunchR;	
-	//UPROPERTY(VisibleAnywhere)
-	//	UBoxComponent* KickL;	
-	//UPROPERTY(VisibleAnywhere)
-	//	UBoxComponent* KickR;
-
-
 	// Input atoms are removed when they pass this age threshold. All moves must be executed in under this time.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float InputExpirationTime;

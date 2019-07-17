@@ -120,7 +120,6 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 					switch (this->Etype)
 					{
 					case EBoxType::Hit: // Damage Collider, Place to Apply Damage On the Enemy if isnt Blocking
-
 							if (!Enemy->bIsBlocking && Owner->canApplyDamage)
 							{
 								Enemy->gotHit = true;
@@ -146,10 +145,6 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 					case EBoxType::Block:
 						// FIX COLLIDING WITH SELF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 						Enemy->SetCanBlock(true);
-
-
-						//if(this->GetOwner()->GetAttachParentActor() != Owner){						}
-
 
 						//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("BlockBoxCollision"));
 

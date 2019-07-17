@@ -112,7 +112,6 @@ void UAnimationColliderComponent::StartAnim(UFGMove* CurrentMove)
 
 			//TSubclassOf<AActor> temp = m_MoveToCollider.Find(CurrentMove);
 
-
 			ChildColliderActorRef->SetChildActorClass(*m_MoveToCollider.Find(CurrentMove));
 
 			TArray<UHitBoxIDComp*> idComponents;

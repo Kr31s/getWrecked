@@ -201,15 +201,6 @@ void AMyStateMachProGameModeBase::CheckOnWhichSidePlayerIs()
 			player2->isOnLeftSide = true;
 		}
 	}
-	if(player1->bCollisionWithOppenent)
-	{
-		//player1->GetCharacterMovement()->Velocity.X = FMath::Clamp(player1->GetCharacterMovement()->Velocity.X + player2->GetCharacterMovement()->Velocity.X, -350.0F, 350.0F);
-	}
-	if(player2->bCollisionWithOppenent)
-	{
-		//player2->GetCharacterMovement()->Velocity.X = FMath::Clamp(player1->GetCharacterMovement()->Velocity.X + player2->GetCharacterMovement()->Velocity.X, -350.0F, 350.0F);
-	}
-
 }
 
 void AMyStateMachProGameModeBase::DetermineMatchWinner()

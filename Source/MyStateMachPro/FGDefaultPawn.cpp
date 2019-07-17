@@ -47,12 +47,6 @@ void AFGDefaultPawn::BeginPlay()
 	this->GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AFGDefaultPawn::OnHit);
 	//this->GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AFGDefaultPawn::ExitOverlap);
 
-	//this->GetAllChildActors(ColliderParentsArray, false);
-	//for (AActor* Element : ColliderParentsArray)
-	//{
-	//	Element->GetName();
-	//	//MoveColliderParents[CurrentMove](TEXT("NALP");
-	//}
 
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
@@ -368,6 +362,8 @@ void AFGDefaultPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 		bCollisionWithOppenent = true;
 		GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Orange, TEXT("ColBEGIN"));
 
+		doJump = false;
+		jumpInitializeFlag = false;
 
 		//pAsPawn->GetCharacterMovement()->Velocity.X = FMath::Clamp(this->GetVelocity().X + pAsPawn->GetCharacterMovement()->Velocity.X, -350.0F, 350.0F);
 
