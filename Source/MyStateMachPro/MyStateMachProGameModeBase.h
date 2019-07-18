@@ -13,12 +13,6 @@
  *
  */
 
-struct matchStats
-{
-	int player1Score = 0;
-	int player2Score = 0;
-};
-
 UENUM(BlueprintType)
 enum class EMatcheTypes : uint8 {
 	BestofOne UMETA(DisplayName = "BestofOne"),
@@ -71,13 +65,13 @@ public:
 		float roundTimer;
 
 	UPROPERTY()
-		float startTimer;	
+		float startTimer;
+
+	UPROPERTY(BlueprintReadWrite)
+		int roundNumber;
 	
 	UPROPERTY(EditAnywhere)
 		float prepTime = 3;
-
-	UPROPERTY()
-		FVector2D matchStanding;
 
 	UFUNCTION()
 		void SetupMatch();
@@ -89,12 +83,28 @@ public:
 	UFUNCTION()
 		void DetermineMatchWinner();
 
-	matchStats Standings;
+	UPROPERTY(BlueprintReadWrite, Category = "Score")
+		int player1Score = 0;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Score")
+		int player2Score = 0;
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTimeChangedSignature, float, newTime);
 	UPROPERTY(BlueprintAssignable)
 		FOnTimeChangedSignature OnTimeChanged;
+
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMatchNumberChangedSignature, int, newNumber);
+	UPROPERTY(BlueprintAssignable)
+		FOnMatchNumberChangedSignature OnMatchNumberChanged;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnP1ScoreChangedSignature, int, newNumber);
+	UPROPERTY(BlueprintAssignable)
+		FOnP1ScoreChangedSignature OnP1ScoreChanged;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnP2ScoreChangedSignature, int, newNumber);
+	UPROPERTY(BlueprintAssignable)
+		FOnP2ScoreChangedSignature OnP2ScoreChanged;
 
 	UFUNCTION()
 	void SetRoundTimer(float deltaSeconds);

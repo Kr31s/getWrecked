@@ -70,7 +70,9 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	player1->isOnLeftSide = true;
 	player2->isOnLeftSide = false;
 	startTimer = prepTime;
-	matchStanding = FVector2D(0, 0);
+	player1Score = 0;
+	player2Score = 0;
+	roundNumber = 1;
 
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
@@ -133,8 +135,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		//player1->K2_DestroyActor();
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
-		Standings.player1Score++;
-		++matchStanding.X;
+		player1Score++;
 		SetupMatch();
 		DetermineMatchWinner();
 	}
@@ -143,8 +144,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		//player2->K2_DestroyActor();
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
-		Standings.player2Score++;
-		++matchStanding.Y;
+		player2Score++;
 		SetupMatch();
 		DetermineMatchWinner();
 
@@ -175,6 +175,7 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	// position need to be changable values in the engine 
 	player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
 	player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
+	++roundNumber;
 }
 
 void AMyStateMachProGameModeBase::CheckOnWhichSidePlayerIs()
@@ -208,31 +209,31 @@ void AMyStateMachProGameModeBase::DetermineMatchWinner()
 	switch (MatchCount)
 	{
 	case EMatcheTypes::BestofOne:
-		if (Standings.player1Score == 1)
+		if (player1Score == 1)
 		{
 			//player 1 wins Complete Match
 		}
-		if (Standings.player2Score == 1)
+		if (player2Score == 1)
 		{
 			//player 2 wins Complete Match
 		}
 		break;
 	case EMatcheTypes::BestofThree:
-		if (Standings.player1Score == 3)
+		if (player1Score == 3)
 		{
 			//player 1 wins Complete Match
 		}
-		if (Standings.player2Score == 3)
+		if (player2Score == 3)
 		{
 			//player 2 wins Complete Match
 		}
 		break;
 	case EMatcheTypes::BestofFive:
-		if (Standings.player1Score == 5)
+		if (player1Score == 5)
 		{
 			//player 1 wins Complete Match
 		}
-		if (Standings.player2Score == 5)
+		if (player2Score == 5)
 		{
 			//player 2 wins Complete Match
 		}
@@ -254,8 +255,7 @@ void AMyStateMachProGameModeBase::RoundTimeOver()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
-		Standings.player1Score++;
-		++matchStanding.X;
+		player1Score++;
 		SetupMatch();
 		DetermineMatchWinner();
 	}
@@ -264,8 +264,7 @@ void AMyStateMachProGameModeBase::RoundTimeOver()
 		//player2->K2_DestroyActor();
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
-		Standings.player2Score++;
-		++matchStanding.Y;
+		player2Score++;
 		SetupMatch();
 		DetermineMatchWinner();
 	}
