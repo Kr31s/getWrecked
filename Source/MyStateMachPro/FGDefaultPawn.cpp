@@ -416,6 +416,20 @@ void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent
 	InInputComponent->BindAction("BottomButton", IE_Released, this, &AFGDefaultPawn::BottomButtonReleased);
 }
 
+void AFGDefaultPawn::checkBlock()
+{
+	if(bCanBlock && DirectionInput.X < 0 && isOnLeftSide)
+	{
+		bIsBlocking = true;
+		return;
+	}
+	if(bCanBlock && DirectionInput.X > 0 && !isOnLeftSide)
+	{
+		bIsBlocking = true;
+		return;
+	}
+}
+
 void AFGDefaultPawn::ReadXAxis(float Value)
 {
 	// Don't care about clamping. We just need to know negative, zero, or positive.

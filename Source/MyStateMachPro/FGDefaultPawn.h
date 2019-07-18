@@ -60,10 +60,17 @@ public:
 		bool bCanBlock;
 
 	UFUNCTION()
-	void SetCanBlock(bool blockState) { this->bCanBlock = blockState; }
+		void SetCanBlock(bool blockState) { this->bCanBlock = blockState; OnCanBlockChanged.Broadcast(this->bCanBlock); }
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCanBlockChangedSignature, bool, newState);
+	UPROPERTY(BlueprintAssignable)
+		FOnCanBlockChangedSignature OnCanBlockChanged;
 
 	UFUNCTION()
 		void SetDirectionInputX(float value) { this->DirectionInput.X = value; }
+
+	UFUNCTION()
+		void checkBlock();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool bIsBlocking;
