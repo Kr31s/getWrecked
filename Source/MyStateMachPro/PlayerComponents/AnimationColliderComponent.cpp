@@ -74,6 +74,7 @@ void UAnimationColliderComponent::DeOrActivateComponents(UHitBoxIDComp* Collider
 	if (!Coll)
 	{
 		realHitBoxes[0]->SetRelativeLocation(FVector(0, 0, -2000));
+		realHitBoxes[0]->SetBoxExtent(FVector::ZeroVector);
 	}
 
 	//blockCollider on 1
@@ -91,6 +92,7 @@ void UAnimationColliderComponent::DeOrActivateComponents(UHitBoxIDComp* Collider
 	if (!Coll)
 	{
 		realHitBoxes[1]->SetRelativeLocation(FVector(0, 0, -2000));
+		realHitBoxes[1]->SetBoxExtent(FVector::ZeroVector);
 	}
 
 	//hurtCollider 2 to 12
@@ -109,17 +111,13 @@ void UAnimationColliderComponent::DeOrActivateComponents(UHitBoxIDComp* Collider
 	for (int i = ++counter; i < realHitBoxes.Num(); ++i)
 	{
 		realHitBoxes[i]->SetRelativeLocation(FVector(0, 0, -2000));
+		realHitBoxes[i]->SetBoxExtent(FVector::ZeroVector);
+
 	}
 }
 
-void UAnimationColliderComponent::StartAnim(UFGMove* CurrentMove)
+void UAnimationColliderComponent::StartAnim(UFGMove * CurrentMove)
 {
-	FVector a = Cast<UHitBoxIDComp>(RealColliderActorRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[0])->GetChildComponent(3)->GetRelativeTransform().GetLocation();
-
-	UE_LOG(LogTemp, Warning, TEXT("X %f"), a.X);
-	UE_LOG(LogTemp, Warning, TEXT("Y %f"), a.Z);
-	UE_LOG(LogTemp, Warning, TEXT("Z %f"), a.X);
-
 	if (!RealColliderActorRef && !ColliderHolderRef)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Green, TEXT("FUCK"));
@@ -159,8 +157,7 @@ void UAnimationColliderComponent::NextColliderSetup()
 	{
 		if (RealColliderActorRef->GetChildActor()) {
 
-
-			DeOrActivateComponents(Cast<UHitBoxIDComp>(ColliderHolderRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[this->m_state]));
+			DeOrActivateComponents(Cast<UHitBoxIDComp>(ColliderHolderRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[FMath::Clamp(this->m_state, 0, ColliderHolderRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass()).Num() - 1)]));
 
 			//DeOrActivateComponents(Cast<UHitBoxIDComp>(RealColliderActorRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[this->m_state]));
 		}

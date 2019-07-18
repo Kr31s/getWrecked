@@ -50,7 +50,6 @@ void AMyCameraActor::Tick(float DeltaSeconds)
 		
 		SetActorRotation(TargetRota);
 		float distance = FMath::Abs(P1L.X - P2L.X);
-		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, FString::SanitizeFloat(distance));
 		if(distance > 85.0F)
 		{
 			PlayerOne->bCollisionWithOppenent = false;
