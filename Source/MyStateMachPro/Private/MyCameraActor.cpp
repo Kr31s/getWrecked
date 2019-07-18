@@ -50,7 +50,6 @@ void AMyCameraActor::Tick(float DeltaSeconds)
 		
 		SetActorRotation(TargetRota);
 		float distance = FMath::Abs(P1L.X - P2L.X);
-		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, FString::SanitizeFloat(distance));
 		if(distance > 85.0F)
 		{
 			PlayerOne->bCollisionWithOppenent = false;
@@ -61,8 +60,9 @@ void AMyCameraActor::Tick(float DeltaSeconds)
 			if((PlayerOne->GetVelocity().X > 340 || PlayerOne->GetVelocity().X < -340) && (PlayerTwo->GetVelocity().X > 340 || PlayerTwo->GetVelocity().X < -340)){
 				return;
 			}
-			PlayerOne->SetActorLocation(PlayerOne->GetActorLocation() + FVector(FMath::Sign(PlayerTwo->GetVelocity().X) * 3.0F, 0, 0));
-			PlayerTwo->SetActorLocation(PlayerTwo->GetActorLocation() + FVector(FMath::Sign(PlayerOne->GetVelocity().X) * 3.0F, 0, 0));
+			if(PlayerOne->CurrentMove/* != "Idle"*/)
+			PlayerOne->SetActorLocation(PlayerOne->GetActorLocation() + FVector(FMath::Sign(PlayerTwo->GetVelocity().X) * 2.5F, 0, 0));
+			PlayerTwo->SetActorLocation(PlayerTwo->GetActorLocation() + FVector(FMath::Sign(PlayerOne->GetVelocity().X) * 2.5F, 0, 0));
 		}
 	}
 }

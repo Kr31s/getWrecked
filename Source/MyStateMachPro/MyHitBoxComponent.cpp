@@ -102,7 +102,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 						Enemy->RessourceComp->ReduceHealth(0.0F);
 						const FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
 						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Owner->gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
-						GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("Both player hitting each other at the same time"));
+						//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("Both player hitting each other at the same time"));
 						return;
 					}
 				}
@@ -127,7 +127,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 							Enemy->gotHit = true;
 							Enemy->RessourceComp->ReduceHealth(Owner->GetCurrentMove()->DamageValue);
 							Enemy->RessourceComp->IncreaseStunMeter(0.05F);
-							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
+							//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
 
 							const FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
 							UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Owner->gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
@@ -135,7 +135,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 						}
 						else
 						{
-							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EnemyIsBlocking Or Just Received Damage"));
+							//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EnemyIsBlocking Or Just Received Damage"));
 
 						}
 						if (Enemy->bIsBlocking)
@@ -185,7 +185,7 @@ void UMyHitBoxComponent::CollisionEndEvent(UPrimitiveComponent* OverlappedCompon
 					{
 					case EBoxType::Block:
 							Enemy->SetCanBlock(false);
-							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EndOverlapCollision"));
+							//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EndOverlapCollision"));
 							break;
 
 
