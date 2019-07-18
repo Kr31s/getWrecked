@@ -591,99 +591,6 @@ void AFGDefaultPawn::UseGameCamera()
 	}
 	// Try again next frame. Currently, there's no limit to how many times we'll do this.
 	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
-
-	/*
-	 *
-	void AFGDefaultPawn::ReadInputstream(unsigned short p_keyInput)
-	{
-		std::bitset<12> inputArray(p_keyInput);
-		if (inputArray[0])
-		{
-			this->LeftButtonPressed();
-		}
-		else {
-			this->LeftButtonReleased();
-		}
-		if (inputArray[1])
-		{
-			this->TopButtonPressed();
-		}
-		else {
-			this->TopButtonReleased();
-		}
-		if (inputArray[2])
-		{
-			this->RightButtonPressed();
-		}
-		else {
-			this->RightButtonReleased();
-		}
-		if (inputArray[3])
-		{
-			this->BottomButtonPressed();
-		}
-		else {
-			this->BottomButtonReleased();
-		}
-		if (inputArray[4])
-		{
-			this->BumperLeftPressed();
-		}
-		else {
-			this->BumperLeftReleased();
-		}
-		if (inputArray[5])
-		{
-			this->TriggerLeftPressed();
-		}
-		else {
-			this->TriggerLeftReleased();
-		}
-		if (inputArray[6])
-		{
-			this->BumperRightPressed()
-		}
-		else {
-			this->BumperRightReleased()
-		}
-		if (inputArray[7])
-		{
-			this->TriggerRightPressed()
-		}
-		else {
-			this->TriggerRightReleased()
-		}
-		if (inputArray[8])
-		{
-			this->ReadYAxis(1)
-		}
-		else {
-			this->ReadYAxis(0)
-		}
-		if (inputArray[9])
-		{
-			this->ReadYAxis(-1)
-		}
-		else {
-			this->ReadYAxis(0)
-		}
-		if (inputArray[10])
-		{
-			this->ReadXAxis(1)
-		}
-		else {
-			this->ReadXAxis(0)
-		}
-		if (inputArray[11])
-		{
-			this->ReadXAxis(-1)
-		}
-		else {
-			this->ReadXAxis(0)
-		}
-	}
-	 */
-
 }
 
 
@@ -707,7 +614,6 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 	if (timeInJump <= jumpDuration)
 	{
 		timeInJump += time;
-		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(timeInJump / jumpDuration));
 		float curveValue = DiagonalCurve->GetFloatValue(timeInJump / jumpDuration);
 
 
@@ -715,16 +621,14 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 
 		
 		
-		//dfösohsfapsduhgpwsdahfgjöklsdhfölgsdöklgöklsdjfölgjsdölfgNEW
-		this->SetActorLocation(FVector(jumpTargetLocation.X, 0.0F, jumpStartLocation.Z + (jumpHeight * curveValue)));
-		/*if (this->CanMoveInLeftDirection && this->CanMoveInRightDirection)
+		if (this->CanMoveInLeftDirection && this->CanMoveInRightDirection)
 		{
 			this->SetActorLocation(FVector(jumpTargetLocation.X, 0.0F, jumpStartLocation.Z + (jumpHeight * curveValue)));
 		}
 		else
 		{
 			this->SetActorLocation(FVector(this->GetActorLocation().X, 0.0F, jumpStartLocation.Z + (jumpHeight * curveValue)));
-		}*/
+		}
 	}
 	else
 	{
@@ -733,8 +637,6 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		jumpInitializeFlag = false;
 		doJump = false;
 	}
-
-	MovementRestrictionComp->TickComponent();
 }
 void AFGDefaultPawn::HandleStun(float deltaSeconds)
 {
