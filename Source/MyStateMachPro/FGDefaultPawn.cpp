@@ -362,11 +362,7 @@ void AFGDefaultPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 		bCollisionWithOppenent = true;
 		GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Orange, TEXT("ColBEGIN"));
 
-		doJump = false;
-		jumpInitializeFlag = false;
-
 		//pAsPawn->GetCharacterMovement()->Velocity.X = FMath::Clamp(this->GetVelocity().X + pAsPawn->GetCharacterMovement()->Velocity.X, -350.0F, 350.0F);
-
 	}
 }
 
@@ -616,11 +612,8 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		timeInJump += time;
 		float curveValue = DiagonalCurve->GetFloatValue(timeInJump / jumpDuration);
 
-
 		jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
 
-		
-		
 		if (this->CanMoveInLeftDirection && this->CanMoveInRightDirection)
 		{
 			this->SetActorLocation(FVector(jumpTargetLocation.X, 0.0F, jumpStartLocation.Z + (jumpHeight * curveValue)));
@@ -629,6 +622,21 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		{
 			this->SetActorLocation(FVector(this->GetActorLocation().X, 0.0F, jumpStartLocation.Z + (jumpHeight * curveValue)));
 		}
+
+		// Push opponent Away do land on destination point
+		if ((timeInJump / jumpDuration) > 0.8 && bCollisionWithOppenent)
+		{
+			//opponent left from me 
+			if (this->GetActorLocation().X > Opponent->GetActorLocation().X)
+			{
+				Opponent->SetActorLocation(FVector(Opponent->GetActorLocation().X - 15.0F, Opponent->GetActorLocation().Y, Opponent->GetActorLocation().Z));
+			}
+			else //opponent right from me
+			{
+				Opponent->SetActorLocation(FVector(Opponent->GetActorLocation().X + 15.0F, Opponent->GetActorLocation().Y, Opponent->GetActorLocation().Z));
+			}
+		}
+		this->GetMovementComponent()->Velocity = FVector(0.0F, 0.0F, 0.0F);
 	}
 	else
 	{
@@ -636,6 +644,8 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 
 		jumpInitializeFlag = false;
 		doJump = false;
+		timeInJump = 0;
+
 	}
 }
 void AFGDefaultPawn::HandleStun(float deltaSeconds)
