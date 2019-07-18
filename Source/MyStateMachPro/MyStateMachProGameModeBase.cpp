@@ -66,7 +66,7 @@ void AMyStateMachProGameModeBase::StartPlay() {
 
 	player1->Opponent = UGameplayStatics::GetPlayerCharacter(this, 1);
 	player2->Opponent = UGameplayStatics::GetPlayerCharacter(this, 0);
-
+	player1->master = true;
 	player1->isOnLeftSide = true;
 	player2->isOnLeftSide = false;
 	startTimer = prepTime;
