@@ -48,6 +48,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Id;
+	bool master = false;
 
 
 	UPROPERTY(EditAnywhere)

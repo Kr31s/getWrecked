@@ -699,14 +699,18 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 
 		jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
 
-		if (this->CanMoveInLeftDirection && this->CanMoveInRightDirection)
+		
+		
+		//dfösohsfapsduhgpwsdahfgjöklsdhfölgsdöklgöklsdjfölgjsdölfgNEW
+		this->SetActorLocation(FVector(jumpTargetLocation.X, 0.0F, jumpStartLocation.Z + (jumpHeight * curveValue)));
+		/*if (this->CanMoveInLeftDirection && this->CanMoveInRightDirection)
 		{
 			this->SetActorLocation(FVector(jumpTargetLocation.X, 0.0F, jumpStartLocation.Z + (jumpHeight * curveValue)));
 		}
 		else
 		{
 			this->SetActorLocation(FVector(this->GetActorLocation().X, 0.0F, jumpStartLocation.Z + (jumpHeight * curveValue)));
-		}
+		}*/
 	}
 	else
 	{
@@ -715,8 +719,9 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		jumpInitializeFlag = false;
 		doJump = false;
 	}
-}
 
+	MovementRestrictionComp->TickComponent();
+}
 void AFGDefaultPawn::HandleStun(float deltaSeconds)
 {
 	if (isStunned || gotHit)
@@ -738,7 +743,6 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 		EnableInput(Cast<APlayerController>(this));
 	}
 }
-
 void AFGDefaultPawn::CrouchValues(bool inCrouch)
 {
 	if (inCrouch)
@@ -752,7 +756,6 @@ void AFGDefaultPawn::CrouchValues(bool inCrouch)
 		GetCapsuleComponent()->SetCapsuleRadius(40.0F, true);
 	}
 }
-
 void AFGDefaultPawn::MoveColliderSwitch()
 {
 	//MoveColliderParents[CurrentMove]->SetActive(true);
