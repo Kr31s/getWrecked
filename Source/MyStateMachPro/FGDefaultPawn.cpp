@@ -621,8 +621,8 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 
 
 
-		if (this->CanMoveInLeftDirection && directionmodifier >= 0
-			|| this->CanMoveInRightDirection && directionmodifier <= 0)
+		if (this->CanMoveInLeftDirection && directionmodifier <= 0
+			|| this->CanMoveInRightDirection && directionmodifier >= 0)
 		{
 			this->SetActorLocation(FVector(jumpTargetLocation.X, 0.0F, jumpStartLocation.Z + (jumpHeight * curveValue)));
 		}
@@ -658,7 +658,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 }
 int AFGDefaultPawn::DirectionSign()
 {
-	return FMath::Sign(this->DirectionInput.X);
+	return directionmodifier;
 }
 
 void AFGDefaultPawn::HandleStun(float deltaSeconds)
