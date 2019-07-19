@@ -10,6 +10,9 @@
 /**
  * 
  */
+
+class AFGDefaultPawn;
+
 UCLASS()
 class MYSTATEMACHPRO_API AMyCameraActor : public ACameraActor
 {
@@ -22,10 +25,10 @@ public:
 	//virtual void BeginPlay() override;
 
 	UPROPERTY()
-		AActor* PlayerOne;
+		AFGDefaultPawn* PlayerOne;
 
 	UPROPERTY()
-		AActor* PlayerTwo;
+		AFGDefaultPawn* PlayerTwo;
 
 	UPROPERTY(EditAnywhere)
 		float YValueHowCloseToPlayer;
@@ -44,4 +47,5 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float YawRotaModifier;
+
 };

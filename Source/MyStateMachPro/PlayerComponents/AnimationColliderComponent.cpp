@@ -12,7 +12,7 @@ UAnimationColliderComponent::UAnimationColliderComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-	ChildColliderActorRef = nullptr;
+	RealColliderActorRef = nullptr;
 	// ...
 }
 
@@ -22,11 +22,14 @@ void UAnimationColliderComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	GetOwner()->GetAllChildActors(ChildActor, false);
-	AFGDefaultPawn* Owner = Cast<AFGDefaultPawn>(GetOwner());
-	
-	ChildColliderActorRef = Cast<UChildActorComponent>(Owner->GetMesh()->GetChildComponent(0));
+	Owner = Cast<AFGDefaultPawn>(GetOwner());
+
+	RealColliderActorRef = Cast<UChildActorComponent>(Owner->GetMesh()->GetChildComponent(0));
+	ColliderHolderRef = Cast<UChildActorComponent>(Owner->GetMesh()->GetChildComponent(1));
 	// ...
-	
+	if (!RealColliderActorRef->GetChildActor()) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("NoChildActor"));
+	}
 }
 
 
@@ -38,106 +41,125 @@ void UAnimationColliderComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	// ...
 }
 
-void UAnimationColliderComponent::DeOrActivateComponents(TArray<UHitBoxIDComp*> ColliderIdComponents, int moveId)
+void UAnimationColliderComponent::DeOrActivateComponents(UHitBoxIDComp* ColliderIdComponent)
 {
-	for(UHitBoxIDComp* IDs : ColliderIdComponents)
+	UHitBoxIDComp* RealCollID;
+	TArray<USceneComponent*> sceneCompHolder;
+	TArray<UMyHitBoxComponent*> realHitBoxes;
+
+	RealCollID = Cast<UHitBoxIDComp>(RealColliderActorRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[0]);
+	RealCollID->GetChildrenComponents(false, sceneCompHolder);
+
+	for (int i = 0; i < sceneCompHolder.Num(); ++i)
 	{
-		if(IDs->GetMoveID() == moveId)
+		realHitBoxes.Add(Cast<UMyHitBoxComponent>(sceneCompHolder[i]));
+	}
+
+	sceneCompHolder = TArray<USceneComponent*>();
+	ColliderIdComponent->GetChildrenComponents(false, sceneCompHolder);
+
+	//hitCollider on 0
+	bool Coll = false;
+	for (int i = 0; i < sceneCompHolder.Num(); ++i)
+	{
+		if (Cast<UMyHitBoxComponent>(ColliderIdComponent->GetChildComponent(i))->Etype == EBoxType::Hit)
 		{
-			IDs->SetActive(true);
-			TArray<USceneComponent*> NotCastedColliderPerID;
-			IDs->GetChildrenComponents(false, NotCastedColliderPerID);
-			TArray<UPrimitiveComponent*> ColliderPerID;
-			TArray<UMyHitBoxComponent*> CastedToBoxColliderPerID;
-			for (USceneComponent* Collider : NotCastedColliderPerID)
-			{
-				ColliderPerID.Add(Cast<UPrimitiveComponent>(Collider));
-			}
-			for (UPrimitiveComponent* Collider : ColliderPerID)
-			{
-				CastedToBoxColliderPerID.Add(Cast<UMyHitBoxComponent>(Collider));
-			}
-			for(UMyHitBoxComponent* Collider : CastedToBoxColliderPerID)
-			{
-				Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-				//Collider->AddRelativeLocation(FVector(0.5F, 0.0F, 0.0F));
-			}
-		}else
+			realHitBoxes[0]->SetRelativeTransform(Cast<UMyHitBoxComponent>(sceneCompHolder[i])->GetRelativeTransform());
+			realHitBoxes[0]->SetBoxExtent(Cast<UMyHitBoxComponent>(sceneCompHolder[i])->GetScaledBoxExtent());
+
+			Coll = true;
+			break;
+		}
+	}
+	if (!Coll)
+	{
+		realHitBoxes[0]->SetRelativeLocation(FVector(0, 0, -2000));
+		realHitBoxes[0]->SetBoxExtent(FVector::ZeroVector);
+	}
+
+	//blockCollider on 1
+	Coll = false;
+	for (int i = 0; i < sceneCompHolder.Num(); ++i)
+	{
+		if (Cast<UMyHitBoxComponent>(ColliderIdComponent->GetChildComponent(i))->Etype == EBoxType::Block)
 		{
-			IDs->SetActive(false);
-			TArray<USceneComponent*> NotCastedColliderPerID;
-			IDs->GetChildrenComponents(false, NotCastedColliderPerID);
-			TArray<UPrimitiveComponent*> ColliderPerID;
-			for(USceneComponent* Collider : NotCastedColliderPerID)
-			{
-				ColliderPerID.Add(Cast<UPrimitiveComponent>(Collider));
-			}
-			for(UPrimitiveComponent* Collider : ColliderPerID)
-			{
-				Collider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			}
-			
+			realHitBoxes[1]->SetRelativeTransform(Cast<UMyHitBoxComponent>(sceneCompHolder[i])->GetRelativeTransform());
+			realHitBoxes[1]->SetBoxExtent(Cast<UMyHitBoxComponent>(sceneCompHolder[i])->GetScaledBoxExtent());
+			Coll = true;
+			break;
+		}
+	}
+	if (!Coll)
+	{
+		realHitBoxes[1]->SetRelativeLocation(FVector(0, 0, -2000));
+		realHitBoxes[1]->SetBoxExtent(FVector::ZeroVector);
+	}
+
+	//hurtCollider 2 to 12
+	int counter = 2;
+	for (int i = 0; i < sceneCompHolder.Num(); ++i)
+	{
+		if (Cast<UMyHitBoxComponent>(ColliderIdComponent->GetChildComponent(i))->Etype == EBoxType::Hurt)
+		{
+			realHitBoxes[counter]->SetRelativeTransform(Cast<UMyHitBoxComponent>(sceneCompHolder[i])->GetRelativeTransform());
+			realHitBoxes[counter]->SetBoxExtent(Cast<UMyHitBoxComponent>(sceneCompHolder[i])->GetScaledBoxExtent());
+
+			++counter;
 		}
 	}
 
+	for (int i = ++counter; i < realHitBoxes.Num(); ++i)
+	{
+		realHitBoxes[i]->SetRelativeLocation(FVector(0, 0, -2000));
+		realHitBoxes[i]->SetBoxExtent(FVector::ZeroVector);
 
+	}
 }
 
-void UAnimationColliderComponent::StartAnim(UFGMove* CurrentMove)
+void UAnimationColliderComponent::StartAnim(UFGMove * CurrentMove)
 {
-	if(!ChildColliderActorRef)
+	if (!RealColliderActorRef && !ColliderHolderRef)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Green, TEXT("FUCK"));
 		return;
 	}
 
 	this->m_state = 0;
-	auto* owner = Cast<AFGDefaultPawn>(GetOwner());
-	if(owner)
+
+	if (Cast<AFGDefaultPawn>(GetOwner()))
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Black, CurrentMove->MoveName.ToString());
-
-		if(m_MoveToCollider.Find(CurrentMove))
+		if (m_MoveToCollider.Find(CurrentMove))
 		{
-			
-
-			//TSubclassOf<AActor> temp = m_MoveToCollider.Find(CurrentMove);
-
-
-			ChildColliderActorRef->SetChildActorClass(*m_MoveToCollider.Find(CurrentMove));
-
-			TArray<UHitBoxIDComp*> idComponents;
-			if (ChildColliderActorRef)
-			{
-				for (UActorComponent* IDs : ChildColliderActorRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass()))
-				{
-					idComponents.Add(Cast<UHitBoxIDComp>(IDs));
-				}
-				DeOrActivateComponents(idComponents, m_state);
-			}
+			ColliderHolderRef->SetChildActorClass(*m_MoveToCollider.Find(CurrentMove));
+			DeOrActivateComponents(Cast<UHitBoxIDComp>(ColliderHolderRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[this->m_state]));
 		}
-		
 	}
 }
 
 
 void UAnimationColliderComponent::NextColliderSetup()
 {
-	m_state++;
-	TArray<UHitBoxIDComp*> idComponentsNext;
-	if (ChildColliderActorRef)
+	++m_state;
+	if (!Owner)
 	{
-		if(AActor* childActor = ChildColliderActorRef->GetChildActor())
+		return;
+	}
+	if (Owner->gotHit)
+	{
+		if (RealColliderActorRef)
 		{
-			TArray<UActorComponent*> temp = childActor->GetComponentsByClass(UHitBoxIDComp::StaticClass());
+			//RealColliderActorRef->DestroyChildActor();
+			return;
+		}
+	}
 
-			for (UActorComponent* IDs : temp)
-			{
-				//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Green, TEXT("IFCASE TRUE"));
+	if (RealColliderActorRef)
+	{
+		if (RealColliderActorRef->GetChildActor()) {
 
-				idComponentsNext.Add(Cast<UHitBoxIDComp>(IDs));
-			}
+			DeOrActivateComponents(Cast<UHitBoxIDComp>(ColliderHolderRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[FMath::Clamp(this->m_state, 0, ColliderHolderRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass()).Num() - 1)]));
 
-			DeOrActivateComponents(idComponentsNext, m_state);
+			//DeOrActivateComponents(Cast<UHitBoxIDComp>(RealColliderActorRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[this->m_state]));
 		}
 	}
 }
@@ -145,9 +167,9 @@ void UAnimationColliderComponent::NextColliderSetup()
 
 void UAnimationColliderComponent::RemoveCurrentChildActor()
 {
-	if (ChildColliderActorRef)
+	if (RealColliderActorRef)
 	{
-		ChildColliderActorRef->DestroyChildActor();
+		//RealColliderActorRef->DestroyChildActor();
 	}
 }
 #pragma optimize("", on)

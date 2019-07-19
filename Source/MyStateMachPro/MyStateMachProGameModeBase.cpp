@@ -6,7 +6,7 @@
 #include "Public/MyCameraActor.h"
 #include "Kismet/GameplayStatics.h"
 
-unsigned int AMyStateMachProGameModeBase::sFrameCounter = 0;
+unsigned int AMyStateMachProGameModeBase::sFrameCounter = 1;
 
 AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 {
@@ -25,6 +25,16 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 }
 
 
+void AMyStateMachProGameModeBase::BeginDestroy() {
+	Super::BeginDestroy();
+	GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("startdown"));
+	AMyStateMachProGameModeBase::sFrameCounter = 1;
+	if (NetworkSystem::NetSys != nullptr) {
+
+		NetworkSystem::NetSys->ShutdownNetwork();
+		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("down"));
+	}
+}
 void AMyStateMachProGameModeBase::StartPlay() {
 
 	Super::StartPlay();
@@ -56,11 +66,13 @@ void AMyStateMachProGameModeBase::StartPlay() {
 
 	player1->Opponent = UGameplayStatics::GetPlayerCharacter(this, 1);
 	player2->Opponent = UGameplayStatics::GetPlayerCharacter(this, 0);
-
+	player1->master = true;
 	player1->isOnLeftSide = true;
 	player2->isOnLeftSide = false;
 	startTimer = prepTime;
-	matchStanding = FVector2D(0, 0);
+	player1Score = 0;
+	player2Score = 0;
+	roundNumber = 1;
 
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
@@ -69,7 +81,16 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	{
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 		++AMyStateMachProGameModeBase::sFrameCounter;
-		
+
+		player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[0].m_input));
+		/*for(int i = 0; i<9;++i)
+		{
+			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter) {
+				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_time));
+			}
+			break;
+		}
+				UE_LOG(LogTemp, Warning, TEXT("error"));*/
 	}
 	if (startTimer >= 0) {
 		startTimer -= DeltaSeconds;
@@ -79,10 +100,21 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player2->AddMovementInput(player2->GetActorForwardVector(), 0.0F);
 		player1->doJump = false;
 		player2->doJump = false;
-		player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
-		player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
-		player1->isOnLeftSide = true;
-		player2->isOnLeftSide = false;
+		if (NetworkSystem::NetSys != nullptr && NetworkSystem::NetSys->roomOwner)
+		{
+
+			player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
+			player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
+			player1->isOnLeftSide = true;
+			player2->isOnLeftSide = false;
+		}
+		else {
+
+			player2->SetActorLocation(FVector(-230, 0.0F, 100.0F));
+			player1->SetActorLocation(FVector(230, 0.0F, 100.0F));
+			player2->isOnLeftSide = true;
+			player1->isOnLeftSide = false;
+		}
 		//player1->GetMesh()->SetRelativeScale3D(FVector(1.0F, -1.0F, 1.0F));
 		//player2->GetMesh()->SetRelativeScale3D(FVector(1.0F, 1.0F, 1.0F));
 		roundTimer = roundTime;
@@ -103,8 +135,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		//player1->K2_DestroyActor();
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
-		Standings.player1Score++;
-		++matchStanding.X;
+		player1Score++;
+		OnP1ScoreChanged.Broadcast(player1Score);
 		SetupMatch();
 		DetermineMatchWinner();
 	}
@@ -113,8 +145,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		//player2->K2_DestroyActor();
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
-		Standings.player2Score++;
-		++matchStanding.Y;
+		player2Score++;
+		OnP2ScoreChanged.Broadcast(player2Score);
 		SetupMatch();
 		DetermineMatchWinner();
 
@@ -122,16 +154,6 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	if (roundTimer <= 0.0F)
 	{
 		RoundTimeOver();
-	}
-}
-void AMyStateMachProGameModeBase::BeginDestroy() {
-	Super::BeginDestroy();
-	GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("startdown"));
-
-	if (NetworkSystem::NetSys != nullptr) {
-
-		NetworkSystem::NetSys->ShutdownNetwork();
-		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("down"));
 	}
 }
 
@@ -143,6 +165,8 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	player2->RessourceComp->SetHealth(1.0F);
 	player1->RessourceComp->SetStunMeter(0.0F);
 	player2->RessourceComp->SetStunMeter(0.0F);
+	player1->RessourceComp->SetPowerMeter(0.0F);
+	player2->RessourceComp->SetPowerMeter(0.0F);
 	//Reset UI Healthbar
 //	player1->RessourceComp->OnHealthChanged.Broadcast(player1, player1->RessourceComp->Health);
 //	player2->RessourceComp->OnHealthChanged.Broadcast(player2, player2->RessourceComp->Health);
@@ -153,6 +177,8 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	// position need to be changable values in the engine 
 	player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
 	player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
+	++roundNumber;
+	OnMatchNumberChanged.Broadcast(roundNumber);
 }
 
 void AMyStateMachProGameModeBase::CheckOnWhichSidePlayerIs()
@@ -186,31 +212,31 @@ void AMyStateMachProGameModeBase::DetermineMatchWinner()
 	switch (MatchCount)
 	{
 	case EMatcheTypes::BestofOne:
-		if (Standings.player1Score == 1)
+		if (player1Score == 1)
 		{
 			//player 1 wins Complete Match
 		}
-		if (Standings.player2Score == 1)
+		if (player2Score == 1)
 		{
 			//player 2 wins Complete Match
 		}
 		break;
 	case EMatcheTypes::BestofThree:
-		if (Standings.player1Score == 3)
+		if (player1Score == 3)
 		{
 			//player 1 wins Complete Match
 		}
-		if (Standings.player2Score == 3)
+		if (player2Score == 3)
 		{
 			//player 2 wins Complete Match
 		}
 		break;
 	case EMatcheTypes::BestofFive:
-		if (Standings.player1Score == 5)
+		if (player1Score == 5)
 		{
 			//player 1 wins Complete Match
 		}
-		if (Standings.player2Score == 5)
+		if (player2Score == 5)
 		{
 			//player 2 wins Complete Match
 		}
@@ -232,8 +258,8 @@ void AMyStateMachProGameModeBase::RoundTimeOver()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
-		Standings.player1Score++;
-		++matchStanding.X;
+		player1Score++;
+		OnP1ScoreChanged.Broadcast(player1Score);
 		SetupMatch();
 		DetermineMatchWinner();
 	}
@@ -242,8 +268,8 @@ void AMyStateMachProGameModeBase::RoundTimeOver()
 		//player2->K2_DestroyActor();
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
-		Standings.player2Score++;
-		++matchStanding.Y;
+		player2Score++;
+		OnP2ScoreChanged.Broadcast(player2Score);
 		SetupMatch();
 		DetermineMatchWinner();
 	}

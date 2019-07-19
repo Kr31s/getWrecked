@@ -28,7 +28,7 @@ class MYSTATEMACHPRO_API AFGDefaultPawn : public ACharacter
 public: 
 
 	std::bitset<12> SendInputStream;
-
+	void DoMovesFromInputStream(std::bitset<12> inputStream);
 
 	AFGDefaultPawn();
 	virtual void BeginPlay() override;
@@ -48,6 +48,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Id;
+	bool master = false;
 
 
 	UPROPERTY(EditAnywhere)
@@ -60,10 +61,17 @@ public:
 		bool bCanBlock;
 
 	UFUNCTION()
-	void SetCanBlock(bool blockState) { this->bCanBlock = blockState; }
+		void SetCanBlock(bool blockState) { this->bCanBlock = blockState; OnCanBlockChanged.Broadcast(this->bCanBlock); }
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCanBlockChangedSignature, bool, newState);
+	UPROPERTY(BlueprintAssignable)
+		FOnCanBlockChangedSignature OnCanBlockChanged;
 
 	UFUNCTION()
 		void SetDirectionInputX(float value) { this->DirectionInput.X = value; }
+
+	UFUNCTION()
+		void checkBlock();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool bIsBlocking;
@@ -80,7 +88,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool isOnLeftSide;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isStunned;
 
 	// jump Variables 
@@ -148,6 +156,8 @@ public:
 	//UFUNCTION()
 	//	void ReadInputstream();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Moves")
+		UFGMove* CurrentMove;
 protected:
 	void LeftButtonPressed();
 	void LeftButtonReleased();
@@ -174,20 +184,6 @@ protected:
 	uint32 ButtonsDown;
 	uint32 ButtonsDown_Old;
 	float TimeInCurrentMove;
-
-
-	UPROPERTY(EditAnywhere, Category = "Moves")
-	UFGMove* CurrentMove;
-
-	//UPROPERTY(VisibleAnywhere)
-	//	UBoxComponent* PunchL;	
-	//UPROPERTY(VisibleAnywhere)
-	//	UBoxComponent* PunchR;	
-	//UPROPERTY(VisibleAnywhere)
-	//	UBoxComponent* KickL;	
-	//UPROPERTY(VisibleAnywhere)
-	//	UBoxComponent* KickR;
-
 
 	// Input atoms are removed when they pass this age threshold. All moves must be executed in under this time.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -228,19 +224,19 @@ protected:
 	void DoMove(UFGMove* NewMove);
 
 	UFUNCTION()
-		void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UFUNCTION()
-		void ExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void ExitOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+		TArray<USM_InputAtom*> InputStream;
 
 private:
 	//~ This array relates to InputStream. InputStream must not be updated without this stream being updated as well.
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<float> InputTimeStamps;
 
-	UPROPERTY(VisibleInstanceOnly)
-	TArray<USM_InputAtom*> InputStream;
 
 
 	UFUNCTION()
@@ -254,8 +250,3 @@ private:
 	//TArray<USM_InputAtom*> RecievedInputStream;
 	long long start;
 };
-
-static long long GetTimeInMilli()
-{
-	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-}

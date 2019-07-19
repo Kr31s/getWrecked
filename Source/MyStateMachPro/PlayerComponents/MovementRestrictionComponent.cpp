@@ -32,7 +32,7 @@ void UMovementRestrictionComponent::BeginPlay()
 // Called every frame
 void UMovementRestrictionComponent::TickComponent()
 {
-	if (Self && Enemy)
+	if (Self && Enemy && Cast<AFGDefaultPawn>(Self)->master)
 	{
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Self) };
 		FVector P1L = Self->GetActorLocation();
@@ -62,11 +62,7 @@ void UMovementRestrictionComponent::TickComponent()
 			pAsPawn->CanMoveInRightDirection = true;
 
 		}
-	
 	}
-	
-	
-	// ...
 }
 
 void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick TickType,

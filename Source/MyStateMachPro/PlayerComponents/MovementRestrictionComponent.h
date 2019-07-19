@@ -44,6 +44,7 @@ protected:
 public:	
 	// Called every frame
 	void TickComponent();
+	void PositionToBorderCheck();
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

@@ -27,7 +27,9 @@ public:
 		TMap<UFGMove*, TSubclassOf<AActor>> m_MoveToCollider;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		UChildActorComponent* ChildColliderActorRef;
+		UChildActorComponent* RealColliderActorRef;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		UChildActorComponent* ColliderHolderRef;
 	 
 	UPROPERTY()
 		TArray<AActor*> ChildActor;
@@ -35,6 +37,9 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	UPROPERTY()
+		AFGDefaultPawn* Owner;
 
 public:	
 	// Called every frame
@@ -47,7 +52,7 @@ public:
 		void NextColliderSetup();
 
 	UFUNCTION(BlueprintCallable)
-		void DeOrActivateComponents(TArray<UHitBoxIDComp*> ColliderIdComponents, int moveId);
+		void DeOrActivateComponents(UHitBoxIDComp* ColliderIdComponent);
 
 	UFUNCTION(BlueprintCallable)
 		void RemoveCurrentChildActor();

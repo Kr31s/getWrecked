@@ -58,16 +58,15 @@ void HeartThread()
 	while (BCServer::sTheServer->m_serverRunning)
 	{
 		sMutexClientIDList.lock();
-		for (int i = 0; i < BCServer::sTheServer->m_clientIDList->size(); ++i)
+		for (int i = 0; i < BCClient::sTotalClientID; ++i)
 		{
-			if (BCServer::sTheServer->m_clientIDList->find(i) == BCServer::sTheServer->m_clientIDList->end()) {
+			if (BCServer::sTheServer->m_clientIDList->find(i) == BCServer::sTheServer->m_clientIDList->end()) 
+			{
 				continue;
 			}
 
-			if (BCServer::sTheServer->m_clientIDList->at(i).m_clientStatus != ClientStatus::Offline)
-			{
-				BCServer::sTheServer->SendDataBCM(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, SendType::False, heartThreadArray);
-			}
+			BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, SendType::NeedAnswer, heartThreadArray);
+
 		}
 		sMutexClientIDList.unlock();
 
@@ -84,8 +83,25 @@ void NonServerMessage()
 
 void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime, unsigned int& p_intValue)
 {
-	if (p_receiveArray[1] == 0)
+	switch (p_receiveArray[1])
 	{
+	case 0:
+		break;
+
+	case 1:
+		//Go on and send answer
+		break;
+	case 2:
+		BCMessage::GetReplyMessage((int)p_receiveArray[45]);
+		return;
+
+	default:
+		Println("Wrong message status")
+		break;
+	}
+
+
+	
 		switch (MessageOfIndex(p_receiveArray[0]))
 		{
 		case Messages::RoomRequest:
@@ -107,16 +123,12 @@ void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, uns
 			BCServer::sTheServer->GameMessage(p_receiveAddress, p_receiveArray, p_intValue);
 			break;
 
-
 		default:
 			NonServerMessage();
 			break;
 		}
-	}
-	else
-	{
-		BCMessage::GetReplyMessage((int)p_receiveArray[45]);
-	}
+	
+	
 }
 
 unsigned long long GetTriangleNummber(unsigned long long value)
@@ -133,7 +145,7 @@ unsigned long long GetTriangleNummber(unsigned long long value)
 int main()
 {
 
-	BCServer::sTheServer = new BCServer(4405, true);
+	BCServer::sTheServer = new BCServer(4023, true);
 
 	std::thread t1(ServerThread);
 	std::thread t2(MessageThread);

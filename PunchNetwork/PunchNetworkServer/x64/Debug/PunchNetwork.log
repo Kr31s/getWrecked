@@ -1,5 +1,10 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(411,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (PunchNetwork.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  mainServer.cpp
+  BCMessage.cpp
 E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20): warning C4305: 'initializing': truncation from 'int' to 'unsigned char'
 E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20): warning C4309: 'initializing': truncation of constant value
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(17): warning C4018: '<=': signed/unsigned mismatch
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(35): warning C4018: '<': signed/unsigned mismatch
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(52): warning C4305: '=': truncation from 'int' to 'unsigned char'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(52): warning C4309: '=': truncation of constant value
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(72): warning C4244: '=': conversion from '__int64' to 'unsigned char', possible loss of data
   PunchNetwork.vcxproj -> E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe

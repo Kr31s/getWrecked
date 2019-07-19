@@ -13,7 +13,13 @@
 #include <bitset>
 #include <vector>
 #include <map>
+#include <mutex>
+#include "BCMessage.h"
 
+static long long GetTimeInMilli()
+{
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
 
 struct GameMessageData
 {
@@ -31,13 +37,14 @@ class NetworkSystem
 {
 public:
 	static NetworkSystem* NetSys;
+	std::mutex sMutexMessageList;
+	std::map<unsigned int, BCMessage> m_messageIDList;
 
-
+	NetAddress serverAddress;
 	AMyStateMachProGameModeBase* m_gameMode;
 	NetSocketUDP socketUDP;
-	NetAddress serverAddress;
 	FMessageReceiveThread* MessageReceiveThread;
-	//FResendMessageThread* ResendMessageThread;
+	FResendMessageThread* ResendMessageThread;
 
 	char m_receiveArray[46];
 	char sendArray[46];
@@ -50,6 +57,7 @@ public:
 	unsigned char status = NULL;
 	unsigned short frameValue = 0;
 	unsigned short inputValue = 0;
+
 	std::vector<GameMessageData> gameMessagesRivale{9};
 	std::vector<GameMessageData> gameMessagesPlayer{9};
 
@@ -57,7 +65,7 @@ public:
 
 
 	bool StartingMessageReceiveThread();
-	//bool StartingResendMessageThread();
+	bool StartingResendMessageThread();
 
 	NetworkSystem();
 	~NetworkSystem();
@@ -65,7 +73,8 @@ public:
 	void setGameMode(AMyStateMachProGameModeBase* gameMode);
 
 	void TaskMessageReceiveThread(char* receivearray);
-	//void TaskResendMessageThread(char* receivearray);
+	void TaskResendMessageThread();
+	void GetAnswerMessage(short messageID);
 
 	bool InitNetSystem();
 
@@ -83,14 +92,15 @@ public:
 	void GameMessage(std::bitset<12>& inputStream);
 
 	//MessagesToReceive
-	void RoomRequestAnswer(unsigned char& status, char* receiveArray);
+	void RoomRequestAnswer(char* receiveArray);
 	void RoomJoin(char* receiveArray);
-	void CreateRoomAnswer(unsigned char& status, char* receiveArray);
-	void LeaveRoomAnswer(unsigned char& status, char* p_receiveArray);
+	void CreateRoomAnswer(char* receiveArray);
+	void LeaveRoomAnswer(char* p_receiveArray);
 	void OpponentLeftRoom(char* receiveArray);
 	void Hearthbeat(char* receiveArray);
 	void ElementUpdate(char* receiveArray);
-	void PauseGameUpdate(unsigned char& status, char* receiveArray);
+	void PauseGameUpdate(char* receiveArray);
 	void OppentGameMessage(char* receiveArray);
+	void StartGame();
 };
 

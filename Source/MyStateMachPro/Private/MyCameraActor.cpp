@@ -3,6 +3,7 @@
 #include "MyCameraActor.h"
 #include "MyStateMachPro.h"
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
+#include "FGDefaultPawn.h"
 
 AMyCameraActor::AMyCameraActor()
 {
@@ -46,9 +47,26 @@ void AMyCameraActor::Tick(float DeltaSeconds)
 		FRotator TargetRota = FMath::RInterpTo(GetActorRotation(), FRotator(/*Pitch*/ + ZDistance/*InPitch*/, (-90.0f + PlayerOne->GetVelocity().X/ YawRotaModifier) + (PlayerTwo->GetVelocity().X / YawRotaModifier)/*InYaw*/, 0.0f/*InRoll*/), DeltaSeconds, InterpModifier);
 		
 		//SetActorRotation(FRotator(Pitch + ZDistance/*InPitch*/, (- 90.0f)/*InYaw*/, 0.0f/*InRoll*/));
-
+		
 		SetActorRotation(TargetRota);
+		float distance = FMath::Abs(P1L.X - P2L.X);
+		if(distance > 85.0F)
+		{
+			PlayerOne->bCollisionWithOppenent = false;
+			PlayerTwo->bCollisionWithOppenent = false;
+		}
+		if(PlayerOne->bCollisionWithOppenent && PlayerTwo->bCollisionWithOppenent && !PlayerOne->doJump && !PlayerTwo->doJump)
+		{
+			if((PlayerOne->GetVelocity().X > 340 || PlayerOne->GetVelocity().X < -340) && (PlayerTwo->GetVelocity().X > 340 || PlayerTwo->GetVelocity().X < -340)){
+				return;
+			}
+			if(PlayerOne->CurrentMove/* != "Idle"*/)
+			PlayerOne->SetActorLocation(PlayerOne->GetActorLocation() + FVector(FMath::Sign(PlayerTwo->GetVelocity().X) * 2.5F, 0, 0));
+			PlayerTwo->SetActorLocation(PlayerTwo->GetActorLocation() + FVector(FMath::Sign(PlayerOne->GetVelocity().X) * 2.5F, 0, 0));
+		}
 	}
 }
+
+
 
 
