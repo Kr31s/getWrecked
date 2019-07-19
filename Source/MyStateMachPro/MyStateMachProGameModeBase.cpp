@@ -66,7 +66,7 @@ void AMyStateMachProGameModeBase::StartPlay() {
 
 	player1->Opponent = UGameplayStatics::GetPlayerCharacter(this, 1);
 	player2->Opponent = UGameplayStatics::GetPlayerCharacter(this, 0);
-
+	player1->master = true;
 	player1->isOnLeftSide = true;
 	player2->isOnLeftSide = false;
 	startTimer = prepTime;
@@ -136,6 +136,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
 		player1Score++;
+		OnP1ScoreChanged.Broadcast(player1Score);
 		SetupMatch();
 		DetermineMatchWinner();
 	}
@@ -145,6 +146,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
 		player2Score++;
+		OnP2ScoreChanged.Broadcast(player2Score);
 		SetupMatch();
 		DetermineMatchWinner();
 
@@ -176,6 +178,7 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
 	player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
 	++roundNumber;
+	OnMatchNumberChanged.Broadcast(roundNumber);
 }
 
 void AMyStateMachProGameModeBase::CheckOnWhichSidePlayerIs()
@@ -256,6 +259,7 @@ void AMyStateMachProGameModeBase::RoundTimeOver()
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
 		player1Score++;
+		OnP1ScoreChanged.Broadcast(player1Score);
 		SetupMatch();
 		DetermineMatchWinner();
 	}
@@ -265,6 +269,7 @@ void AMyStateMachProGameModeBase::RoundTimeOver()
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
 		player2Score++;
+		OnP2ScoreChanged.Broadcast(player2Score);
 		SetupMatch();
 		DetermineMatchWinner();
 	}

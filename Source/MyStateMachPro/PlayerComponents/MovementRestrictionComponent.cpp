@@ -36,43 +36,34 @@ void UMovementRestrictionComponent::TickComponent()
 	{
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Self) };
 		FVector P1L = Self->GetActorLocation();
-		FVector P2L = Enemy->GetActorLocation();
-		float playerDistance = Self->GetDistanceTo(Enemy);
-		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Green, FString::SanitizeFloat(playerDistance));
-		FMath::Clamp(P1L.X, -300.0F, 300.0F);
-		if (P1L.X < P2L.X && playerDistance >= MaxDistanceFromMiddle) {
-			float LeftEdge = ((P1L.X + P2L.X) * 0.5F) - ((MaxDistanceFromMiddle) / 2);
+		float LeftEdge = ((P1L.X + Enemy->GetActorLocation().X) * 0.5F) - ((MaxDistanceFromMiddle) / 2);
+		float RightEdge = ((P1L.X + Enemy->GetActorLocation().X) * 0.5F) + ((MaxDistanceFromMiddle) / 2);
+
+		if (P1L.X <= LeftEdge) {
 			pAsPawn->CanMoveInLeftDirection = false;
-
-			Self->SetActorLocation(FVector(LeftEdge, P1L.Y, P1L.Z));
-
+			//Self->SetActorLocation(FVector(LeftEdge, P1L.Y, P1L.Z));
 		}
 		else
 		{
 			pAsPawn->CanMoveInLeftDirection = true;
 
 		}
-		if (P1L.X > P2L.X && playerDistance >= MaxDistanceFromMiddle) {
-			float RightEdge = ((P1L.X + P2L.X) * 0.5F) + ((MaxDistanceFromMiddle) / 2);
+		if (P1L.X >= RightEdge) {
 			pAsPawn->CanMoveInRightDirection = false;
-			Self->SetActorLocation(FVector(RightEdge, P1L.Y, P1L.Z));
+			//Self->SetActorLocation(FVector(RightEdge, P1L.Y, P1L.Z));
 		}
 		else
 		{
 			pAsPawn->CanMoveInRightDirection = true;
 
 		}
-	
 	}
-	
-	
-	// ...
 }
 
 void UMovementRestrictionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	FActorComponentTickFunction* ThisTickFunction)
 {
-	if(Self && Enemy)
+	if (Self && Enemy)
 	{
 		Self->SetActorLocation(FVector(FMath::Clamp(Self->GetActorLocation().X, LeftMapEnd, RightMapEnd), 0.0F, Self->GetActorLocation().Z));
 		TickComponent();
