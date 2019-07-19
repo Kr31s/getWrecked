@@ -649,7 +649,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		jumpInitializeFlag = false;
 		doJump = false;
 		timeInJump = 0;
-
+		
 	}
 }
 void AFGDefaultPawn::HandleStun(float deltaSeconds)
