@@ -92,8 +92,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		}
 				UE_LOG(LogTemp, Warning, TEXT("error"));*/
 	}
-	if (startTimer >= 0) {
-		startTimer -= DeltaSeconds;
+	if (startTimer == 3.0f) {
 		player1->isStunned = true;
 		player2->isStunned = true;
 		player1->AddMovementInput(player1->GetActorForwardVector(), 0.0F);
@@ -102,7 +101,6 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player2->doJump = false;
 		if (NetworkSystem::NetSys != nullptr && NetworkSystem::NetSys->roomOwner)
 		{
-
 			player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
 			player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
 			player1->isOnLeftSide = true;
@@ -120,12 +118,18 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		roundTimer = roundTime;
 		player1->SetDirectionInputX(0.0F);
 		player2->SetDirectionInputX(0.0F);
+	}
+
+	if (startTimer > 0.0f) 
+	{
+		startTimer -= DeltaSeconds;
 		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Magenta, FString::SanitizeFloat(startTimer));
 		return;
 	}
-
+	
 	player1->isStunned = false;
 	player2->isStunned = false;
+	
 	//roundTimer -= DeltaSeconds;
 	SetRoundTimer(DeltaSeconds);
 	CheckOnWhichSidePlayerIs();

@@ -13,7 +13,6 @@
 #include <chrono>
 #include "FGDefaultPawn.generated.h"
 
-
 class UFGDirectionalInputAtom;
 class UFGButtonInputAtom;
 class UFGMove;
@@ -149,6 +148,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		UFGMove* GetCurrentMove();
 
+	UFUNCTION(BlueprintCallable)
+		int DirectionSign();
+
 	UFUNCTION()
 		void SetRotationOfPlayer();
 
@@ -246,6 +248,8 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 	void DiagonalJump(float direction, FVector position, float time, float Height, float Distance);
+
+	
 	//UPROPERTY(VisibleInstanceOnly)
 	//TArray<USM_InputAtom*> RecievedInputStream;
 	long long start;
