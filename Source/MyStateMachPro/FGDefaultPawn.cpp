@@ -314,7 +314,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	{
 
 		UE_LOG(LogTemp, Warning, TEXT("Switching to state %s"), *MoveLinkToFollow.Link->Move->MoveName.ToString());
-		
+
 		if (MoveLinkToFollow.Link->bClearInput || MoveLinkToFollow.Link->Move->bClearInputOnEntry || CurrentMove->bClearInputOnExit)
 		{
 			InputStream.Reset();
@@ -338,12 +338,12 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 		// Set and start the new move.
 		CurrentMove = MoveLinkToFollow.Link->Move;
-		if(this == UGameplayStatics::GetPlayerCharacter(this, 0))
+		if (this == UGameplayStatics::GetPlayerCharacter(this, 0))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("CurrentMove: %s"), *CurrentMove->MoveName.ToString());
 			UE_LOG(LogTemp, Warning, TEXT("CurrentMove: %s"), *CurrentMove->GetName());
 		}
-	
+
 		TimeInCurrentMove = 0.0f;
 		DoMove(CurrentMove);
 		this->RessourceComp->IncreasePowerMeter(CurrentMove->PowerMeterRaiseValue);
@@ -355,13 +355,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 
-void AFGDefaultPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AFGDefaultPawn::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
 		bCollisionWithOppenent = true;
 		GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Orange, TEXT("ColBEGIN"));
-		if(doJump && pAsPawn->doJump)
+		if (doJump && pAsPawn->doJump)
 		{
 			doJump = false;
 			jumpInitializeFlag = false;
@@ -371,7 +371,7 @@ void AFGDefaultPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 }
 
 
-void AFGDefaultPawn::ExitOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void AFGDefaultPawn::ExitOverlap(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
@@ -400,7 +400,7 @@ void AFGDefaultPawn::SetRotationOfPlayer()
 	}
 }
 
-void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent)
+void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent * InInputComponent)
 {
 	Super::SetupPlayerInputComponent(InInputComponent);
 
@@ -418,12 +418,12 @@ void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent
 
 void AFGDefaultPawn::checkBlock()
 {
-	if(bCanBlock && DirectionInput.X < 0 && isOnLeftSide)
+	if (bCanBlock && DirectionInput.X < 0 && isOnLeftSide)
 	{
 		bIsBlocking = true;
 		return;
 	}
-	if(bCanBlock && DirectionInput.X > 0 && !isOnLeftSide)
+	if (bCanBlock && DirectionInput.X > 0 && !isOnLeftSide)
 	{
 		bIsBlocking = true;
 		return;
@@ -603,7 +603,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		return;
 	}
 
-	if (!jumpInitializeFlag) // change to while ?
+	if (!jumpInitializeFlag)
 	{
 		timeInJump = 0;
 		jumpStartLocation = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
@@ -618,7 +618,11 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 
 		jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
 
-		if (this->CanMoveInLeftDirection && this->CanMoveInRightDirection)
+
+
+
+		if (this->CanMoveInLeftDirection && directionmodifier <= 0
+			|| this->CanMoveInRightDirection && directionmodifier >= 0)
 		{
 			this->SetActorLocation(FVector(jumpTargetLocation.X, 0.0F, jumpStartLocation.Z + (jumpHeight * curveValue)));
 		}
@@ -649,9 +653,14 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		jumpInitializeFlag = false;
 		doJump = false;
 		timeInJump = 0;
-
+		
 	}
 }
+int AFGDefaultPawn::DirectionSign()
+{
+	return directionmodifier;
+}
+
 void AFGDefaultPawn::HandleStun(float deltaSeconds)
 {
 	if (isStunned || gotHit)

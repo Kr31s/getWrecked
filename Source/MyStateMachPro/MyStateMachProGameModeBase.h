@@ -65,6 +65,9 @@ public:
 		float roundTimer;
 
 	UPROPERTY()
+		bool scoreFlag;
+
+	UPROPERTY()
 		float startTimer;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -76,6 +79,14 @@ public:
 	UFUNCTION()
 		void SetupMatch();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float transitiontime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float transitionMaxDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float transitionSpeed;
 
 	UFUNCTION()
 		void CheckOnWhichSidePlayerIs();

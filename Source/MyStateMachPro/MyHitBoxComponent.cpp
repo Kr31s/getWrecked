@@ -127,11 +127,14 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 							Enemy->gotHit = true;
 							Enemy->RessourceComp->ReduceHealth(Owner->GetCurrentMove()->DamageValue);
 							Enemy->RessourceComp->IncreaseStunMeter(0.05F);
-							//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
+							Owner->CustomTimeDilation = 0.1F;
+							Enemy->CustomTimeDilation = 0.1F;
+							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
 
 							const FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
 							UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Owner->gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
 							Owner->canApplyDamage = false;
+
 						}
 						else
 						{
@@ -186,12 +189,15 @@ void UMyHitBoxComponent::CollisionEndEvent(UPrimitiveComponent* OverlappedCompon
 					{
 					case EBoxType::Block:
 							Enemy->SetCanBlock(false);
+							
 							//Enemy->checkBlock();
 							//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EndOverlapCollision"));
 							break;
 
 
-					case EBoxType::Hurt:
+					case EBoxType::Hit:
+						Owner->CustomTimeDilation = 1.0F;
+						Enemy->CustomTimeDilation = 1.0F;
 						break;
 					default:
 						break;
