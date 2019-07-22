@@ -54,7 +54,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
 		void RivalLeaveMessage();
 	UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
-		void UpdateLobbyValues(bool owner, int slot1Pos, int slot2Pos, bool ready);
+		void UpdateLobbyValues(int slot1Pos, int slot2Pos, bool ready);
 	UFUNCTION(BlueprintImplementableEvent, Category = "ServerMessages")
 		void StartGame();
 
