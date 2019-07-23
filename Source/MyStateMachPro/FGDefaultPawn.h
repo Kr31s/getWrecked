@@ -88,6 +88,8 @@ public:
 		bool isOnLeftSide;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		bool playerWon = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int movingForward = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

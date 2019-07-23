@@ -21,7 +21,8 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 
 	//startTimer = 3.0F;
 	MatchCount = EMatcheTypes::BestofOne;
-	transitionMaxDuration = 3.0F;
+	transitionMaxDuration = 6.0F;
+	slowmotionMaxDuration = 3.0F;
 	transitionSpeed = 0.1F;
 }
 
@@ -125,37 +126,33 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player2->SetDirectionInputX(0.0F);
 	}
 
-	if (startTimer > 0.0f) 
-	{
-		startTimer -= DeltaSeconds;
-		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Magenta, FString::SanitizeFloat(startTimer));
-		return;
-	}
 
-	
+
 	//roundTimer -= DeltaSeconds;
-	SetRoundTimer(DeltaSeconds);
 	CheckOnWhichSidePlayerIs();
 
 	if (player1->RessourceComp->Health <= 0.0F)
 	{
 		//player1->K2_DestroyActor();
-		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
-		if(!scoreFlag)
+		if (!scoreFlag)
 		{
 			player2Score++;
+			player2->playerWon = true;
 			scoreFlag = true;
 		}
 		OnP2ScoreChanged.Broadcast(player2Score);
 
-			
+
 		while (transitiontime < transitionMaxDuration) {
-				transitiontime += DeltaSeconds;
-				//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, TEXT("WHILE-TRANSITION"));
+			transitiontime += DeltaSeconds;
+			//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, TEXT("WHILE-TRANSITION"));
+			if (transitiontime < slowmotionMaxDuration)
+			{
 				player1->CustomTimeDilation = transitionSpeed;
 				player2->CustomTimeDilation = transitionSpeed;
-				return;
+			}
+			return;
 		}
 
 		SetupMatch();
@@ -170,21 +167,34 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		if (!scoreFlag)
 		{
 			player1Score++;
+			player1->playerWon = true;
 			scoreFlag = true;
 		}
 		OnP1ScoreChanged.Broadcast(player1Score);
-			
+
 		while (transitiontime < transitionMaxDuration) {
 			transitiontime += DeltaSeconds;
-			player1->CustomTimeDilation = transitionSpeed;
-			player2->CustomTimeDilation = transitionSpeed;
+			if (transitiontime < slowmotionMaxDuration)
+			{
+				player1->CustomTimeDilation = transitionSpeed;
+				player2->CustomTimeDilation = transitionSpeed;
+			}
 			return;
-		} 
+		}
 
 		SetupMatch();
 		DetermineMatchWinner();
 		transitiontime = 0;
 	}
+	SetRoundTimer(DeltaSeconds);
+
+	if (startTimer > 0.0f)
+	{
+		startTimer -= DeltaSeconds;
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Magenta, FString::SanitizeFloat(startTimer));
+		return;
+	}
+
 	if (roundTimer <= 0.0F)
 	{
 		RoundTimeOver();
@@ -198,7 +208,8 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	roundTimer = roundTime;
 	player1->CustomTimeDilation = 1.0F;
 	player2->CustomTimeDilation = 1.0F;
-
+	player1->playerWon = false;
+	player2->playerWon = false;
 	player1->RessourceComp->SetHealth(1.0F);
 	player2->RessourceComp->SetHealth(1.0F);
 	player1->RessourceComp->SetStunMeter(0.0F);
@@ -294,7 +305,7 @@ void AMyStateMachProGameModeBase::RoundTimeOver()
 {
 	if (player1->RessourceComp->Health > player2->RessourceComp->Health)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
 		player1Score++;
 		OnP1ScoreChanged.Broadcast(player1Score);
@@ -304,7 +315,7 @@ void AMyStateMachProGameModeBase::RoundTimeOver()
 	else
 	{
 		//player2->K2_DestroyActor();
-		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
 		player2Score++;
 		OnP2ScoreChanged.Broadcast(player2Score);

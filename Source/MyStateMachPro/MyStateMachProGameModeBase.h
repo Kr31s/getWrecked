@@ -58,6 +58,12 @@ public:
 	UPROPERTY()
 		AFGDefaultPawn* player1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		FString player1Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		FString player2Name;
+
 	UPROPERTY()
 		AFGDefaultPawn* player2;
 
@@ -84,6 +90,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float transitionMaxDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float slowmotionMaxDuration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float transitionSpeed;
