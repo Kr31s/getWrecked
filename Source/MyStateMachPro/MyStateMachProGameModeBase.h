@@ -27,6 +27,11 @@ class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 
 
 public:
+	static int m_roundVal;
+	static int m_timeVal;
+	static FString m_opponentName;//FString(UTF8_TO_TCHAR(opponentName))
+	static FString m_playerName;
+
 
 	static unsigned int sFrameCounter;
 

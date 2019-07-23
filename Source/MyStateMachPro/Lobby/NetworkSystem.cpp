@@ -2,7 +2,6 @@
 #include "MyUserWidget.h"
 #include "MyStateMachProGameModeBase.h"
 
-#include <array>
 
 NetworkSystem* NetworkSystem::NetSys = NULL;
 
@@ -164,25 +163,6 @@ void NetworkSystem::ClearReceiveArray()
 
 void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FString& p_name)
 {
-	m_roundVal = p_roundValue;
-
-	switch (p_timeValue)
-	{
-	case 0:
-		m_timeVal = 60;
-		break;
-	case 1:
-		m_timeVal = 90;
-		break;
-	case 2:
-		m_timeVal = 120;
-		break;
-
-	default:
-		break;
-	}
-
-
 	UE_LOG(LogTemp, Warning, TEXT("RoomRequest"));
 	//charInput Name
 	char* result = TCHAR_TO_ANSI(*p_name);
@@ -214,24 +194,6 @@ void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FStri
 }
 void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FString& p_name)
 {
-	m_roundVal = p_roundValue;
-
-	switch (p_timeValue)
-	{
-	case 0:
-		m_timeVal = 60;
-		break;
-	case 1:
-		m_timeVal = 90;
-		break;
-	case 2:
-		m_timeVal = 120;
-		break;
-
-	default:
-		break;
-	}
-
 	UE_LOG(LogTemp, Warning, TEXT("CreateRoom"));
 	char* result = TCHAR_TO_ANSI(*p_name);
 
@@ -321,8 +283,7 @@ void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
 	{
 		for (int i = 0; (i < 20); ++i)
 		{
-			m_opponentName[i] = p_receiveArray[i + 5];
-			UE_LOG(LogTemp, Warning, TEXT("%c"), m_opponentName[i]);
+			AMyStateMachProGameModeBase::m_opponentName[i] = p_receiveArray[i + 5];
 		}
 
 		myRoomID = p_receiveArray[3];
@@ -337,14 +298,12 @@ void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
 
 
 	UMyUserWidget::myUserWidget->JoinRoomMessage((bool)status, FString(UTF8_TO_TCHAR(m_opponentName)));
-
 }
 void NetworkSystem::RoomJoin(char* p_receiveArray)
 {
 	for (int i = 0; (i < 20); ++i)
 	{
-		m_opponentName[i] = p_receiveArray[i + 2];
-		UE_LOG(LogTemp, Warning, TEXT("Letters %c"), m_opponentName[i]);
+		AMyStateMachProGameModeBase::m_opponentName[i] = p_receiveArray[i + 2];
 	}
 	UMyUserWidget::myUserWidget->RivalJoinMessage(FString(UTF8_TO_TCHAR(m_opponentName)));
 	UE_LOG(LogTemp, Warning, TEXT("RivalJoinMessage"));

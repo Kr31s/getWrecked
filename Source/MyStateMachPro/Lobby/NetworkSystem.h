@@ -36,10 +36,6 @@ class AMyStateMachProGameModeBase;
 class NetworkSystem
 {
 public:
-	int m_roundVal;
-	int m_timeVal;
-	unsigned char m_opponentName[20];//FString(UTF8_TO_TCHAR(opponentName))
-	unsigned char m_playerName[20];
 
 
 	static NetworkSystem* NetSys;
@@ -58,6 +54,7 @@ public:
 
 	int myRoomID = -1;
 	int clientID = -1;
+	unsigned char m_opponentName[20];//FString(UTF8_TO_TCHAR(opponentName))
 	unsigned char identifier = NULL;
 	unsigned char status = NULL;
 	unsigned short frameValue = 0;
