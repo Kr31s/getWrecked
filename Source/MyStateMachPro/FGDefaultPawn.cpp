@@ -175,7 +175,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionNeutralAtom; // Idle
-
+			movingForward = 0;
 			isCrouching = false;
 		}
 		else
