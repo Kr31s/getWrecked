@@ -152,7 +152,6 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 				//write message to tell the requested the status of his message
 				p_receiveArray[0] = 0;
 				sMutexClientIDList.lock();
-				p_receiveArray[2] = true;
 				p_receiveArray[4] = BCClient(p_receiveAddress, p_receiveArray).m_clientID;
 				sMutexClientIDList.unlock();
 				p_receiveArray[3] = BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
@@ -160,6 +159,7 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 				//add the person who reqested to the room
 				BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).AddRival(&BCServer::sTheServer->m_clientIDList->at(p_receiveArray[3]));
 
+				p_receiveArray[2] = true;
 				CharArrayAddChar(p_receiveArray, 5, BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_nickname, 0, 20);
 				SendData(p_receiveArray[4], SendType::Answer, p_receiveArray);
 

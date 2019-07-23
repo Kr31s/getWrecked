@@ -62,6 +62,7 @@ void BCMessage::CheckResendMessages(char* p_receiveArray)
 
 void BCMessage::GetReplyMessage(unsigned int p_messageID)
 {
+
 	if (BCServer::sTheServer->m_messageIDList->find(p_messageID) == BCServer::sTheServer->m_messageIDList->end())
 	{
 		Println("Reply message number unkown");

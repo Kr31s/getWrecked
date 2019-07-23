@@ -353,7 +353,7 @@ void NetworkSystem::Hearthbeat(char* p_receiveArray)
 }
 void NetworkSystem::ElementUpdate(char* p_receiveArray)
 {
-	UMyUserWidget::myUserWidget->UpdateLobbyValues(roomOwner, (int)p_receiveArray[3], (int)p_receiveArray[4], (bool)p_receiveArray[5]);
+	UMyUserWidget::myUserWidget->UpdateLobbyValues((int)p_receiveArray[3], (int)p_receiveArray[4], (bool)p_receiveArray[5]);
 	SendReceiveMessageClient();
 }
 void NetworkSystem::PauseGameUpdate(char* p_receiveArray)
