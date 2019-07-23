@@ -45,7 +45,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MatchCount")
 		EMatcheTypes MatchCount;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		float roundTime;
 	// This will be spawned when the game starts.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -72,7 +72,7 @@ public:
 	UPROPERTY()
 		AFGDefaultPawn* player2;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		float roundTimer;
 
 	UPROPERTY()
@@ -119,7 +119,7 @@ public:
 		FOnTimeChangedSignature OnTimeChanged;
 
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMatchNumberChangedSignature, int, newNumber);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMatchNumberChangedSignature, EMatcheTypes, newNumber);
 	UPROPERTY(BlueprintAssignable)
 		FOnMatchNumberChangedSignature OnMatchNumberChanged;
 
@@ -130,6 +130,10 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnP2ScoreChangedSignature, int, newNumber);
 	UPROPERTY(BlueprintAssignable)
 		FOnP2ScoreChangedSignature OnP2ScoreChanged;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnOnNextRoundNumberSignature, int, newNumber);
+	UPROPERTY(BlueprintAssignable)
+		FOnOnNextRoundNumberSignature OnNextRoundNumber;
 
 	UFUNCTION()
 	void SetRoundTimer(float deltaSeconds);
