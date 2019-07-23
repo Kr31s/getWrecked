@@ -129,11 +129,15 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				else
 				{
 					InputDirection = DirectionBackAtom; // Back on Leftside
+					movingForward = -1;
+
 				}
 			}
 			else
 			{
 				InputDirection = DirectionForwardAtom; // Forward on Rightside
+				movingForward = 1;
+
 			}
 
 			if (CanMoveInLeftDirection && !bIsBlocking) {
@@ -214,6 +218,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			if (this->isOnLeftSide)
 			{
 				InputDirection = DirectionForwardAtom; // Forward on LeftSide
+				movingForward = 1;
 			}
 			else
 			{
@@ -221,12 +226,14 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				{
 					bIsBlocking = true;
 					//CurrentMove = BlockMove;
-					InputDirection = DirectionBackAtom; // Back on RightSide
+					InputDirection = DirectionBackAtom; // Back on RightSide // Block
 
 				}
 				else
 				{
 					InputDirection = DirectionBackAtom; // Back on RightSide
+					movingForward = -1;
+
 				}
 
 			}
