@@ -229,7 +229,6 @@ void BCServer::LeaveRoom(NetAddress& p_receiveAddress, char* p_receiveArray)
 }
 void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
 {
-			Println((int)p_receiveArray[2]);
 	if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).FindClient(p_receiveAddress))
 	{
 		//net address is in room
@@ -243,7 +242,7 @@ void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
 			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Owner->m_ready = p_receiveArray[5];
 			SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Owner->m_clientID, SendType::Answer, p_receiveArray);
 
-			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Member == nullptr)
+			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member == nullptr)
 				return;
 			p_receiveArray[0] = 7;
 			p_receiveArray[2] = p_receiveArray[3];
@@ -262,7 +261,7 @@ void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
 			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_ready = p_receiveArray[5];
 			SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_clientID, SendType::Answer, p_receiveArray);
 
-			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Owner == nullptr)
+			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Owner == nullptr)
 				return;
 
 			p_receiveArray[0] = 7;
@@ -283,9 +282,6 @@ void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
 			SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_clientID, SendType::NeedAnswer, p_receiveArray);
 		}
 	}
-
-	p_receiveArray[2] = false;
-	SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_clientID, SendType::Answer, p_receiveArray);
 }
 void BCServer::PauseGame(NetAddress& p_receiveAddress, char* p_receiveArray)
 {
