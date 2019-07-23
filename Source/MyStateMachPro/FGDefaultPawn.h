@@ -87,6 +87,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool isOnLeftSide;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int movingForward = 0;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isStunned;
 
