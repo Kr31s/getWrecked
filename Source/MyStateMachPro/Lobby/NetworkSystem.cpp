@@ -283,7 +283,7 @@ void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
 	{
 		for (int i = 0; (i < 20); ++i)
 		{
-			AMyStateMachProGameModeBase::m_opponentName[i] = p_receiveArray[i + 5];
+			m_opponentName[i] = p_receiveArray[i + 5];
 		}
 
 		myRoomID = p_receiveArray[3];
@@ -303,7 +303,7 @@ void NetworkSystem::RoomJoin(char* p_receiveArray)
 {
 	for (int i = 0; (i < 20); ++i)
 	{
-		AMyStateMachProGameModeBase::m_opponentName[i] = p_receiveArray[i + 2];
+		m_opponentName[i] = p_receiveArray[i + 2];
 	}
 	UMyUserWidget::myUserWidget->RivalJoinMessage(FString(UTF8_TO_TCHAR(m_opponentName)));
 	UE_LOG(LogTemp, Warning, TEXT("RivalJoinMessage"));
@@ -340,6 +340,7 @@ void NetworkSystem::OpponentLeftRoom(char* p_receiveArray)
 void NetworkSystem::ElementUpdate(char* p_receiveArray)
 {
 	UMyUserWidget::myUserWidget->UpdateLobbyValues((int)p_receiveArray[3], (int)p_receiveArray[4], (bool)p_receiveArray[5]);
+	UE_LOG(LogTemp, Warning, TEXT("ElementUpdate"));
 }
 void NetworkSystem::PauseGameUpdate(char* p_receiveArray)
 {
@@ -375,5 +376,6 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 }
 void NetworkSystem::StartGame()
 {
+	UMyUserWidget::threadDestroyFlag = false;
 	UMyUserWidget::myUserWidget->StartGame();
 }

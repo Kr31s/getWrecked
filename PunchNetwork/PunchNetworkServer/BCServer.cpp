@@ -256,13 +256,13 @@ void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
 			Println("Value change Member");
 
 
-			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).m_Owner == nullptr)
+			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Owner == nullptr)
 				return;
 
 			p_receiveArray[40] = p_receiveArray[2];
 			p_receiveArray[2] = true;
-			SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_clientID, SendType::Answer, p_receiveArray);
 			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_ready = p_receiveArray[5];
+			SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_clientID, SendType::Answer, p_receiveArray);
 
 
 			p_receiveArray[0] = 7;

@@ -29,16 +29,18 @@ public:
 	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool CreateRoom(int timeValue, int roundValue, const FString& name);
+		void CreateRoom(int timeValue, int roundValue, const FString& name);
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool JoinRoom(int timeValue, int roundValue, const FString& name);
+		void JoinRoom(int timeValue, int roundValue, const FString& name);
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool LeaveRoom();
+		void LeaveRoom();
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
 		bool CreateClient();
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool ElementUpdateLobby(int slot1Pos, int slot2Pos, bool ready);
+		void ElementUpdateLobby(int slot1Pos, int slot2Pos, bool ready);
 
+	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
+		void SetGameValues(int p_timeValue, int p_roundValue, const FString& p_PlayerName, const FString& p_OpponentName);
 
 
 
