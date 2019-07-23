@@ -17,18 +17,21 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
-	roundTimer = roundTime;
+
 	if (NetworkSystem::NetSys != nullptr)
 	{
 		NetworkSystem::NetSys->setGameMode(this);
 		GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Alive2"));
 	}
+	player1Name = m_playerName;
+	player2Name = m_opponentName;
 
-	//startTimer = 3.0F;
-	MatchCount = EMatcheTypes::BestofOne;
+	MatchCount = static_cast<EMatcheTypes>(m_roundVal);
 	transitionMaxDuration = 6.0F;
 	slowmotionMaxDuration = 3.0F;
 	transitionSpeed = 0.1F;
+	roundTime = 60 + (30 * m_timeVal);
+	roundTimer = roundTime;
 }
 
 
@@ -67,7 +70,12 @@ void AMyStateMachProGameModeBase::StartPlay() {
 			Pawn->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
 		}
 	}
+	roundTime = 60 + (30 * m_timeVal);
+	roundTimer = roundTime;
 
+	OnMatchNumberChanged.Broadcast(MatchCount);
+	OnTimeChanged.Broadcast(roundTimer);
+	
 	player1 = Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	player2 = Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 1));
 
@@ -130,7 +138,12 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player1->SetDirectionInputX(0.0F);
 		player2->SetDirectionInputX(0.0F);
 	}
-
+	if (startTimer > 0.0f)
+	{
+		startTimer -= DeltaSeconds;
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Magenta, FString::SanitizeFloat(startTimer));
+		return;
+	}
 
 
 	//roundTimer -= DeltaSeconds;
@@ -193,12 +206,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	}
 	SetRoundTimer(DeltaSeconds);
 
-	if (startTimer > 0.0f)
-	{
-		startTimer -= DeltaSeconds;
-		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Magenta, FString::SanitizeFloat(startTimer));
-		return;
-	}
+
 
 	if (roundTimer <= 0.0F)
 	{
@@ -232,7 +240,7 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
 	player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
 	++roundNumber;
-	OnMatchNumberChanged.Broadcast(roundNumber);
+	OnNextRoundNumber.Broadcast(roundNumber);
 }
 
 void AMyStateMachProGameModeBase::CheckOnWhichSidePlayerIs()
