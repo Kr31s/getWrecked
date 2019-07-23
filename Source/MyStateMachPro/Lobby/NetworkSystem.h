@@ -97,7 +97,6 @@ public:
 	void CreateRoomAnswer(char* receiveArray);
 	void LeaveRoomAnswer(char* p_receiveArray);
 	void OpponentLeftRoom(char* receiveArray);
-	void Hearthbeat(char* receiveArray);
 	void ElementUpdate(char* receiveArray);
 	void PauseGameUpdate(char* receiveArray);
 	void OppentGameMessage(char* receiveArray);

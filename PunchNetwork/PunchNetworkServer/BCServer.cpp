@@ -151,23 +151,25 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 				//Found Room
 				//write message to tell the requested the status of his message
 				p_receiveArray[0] = 0;
+				p_receiveArray[2] = true;
 				sMutexClientIDList.lock();
 				p_receiveArray[4] = BCClient(p_receiveAddress, p_receiveArray).m_clientID;
 				sMutexClientIDList.unlock();
 				p_receiveArray[3] = BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
 
 				//add the person who reqested to the room
-				BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).AddRival(&BCServer::sTheServer->m_clientIDList->at(p_receiveArray[3]));
+				BCServer::sTheServer->m_roomIDList->at(p_receiveArray[3]).AddRival(&BCServer::sTheServer->m_clientIDList->at(p_receiveArray[4]));
 
-				p_receiveArray[2] = true;
 				CharArrayAddChar(p_receiveArray, 5, BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_nickname, 0, 20);
 				SendData(p_receiveArray[4], SendType::Answer, p_receiveArray);
 
+
 				//write message to inform the owner of the room
 				p_receiveArray[0] = 1;
-				CharArrayAddChar(p_receiveArray, 2, BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Member->m_nickname, 0, 20);
+				CharArrayAddChar(p_receiveArray, 2, p_receiveArray, 5, 25);
 				SendData(BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_clientID, SendType::NeedAnswer, p_receiveArray);
 
+				
 				Print("Player joined room with ID ");
 				Println(BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID);
 				return;
@@ -219,7 +221,7 @@ void BCServer::CreateRoom(NetAddress& p_receiveAddress, char* p_receiveArray, un
 	p_receiveArray[3] = BCRoom(&BCServer::sTheServer->m_clientIDList->at(p_receiveArray[4]), p_rounds, p_gameTime).m_roomID;
 	SendData(p_receiveArray[4], SendType::Answer, p_receiveArray);
 	Print("Room created with ID ");
-	Println((int)p_receiveArray[1]);
+	Println((int)p_receiveArray[3]);
 }
 void BCServer::LeaveRoom(NetAddress& p_receiveAddress, char* p_receiveArray)
 {
@@ -227,6 +229,7 @@ void BCServer::LeaveRoom(NetAddress& p_receiveAddress, char* p_receiveArray)
 }
 void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
 {
+			Println((int)p_receiveArray[2]);
 	if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).FindClient(p_receiveAddress))
 	{
 		//net address is in room
@@ -237,11 +240,11 @@ void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
 			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Member == nullptr)
 				return;
 
-			p_receiveArray[2] = true;
-			SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Owner->m_clientID, SendType::Answer, p_receiveArray);
-			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Owner->m_ready = p_receiveArray[5];
-
 			p_receiveArray[40] = p_receiveArray[2];
+			p_receiveArray[2] = true;
+			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Owner->m_ready = p_receiveArray[5];
+			SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Owner->m_clientID, SendType::Answer, p_receiveArray);
+
 			p_receiveArray[0] = 7;
 			p_receiveArray[2] = p_receiveArray[3];
 			p_receiveArray[3] = p_receiveArray[4];
@@ -256,12 +259,12 @@ void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
 			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).m_Owner == nullptr)
 				return;
 
-			p_receiveArray[2] = true;
-			SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Member->m_clientID, SendType::Answer, p_receiveArray);
-
-			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Member->m_ready = p_receiveArray[5];
-
 			p_receiveArray[40] = p_receiveArray[2];
+			p_receiveArray[2] = true;
+			SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_clientID, SendType::Answer, p_receiveArray);
+			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_ready = p_receiveArray[5];
+
+
 			p_receiveArray[0] = 7;
 			p_receiveArray[2] = p_receiveArray[3];
 			p_receiveArray[3] = p_receiveArray[4];

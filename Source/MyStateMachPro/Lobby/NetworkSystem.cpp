@@ -72,7 +72,6 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 	}
 
 
-
 	switch (identifier)
 	{
 	case 0:
@@ -89,9 +88,6 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 		break;
 	case 4:
 		this->OpponentLeftRoom(p_receiveArray);
-		break;
-	case 5:
-		this->Hearthbeat(p_receiveArray);
 		break;
 	case 7:
 		this->ElementUpdate(p_receiveArray);
@@ -309,19 +305,18 @@ void NetworkSystem::RoomJoin(char* p_receiveArray)
 {
 	for (int i = 0; (i < 20); i++)
 	{
-		opponentName[i] = p_receiveArray[i + 2];
-		UE_LOG(LogTemp, Warning, TEXT("%c"), p_receiveArray[i + 2]);
+		opponentName[i] = p_receiveArray[i + 5];
+		UE_LOG(LogTemp, Warning, TEXT("Letters %c"), p_receiveArray[i + 5]);
 	}
 	UMyUserWidget::myUserWidget->RivalJoinMessage(FString(UTF8_TO_TCHAR(opponentName)));
 	UE_LOG(LogTemp, Warning, TEXT("RivalJoinMessage"));
-	SendReceiveMessageClient();
 }
 void NetworkSystem::CreateRoomAnswer(char* p_receiveArray)
 {
 	if ((bool)p_receiveArray[2])
 	{
-		myRoomID = p_receiveArray[2];
-		clientID = p_receiveArray[3];
+		myRoomID = p_receiveArray[3];
+		clientID = p_receiveArray[4];
 		roomOwner = true;
 	}
 	else
@@ -344,17 +339,10 @@ void NetworkSystem::OpponentLeftRoom(char* p_receiveArray)
 {
 	sendArray[0] = identifier;
 	UMyUserWidget::myUserWidget->RivalLeaveMessage();
-
-	SendReceiveMessageClient();
-}
-void NetworkSystem::Hearthbeat(char* p_receiveArray)
-{
-	SendReceiveMessageClient();
 }
 void NetworkSystem::ElementUpdate(char* p_receiveArray)
 {
 	UMyUserWidget::myUserWidget->UpdateLobbyValues((int)p_receiveArray[3], (int)p_receiveArray[4], (bool)p_receiveArray[5]);
-	SendReceiveMessageClient();
 }
 void NetworkSystem::PauseGameUpdate(char* p_receiveArray)
 {
