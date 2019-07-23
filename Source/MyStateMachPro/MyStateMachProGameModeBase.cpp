@@ -21,8 +21,8 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 
 	//startTimer = 3.0F;
 	MatchCount = EMatcheTypes::BestofOne;
-	transitionMaxDuration = 2.0F;
-	transitionSpeed = 0.2F;
+	transitionMaxDuration = 3.0F;
+	transitionSpeed = 0.1F;
 }
 
 
