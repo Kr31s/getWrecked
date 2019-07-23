@@ -367,13 +367,11 @@ void AFGDefaultPawn::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
 		bCollisionWithOppenent = true;
-		GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Orange, TEXT("ColBEGIN"));
 		if (doJump && pAsPawn->doJump)
 		{
 			doJump = false;
 			jumpInitializeFlag = false;
 		}
-		//pAsPawn->GetCharacterMovement()->Velocity.X = FMath::Clamp(this->GetVelocity().X + pAsPawn->GetCharacterMovement()->Velocity.X, -350.0F, 350.0F);
 	}
 }
 
@@ -383,7 +381,6 @@ void AFGDefaultPawn::ExitOverlap(UPrimitiveComponent * OverlappedComp, AActor * 
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
 		bCollisionWithOppenent = false;
-		GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Orange, TEXT("ColEND"));
 	}
 
 }
