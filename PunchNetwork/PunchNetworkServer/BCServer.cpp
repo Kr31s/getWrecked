@@ -237,14 +237,14 @@ void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
 		{
 			Println("Value change Owner");
 
-			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Member == nullptr)
-				return;
 
 			p_receiveArray[40] = p_receiveArray[2];
 			p_receiveArray[2] = true;
 			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Owner->m_ready = p_receiveArray[5];
 			SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Owner->m_clientID, SendType::Answer, p_receiveArray);
 
+			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Member == nullptr)
+				return;
 			p_receiveArray[0] = 7;
 			p_receiveArray[2] = p_receiveArray[3];
 			p_receiveArray[3] = p_receiveArray[4];
@@ -256,14 +256,14 @@ void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
 			Println("Value change Member");
 
 
-			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Owner == nullptr)
-				return;
 
 			p_receiveArray[40] = p_receiveArray[2];
 			p_receiveArray[2] = true;
 			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_ready = p_receiveArray[5];
 			SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_clientID, SendType::Answer, p_receiveArray);
 
+			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).m_Owner == nullptr)
+				return;
 
 			p_receiveArray[0] = 7;
 			p_receiveArray[2] = p_receiveArray[3];
