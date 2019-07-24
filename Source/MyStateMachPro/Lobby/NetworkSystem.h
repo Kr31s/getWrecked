@@ -36,6 +36,8 @@ class AMyStateMachProGameModeBase;
 class NetworkSystem
 {
 public:
+
+
 	static NetworkSystem* NetSys;
 	std::mutex sMutexMessageList;
 	std::map<unsigned int, BCMessage> m_messageIDList;
@@ -50,9 +52,9 @@ public:
 	char sendArray[46];
 	char heartBeatArray[46];
 
-	unsigned char opponentName[20];
 	int myRoomID = -1;
 	int clientID = -1;
+	unsigned char m_opponentName[20];//FString(UTF8_TO_TCHAR(opponentName))
 	unsigned char identifier = NULL;
 	unsigned char status = NULL;
 	unsigned short frameValue = 0;

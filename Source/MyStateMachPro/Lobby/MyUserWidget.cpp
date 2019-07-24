@@ -3,9 +3,10 @@
 
 #include "MyUserWidget.h"
 #include "NetworkSystem.h"
+#include "MyStateMachProGameModeBase.h"
 
 UMyUserWidget* UMyUserWidget::myUserWidget = NULL;
-bool  UMyUserWidget::threadDestroyFlag = true;
+bool UMyUserWidget::threadDestroyFlag = true;
 bool UMyUserWidget::ActivateThreadDestroyFlag()
 {
 	return UMyUserWidget::threadDestroyFlag = false;
@@ -22,12 +23,20 @@ void UMyUserWidget::BeginDestroy()
 
 bool UMyUserWidget::CreateRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
 {
+	AMyStateMachProGameModeBase::m_playerName = p_Name;
+	AMyStateMachProGameModeBase::m_roundVal = p_roundValue;
+	AMyStateMachProGameModeBase::m_timeVal = p_timeValue;
+
 	NetworkSystem::NetSys->CreateRoom(p_timeValue, p_roundValue, p_Name);
 	return true;
 }
 
 bool UMyUserWidget::JoinRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
 {
+	AMyStateMachProGameModeBase::m_playerName = p_Name;
+	AMyStateMachProGameModeBase::m_roundVal = p_roundValue;
+	AMyStateMachProGameModeBase::m_timeVal = p_timeValue;
+
 	NetworkSystem::NetSys->RoomRequest(p_timeValue, p_roundValue, p_Name);
 	return true;
 }

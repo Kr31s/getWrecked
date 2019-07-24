@@ -157,6 +157,7 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 				sMutexClientIDList.unlock();
 				p_receiveArray[3] = BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
 
+				int a = p_receiveArray[3];
 				//add the person who reqested to the room
 				BCServer::sTheServer->m_roomIDList->at(p_receiveArray[3]).AddRival(&BCServer::sTheServer->m_clientIDList->at(p_receiveArray[4]));
 
@@ -166,9 +167,8 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 
 				//write message to inform the owner of the room
 				p_receiveArray[0] = 1;
-				CharArrayAddChar(p_receiveArray, 2, p_receiveArray, 5, 25);
+				CharArrayAddChar(p_receiveArray, 2, BCServer::sTheServer->m_roomIDList->at(a).m_Member->m_nickname, 0, 20);
 				SendData(BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_clientID, SendType::NeedAnswer, p_receiveArray);
-
 				
 				Print("Player joined room with ID ");
 				Println(BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID);

@@ -2,7 +2,6 @@
 #include "MyUserWidget.h"
 #include "MyStateMachProGameModeBase.h"
 
-#include <array>
 
 NetworkSystem* NetworkSystem::NetSys = NULL;
 
@@ -70,8 +69,11 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 		BCMessage::GetReplyMessage(p_receiveArray[45]);
 		break;
 	}
-
-
+	
+	if (m_receiveArray[3] == 'm')
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Jop"));
+	}
 	switch (identifier)
 	{
 	case 0:
@@ -106,7 +108,7 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 		//unknown command
 		break;
 	}
-
+	ClearReceiveArray();
 }
 
 void NetworkSystem::TaskResendMessageThread()
@@ -147,7 +149,6 @@ void NetworkSystem::SendReceiveMessageClient()
 	sendArray[1] = 2;
 	sendArray[45] = m_receiveArray[45];
 	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
-	ClearReceiveArray();
 }
 
 void NetworkSystem::ClearReceiveArray()
@@ -180,7 +181,7 @@ void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FStri
 	}
 
 	sendArray[0] = 0;
-	sendArray[1] = 0;
+	sendArray[1] = 1;
 
 	//input round settings
 	sendArray[2] = p_roundValue;
@@ -209,7 +210,7 @@ void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FStrin
 		UE_LOG(LogTemp, Warning, TEXT("%c"), result[i]);
 	}
 	sendArray[0] = 2;
-	sendArray[1] = 0;
+	sendArray[1] = 1;
 
 	//input round settings
 	sendArray[2] = p_roundValue;
@@ -226,7 +227,7 @@ void NetworkSystem::LeaveRoom()
 	if (myRoomID >= 0)
 	{
 		sendArray[0] = 3;
-		sendArray[1] = 0;
+		sendArray[1] = 1;
 		sendArray[2] = myRoomID;
 		sendArray[45] = BCMessage(sendArray).m_messageID;
 
@@ -236,9 +237,7 @@ void NetworkSystem::LeaveRoom()
 void NetworkSystem::ElementChanged(int& slot1Pos, int& slot2Pos, bool& ready)
 {
 	sendArray[0] = 6;
-	sendArray[1] = 0;
-	UE_LOG(LogTemp, Warning, TEXT("%d"), (int)myRoomID);
-
+	sendArray[1] = 1;
 	sendArray[2] = myRoomID;
 	sendArray[3] = slot1Pos;
 	sendArray[4] = slot2Pos;
@@ -250,6 +249,7 @@ void NetworkSystem::ElementChanged(int& slot1Pos, int& slot2Pos, bool& ready)
 void NetworkSystem::PauseGame(bool& stop)
 {
 	sendArray[0] = 8;
+	sendArray[1] = 1;
 	sendArray[45] = BCMessage(sendArray).m_messageID;
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
@@ -281,10 +281,9 @@ void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
 {
 	if ((bool)p_receiveArray[2])
 	{
-		for (int i = 0; (i < 20); i++)
+		for (int i = 0; (i < 20); ++i)
 		{
-			opponentName[i] = p_receiveArray[i + 5];
-			UE_LOG(LogTemp, Warning, TEXT("%c"), opponentName[i]);
+			AMyStateMachProGameModeBase::m_opponentName[i] = p_receiveArray[i + 5];
 		}
 
 		myRoomID = p_receiveArray[3];
@@ -298,17 +297,15 @@ void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
 	}
 
 
-	UMyUserWidget::myUserWidget->JoinRoomMessage((bool)status, FString(UTF8_TO_TCHAR(opponentName)));
-
+	UMyUserWidget::myUserWidget->JoinRoomMessage((bool)status, FString(UTF8_TO_TCHAR(m_opponentName)));
 }
 void NetworkSystem::RoomJoin(char* p_receiveArray)
 {
-	for (int i = 0; (i < 20); i++)
+	for (int i = 0; (i < 20); ++i)
 	{
-		opponentName[i] = p_receiveArray[i + 5];
-		UE_LOG(LogTemp, Warning, TEXT("Letters %c"), p_receiveArray[i + 5]);
+		AMyStateMachProGameModeBase::m_opponentName[i] = p_receiveArray[i + 2];
 	}
-	UMyUserWidget::myUserWidget->RivalJoinMessage(FString(UTF8_TO_TCHAR(opponentName)));
+	UMyUserWidget::myUserWidget->RivalJoinMessage(FString(UTF8_TO_TCHAR(m_opponentName)));
 	UE_LOG(LogTemp, Warning, TEXT("RivalJoinMessage"));
 }
 void NetworkSystem::CreateRoomAnswer(char* p_receiveArray)

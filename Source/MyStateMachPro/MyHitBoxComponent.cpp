@@ -129,7 +129,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 							Enemy->RessourceComp->IncreaseStunMeter(0.05F);
 							Owner->CustomTimeDilation = 0.1F;
 							Enemy->CustomTimeDilation = 0.1F;
-							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
+							//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
 
 							const FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
 							UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Owner->gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);

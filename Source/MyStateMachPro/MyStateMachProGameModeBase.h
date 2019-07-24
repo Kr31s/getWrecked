@@ -27,6 +27,11 @@ class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 
 
 public:
+	static int m_roundVal;
+	static int m_timeVal;
+	static FString m_opponentName;//FString(UTF8_TO_TCHAR(opponentName))
+	static FString m_playerName;
+
 
 	static unsigned int sFrameCounter;
 
@@ -58,6 +63,12 @@ public:
 	UPROPERTY()
 		AFGDefaultPawn* player1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		FString player1Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		FString player2Name;
+
 	UPROPERTY()
 		AFGDefaultPawn* player2;
 
@@ -84,6 +95,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float transitionMaxDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float slowmotionMaxDuration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float transitionSpeed;
