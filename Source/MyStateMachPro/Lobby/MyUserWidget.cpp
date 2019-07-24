@@ -21,30 +21,27 @@ void UMyUserWidget::BeginDestroy()
 	}
 }
 
-bool UMyUserWidget::CreateRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
+void UMyUserWidget::CreateRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
 {
 	AMyStateMachProGameModeBase::m_playerName = p_Name;
 	AMyStateMachProGameModeBase::m_roundVal = p_roundValue;
 	AMyStateMachProGameModeBase::m_timeVal = p_timeValue;
 
 	NetworkSystem::NetSys->CreateRoom(p_timeValue, p_roundValue, p_Name);
-	return true;
 }
 
-bool UMyUserWidget::JoinRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
+void UMyUserWidget::JoinRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
 {
 	AMyStateMachProGameModeBase::m_playerName = p_Name;
 	AMyStateMachProGameModeBase::m_roundVal = p_roundValue;
 	AMyStateMachProGameModeBase::m_timeVal = p_timeValue;
 
 	NetworkSystem::NetSys->RoomRequest(p_timeValue, p_roundValue, p_Name);
-	return true;
 }
 
-bool UMyUserWidget::LeaveRoom()
+void UMyUserWidget::LeaveRoom()
 {
 	NetworkSystem::NetSys->LeaveRoom();
-	return true;
 }
 
 bool  UMyUserWidget::CreateClient()
@@ -60,8 +57,15 @@ bool  UMyUserWidget::CreateClient()
 	return NetworkSystem::NetSys->InitNetSystem();
 }
 
-bool UMyUserWidget::ElementUpdateLobby(int slot1Pos, int slot2Pos, bool ready)
+void UMyUserWidget::ElementUpdateLobby(int slot1Pos, int slot2Pos, bool ready)
 {
 	NetworkSystem::NetSys->ElementChanged(slot1Pos, slot2Pos, ready);
-	return true;
+}
+
+void UMyUserWidget::SetGameValues(int p_timeValue, int p_roundValue, const FString& p_playerName, const FString& p_opponentName)
+{
+	AMyStateMachProGameModeBase::m_playerName = p_playerName;
+	AMyStateMachProGameModeBase::m_opponentName = p_opponentName;
+	AMyStateMachProGameModeBase::m_roundVal = p_roundValue;
+	AMyStateMachProGameModeBase::m_timeVal = p_timeValue;
 }
