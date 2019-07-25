@@ -38,7 +38,7 @@ uint32 FMessageReceiveThread::Run()
 		{
 			NetworkSystem::NetSys->TaskMessageReceiveThread(m_receiveArray);
 		}
-	FPlatformProcess::Sleep(0.0083333);
+		FPlatformProcess::Sleep(0.0083333);
 	}
 	return 0;
 }

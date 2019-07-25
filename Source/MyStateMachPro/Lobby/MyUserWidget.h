@@ -24,7 +24,7 @@ public:
 	static bool threadDestroyFlag;
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool ActivateThreadDestroyFlag();
+		void DeactivateThreadDestroy();
 
 	virtual void BeginDestroy() override;
 

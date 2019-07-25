@@ -100,6 +100,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	{
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 		++AMyStateMachProGameModeBase::sFrameCounter;
+		UE_LOG(LogTemp, Warning, TEXT("test %d"), (int)player1->SendInputStream[0]);
 
 		player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[0].m_input));
 		/*for(int i = 0; i<9;++i)
@@ -109,7 +110,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			}
 			break;
 		}
-				UE_LOG(LogTemp, Warning, TEXT("error"));*/
+		*/
 	}
 	if (startTimer == 3.0f) {
 

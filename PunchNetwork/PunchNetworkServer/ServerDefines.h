@@ -19,6 +19,7 @@ class BCMessage;
 
 
 static std::mutex sMutexClientIDList;
+static std::mutex sMutexMessageIDList;
 
 
 enum class SendType
@@ -63,7 +64,7 @@ static void CharArrayAddChar(char* firstArray, unsigned int startPosFirstArray, 
 
 static void ClearReceiveArray(char* p_receiveArray, long long p_length)
 {
-	for (int i = 0; (p_receiveArray[i] != NULL) && i < p_length; ++i)
+	for (int i = 0; i < p_length; ++i)
 	{
 		p_receiveArray[i] = NULL;
 	}

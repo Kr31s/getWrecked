@@ -7,9 +7,9 @@
 
 UMyUserWidget* UMyUserWidget::myUserWidget = NULL;
 bool UMyUserWidget::threadDestroyFlag = true;
-bool UMyUserWidget::ActivateThreadDestroyFlag()
+void UMyUserWidget::DeactivateThreadDestroy()
 {
-	return UMyUserWidget::threadDestroyFlag = false;
+	UMyUserWidget::threadDestroyFlag = false;
 }
 void UMyUserWidget::BeginDestroy()
 {
@@ -19,6 +19,8 @@ void UMyUserWidget::BeginDestroy()
 	if (UMyUserWidget::threadDestroyFlag && NetworkSystem::NetSys != nullptr) {
 		NetworkSystem::NetSys->ShutdownNetwork();
 	}
+
+	UMyUserWidget::myUserWidget = nullptr;
 }
 
 void UMyUserWidget::CreateRoom(int p_timeValue, int p_roundValue, const FString& p_Name)

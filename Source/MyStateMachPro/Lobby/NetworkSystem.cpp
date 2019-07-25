@@ -1,6 +1,7 @@
 #include "NetworkSystem.h"
 #include "MyUserWidget.h"
 #include "MyStateMachProGameModeBase.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 
 NetworkSystem* NetworkSystem::NetSys = NULL;
@@ -61,6 +62,8 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 
 	switch (status)
 	{
+	case 0:
+		break;
 	case 1:
 		SendReceiveMessageClient();
 		break;
@@ -69,11 +72,8 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 		BCMessage::GetReplyMessage(p_receiveArray[45]);
 		break;
 	}
-	
-	if (m_receiveArray[3] == 'm')
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Jop"));
-	}
+
+
 	switch (identifier)
 	{
 	case 0:
@@ -101,7 +101,7 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 		this->OppentGameMessage(p_receiveArray);
 		break;
 	case 12:
-		this->StartGame();;
+		this->StartGame();
 		break;
 
 	default:
@@ -113,7 +113,7 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 
 void NetworkSystem::TaskResendMessageThread()
 {
-	for (unsigned int i = 0; i < BCMessage::sTotalMessageID; ++i)
+	/*for (unsigned int i = 0; i < BCMessage::sTotalMessageID; ++i)
 	{
 		sMutexMessageList.lock();
 		if (m_messageIDList.find(i) == m_messageIDList.end())
@@ -131,7 +131,7 @@ void NetworkSystem::TaskResendMessageThread()
 			m_messageIDList.at(i).m_finished = true;
 		}
 		sMutexMessageList.unlock();
-	}
+	}*/
 }
 
 void NetworkSystem::ShutdownNetwork()
@@ -187,7 +187,9 @@ void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FStri
 	sendArray[2] = p_roundValue;
 	//input time settings
 	sendArray[3] = p_timeValue;
-	sendArray[45] = BCMessage(sendArray).m_messageID;
+	sendArray[44] = 7;
+	sendArray[45] = 16;
+	//sendArray[45] = BCMessage(sendArray).m_messageID;
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
 
@@ -217,7 +219,6 @@ void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FStrin
 	//input time settings
 	sendArray[3] = p_timeValue;
 	sendArray[45] = BCMessage(sendArray).m_messageID;
-
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
 
@@ -254,7 +255,7 @@ void NetworkSystem::PauseGame(bool& stop)
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
-void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
+void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 {
 	unsigned short temp;
 	sendArray[0] = 10;
@@ -265,20 +266,34 @@ void NetworkSystem::GameMessage(std::bitset<12>& inputStream)
 
 	for (int i = 0; i < 9; ++i)
 	{
-		sendArray[2 + 4 * i] = (gameMessagesPlayer[i].m_time) >> 8;
+		sendArray[2 + (4 * i)] = (gameMessagesPlayer[i].m_time) >> 8;
 		temp = (gameMessagesPlayer[i].m_time) << 8;
-		sendArray[3 + 4 * i] = temp >> 8;
-		sendArray[4 + 4 * i] = (gameMessagesPlayer[i].m_input) >> 8;
+		sendArray[3 + (4 * i)] = temp >> 8;
+		sendArray[4 + (4 * i)] = (gameMessagesPlayer[i].m_input) >> 8;
 		temp = (gameMessagesPlayer[i].m_input) << 8;
-		sendArray[5 + 4 * i] = temp >> 8;
+		sendArray[5 + (4 * i)] = temp >> 8;
 	}
+	UE_LOG(LogTemp, Warning, TEXT("is sending"));
 
-	sendArray[45] = BCMessage(sendArray).m_messageID;
+
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
 }
 
 void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
 {
+
+	GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Error Message 0"));
+	if (UMyUserWidget::myUserWidget == nullptr) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Error Message 0"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("START"));
+
+	for (int i = 0; (i < 46); ++i)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%d"), p_receiveArray[i]);
+	}
 	if ((bool)p_receiveArray[2])
 	{
 		for (int i = 0; (i < 20); ++i)
@@ -295,7 +310,6 @@ void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
 	{
 		//failed room join
 	}
-
 
 	UMyUserWidget::myUserWidget->JoinRoomMessage((bool)status, FString(UTF8_TO_TCHAR(m_opponentName)));
 }
@@ -334,7 +348,6 @@ void NetworkSystem::LeaveRoomAnswer(char* p_receiveArray)
 }
 void NetworkSystem::OpponentLeftRoom(char* p_receiveArray)
 {
-	sendArray[0] = identifier;
 	UMyUserWidget::myUserWidget->RivalLeaveMessage();
 }
 void NetworkSystem::ElementUpdate(char* p_receiveArray)
@@ -348,10 +361,18 @@ void NetworkSystem::PauseGameUpdate(char* p_receiveArray)
 void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 {
 	unsigned short inputVal;
-	unsigned short timeVal = p_receiveArray[2];
+	unsigned short timeVal;
 
-	timeVal |= p_receiveArray[3] >> 8;
+	timeVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 ])) << 8;
+	timeVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3]));
 
+	inputVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[4])) << 8;
+	inputVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[5]));
+
+	gameMessagesRivale.insert(gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
+	gameMessagesRivale.resize(9);
+
+	return;
 	for (int i = 0; i < 9; ++i)
 	{
 		timeVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 + 4 * i])) << 8;
@@ -366,16 +387,17 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 			for (; i > -1; --i)
 			{
 				gameMessagesRivale.insert(gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
+				gameMessagesRivale.resize(9);
+				UE_LOG(LogTemp, Warning, TEXT("right receiviung"));
 			}
 			break;
 		}
 	}
-
-	gameMessagesRivale.resize(9);
+	UE_LOG(LogTemp, Warning, TEXT("wrong receiviung"));
 
 }
 void NetworkSystem::StartGame()
 {
-	UMyUserWidget::threadDestroyFlag = false;
-	UMyUserWidget::myUserWidget->StartGame();
+	UMyUserWidget::myUserWidget->DeactivateThreadDestroy();
+	UGameplayStatics::OpenLevel(UMyUserWidget::myUserWidget, "/Game/Maps/Temple_v01_marlon", TRAVEL_Absolute);
 }
