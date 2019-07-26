@@ -46,7 +46,9 @@ void MessageThread()
 
 	while (BCServer::sTheServer->m_serverRunning)
 	{
+		sMutexMessageIDList.lock();
 		BCMessage::CheckResendMessages(messageThreadArray);
+		sMutexMessageIDList.unlock();
 	}
 	Println("MessageThread closed");
 }
@@ -60,7 +62,7 @@ void HeartThread()
 		sMutexClientIDList.lock();
 		for (int i = 0; i < BCClient::sTotalClientID; ++i)
 		{
-			if (BCServer::sTheServer->m_clientIDList->find(i) == BCServer::sTheServer->m_clientIDList->end()) 
+			if (BCServer::sTheServer->m_clientIDList->find(i) == BCServer::sTheServer->m_clientIDList->end())
 			{
 				continue;
 			}
@@ -83,6 +85,12 @@ void NonServerMessage()
 
 void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime, unsigned int& p_intValue)
 {
+	if (MessageOfIndex(p_receiveArray[0]) == Messages::GameMessage)
+	{
+		BCServer::sTheServer->GameMessage(p_receiveAddress, p_receiveArray, p_intValue);
+		return;
+	}
+
 	switch (p_receiveArray[1])
 	{
 	case 0:
@@ -97,38 +105,34 @@ void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, uns
 
 	default:
 		Println("Wrong message status")
+			break;
+	}
+
+
+
+	switch (MessageOfIndex(p_receiveArray[0]))
+	{
+	case Messages::RoomRequest:
+		BCServer::sTheServer->RoomRequest(p_receiveAddress, p_receiveArray, p_rounds, p_gameTime);
+		break;
+	case Messages::CreateRoom:
+		BCServer::sTheServer->CreateRoom(p_receiveAddress, p_receiveArray, p_rounds, p_gameTime);
+		break;
+	case Messages::LeaveRoom:
+		BCServer::sTheServer->LeaveRoom(p_receiveAddress, p_receiveArray);
+		break;
+	case Messages::ElementChange:
+		BCServer::sTheServer->ElementChange(p_receiveAddress, p_receiveArray);
+		break;
+	case Messages::PauseGame:
+		BCServer::sTheServer->PauseGame(p_receiveAddress, p_receiveArray);
+		break;
+	default:
+		NonServerMessage();
 		break;
 	}
 
 
-	
-		switch (MessageOfIndex(p_receiveArray[0]))
-		{
-		case Messages::RoomRequest:
-			BCServer::sTheServer->RoomRequest(p_receiveAddress, p_receiveArray, p_rounds, p_gameTime);
-			break;
-		case Messages::CreateRoom:
-			BCServer::sTheServer->CreateRoom(p_receiveAddress, p_receiveArray, p_rounds, p_gameTime);
-			break;
-		case Messages::LeaveRoom:
-			BCServer::sTheServer->LeaveRoom(p_receiveAddress, p_receiveArray);
-			break;
-		case Messages::ElementChange:
-			BCServer::sTheServer->ElementChange(p_receiveAddress, p_receiveArray);
-			break;
-		case Messages::PauseGame:
-			BCServer::sTheServer->PauseGame(p_receiveAddress, p_receiveArray);
-			break;
-		case Messages::GameMessage:
-			BCServer::sTheServer->GameMessage(p_receiveAddress, p_receiveArray, p_intValue);
-			break;
-
-		default:
-			NonServerMessage();
-			break;
-		}
-	
-	
 }
 
 unsigned long long GetTriangleNummber(unsigned long long value)
@@ -148,8 +152,8 @@ int main()
 	BCServer::sTheServer = new BCServer(4023, true);
 
 	std::thread t1(ServerThread);
-	std::thread t2(MessageThread);
-	std::thread t3(HeartThread);
+	//std::thread t2(MessageThread);
+	//std::thread t3(HeartThread);
 
 	int i;
 	std::cin >> i;
@@ -157,8 +161,8 @@ int main()
 	BCServer::sTheServer->m_serverRunning = false;
 
 	t1.join();
-	t2.join();
-	t3.join();
+	//t2.join();
+	//t3.join();
 
 	return 0;
 }

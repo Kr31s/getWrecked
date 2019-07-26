@@ -52,7 +52,6 @@ void AMyStateMachProGameModeBase::StartPlay() {
 
 	//MyMainMenu->AddToViewport();
 
-
 	if (UWorld * World = GetWorld())
 	{
 		MainGameCamera = Cast<AMyCameraActor>(World->SpawnActor(AMyCameraActor::StaticClass(), &FTransform::Identity));
@@ -60,22 +59,33 @@ void AMyStateMachProGameModeBase::StartPlay() {
 
 
 	// Create another player
-	if (APlayerController * PC = UGameplayStatics::CreatePlayer(this, -1))
+	if (GetNumPlayers() < 2) // missing online check not sure if necessary
 	{
-		if (APawn * Pawn = PC->GetPawn())
+
+		if (APlayerController * PC = UGameplayStatics::CreatePlayer(this, -1))
 		{
-			// Move this player forward (hardcoded distance, should be a UPROPERTY) and then turn around.
-			Pawn->SetActorLocation(FVector(230, 0.0F, 100.0F));
-			//Pawn->SetActorLocation(Pawn->GetActorLocation() + Pawn->GetActorForwardVector() * 250.0f);
-			Pawn->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
+			if (APawn * Pawn = PC->GetPawn())
+			{
+				// Move this player forward (hardcoded distance, should be a UPROPERTY) and then turn around.
+				Pawn->SetActorLocation(FVector(230, 0.0F, 100.0F));
+				//Pawn->SetActorLocation(Pawn->GetActorLocation() + Pawn->GetActorForwardVector() * 250.0f);
+				Pawn->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
+			}
 		}
 	}
+
 	roundTime = 60 + (30 * m_timeVal);
 	roundTimer = roundTime;
+	player1Name = m_playerName;
+	player2Name = m_opponentName;
+
+	OnName1Changed.Broadcast(player1Name);
+	OnName2Changed.Broadcast(player2Name);
+
 
 	OnMatchNumberChanged.Broadcast(MatchCount);
 	OnTimeChanged.Broadcast(roundTimer);
-	
+
 	player1 = Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	player2 = Cast<AFGDefaultPawn>(UGameplayStatics::GetPlayerCharacter(this, 1));
 
@@ -96,6 +106,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	{
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 		++AMyStateMachProGameModeBase::sFrameCounter;
+		UE_LOG(LogTemp, Warning, TEXT("test %d"), (int)player1->SendInputStream[0]);
 
 		player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[0].m_input));
 		/*for(int i = 0; i<9;++i)
@@ -105,7 +116,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			}
 			break;
 		}
-				UE_LOG(LogTemp, Warning, TEXT("error"));*/
+		*/
 	}
 	if (startTimer == 3.0f) {
 
@@ -144,6 +155,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Magenta, FString::SanitizeFloat(startTimer));
 		return;
 	}
+	else if (startTimer < 0.0F && !player1->playerWon && !player2->playerWon) {
+		player1->isInputEnabled = true;
+		player2->isInputEnabled = true;
+	}
 
 
 	//roundTimer -= DeltaSeconds;
@@ -160,7 +175,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			scoreFlag = true;
 		}
 		OnP2ScoreChanged.Broadcast(player2Score);
-
+		player1->isInputEnabled = false;
+		player2->isInputEnabled = false;
 
 		while (transitiontime < transitionMaxDuration) {
 			transitiontime += DeltaSeconds;
@@ -189,6 +205,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			scoreFlag = true;
 		}
 		OnP1ScoreChanged.Broadcast(player1Score);
+		player1->isInputEnabled = false;
+		player2->isInputEnabled = false;
 
 		while (transitiontime < transitionMaxDuration) {
 			transitiontime += DeltaSeconds;
@@ -211,6 +229,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	if (roundTimer <= 0.0F)
 	{
 		RoundTimeOver();
+		player1->isInputEnabled = false;
+		player2->isInputEnabled = false;
 	}
 }
 
@@ -277,29 +297,37 @@ void AMyStateMachProGameModeBase::DetermineMatchWinner()
 		if (player1Score == 1)
 		{
 			//player 1 wins Complete Match
+			UGameplayStatics::OpenLevel(GetWorld(), "MainMenu");
+
 		}
 		if (player2Score == 1)
 		{
+			UGameplayStatics::OpenLevel(GetWorld(), "MainMenu");
 			//player 2 wins Complete Match
 		}
 		break;
 	case EMatcheTypes::BestofThree:
-		if (player1Score == 3)
+		if (player1Score == 2)
 		{
 			//player 1 wins Complete Match
+			UGameplayStatics::OpenLevel(GetWorld(), "MainMenu");
+
 		}
-		if (player2Score == 3)
+		if (player2Score == 2)
 		{
+			UGameplayStatics::OpenLevel(GetWorld(), "MainMenu");
 			//player 2 wins Complete Match
 		}
 		break;
 	case EMatcheTypes::BestofFive:
-		if (player1Score == 5)
+		if (player1Score == 3)
 		{
+			UGameplayStatics::OpenLevel(GetWorld(), "MainMenu");
 			//player 1 wins Complete Match
 		}
-		if (player2Score == 5)
+		if (player2Score == 3)
 		{
+			UGameplayStatics::OpenLevel(GetWorld(), "MainMenu");
 			//player 2 wins Complete Match
 		}
 		break;
@@ -322,17 +350,20 @@ void AMyStateMachProGameModeBase::RoundTimeOver()
 		//UGameplayStatics::SetGamePaused(this, true);
 		player1Score++;
 		OnP1ScoreChanged.Broadcast(player1Score);
-		SetupMatch();
-		DetermineMatchWinner();
 	}
-	else
+	else if(player1->RessourceComp->Health < player2->RessourceComp->Health)
 	{
 		//player2->K2_DestroyActor();
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
 		player2Score++;
 		OnP2ScoreChanged.Broadcast(player2Score);
-		SetupMatch();
-		DetermineMatchWinner();
 	}
+	else if (player1->RessourceComp->Health == player2->RessourceComp->Health) {
+		//draw
+	}
+	player1->isInputEnabled = false;
+	player2->isInputEnabled = false;
+	SetupMatch();
+	DetermineMatchWinner();
 }

@@ -62,7 +62,7 @@ void BCMessage::CheckResendMessages(char* p_receiveArray)
 
 void BCMessage::GetReplyMessage(unsigned int p_messageID)
 {
-
+	sMutexMessageIDList.lock();
 	if (BCServer::sTheServer->m_messageIDList->find(p_messageID) == BCServer::sTheServer->m_messageIDList->end())
 	{
 		Println("Reply message number unkown");
@@ -74,5 +74,6 @@ void BCMessage::GetReplyMessage(unsigned int p_messageID)
 	Println("New Ping: " << (int)BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(p_messageID).m_clientID).m_ping);
 	sMutexClientIDList.unlock();
 	BCServer::sTheServer->m_messageIDList->at(p_messageID).m_finished = true;
+	sMutexMessageIDList.unlock();
 	Println("Reply message received");
 }
