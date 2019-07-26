@@ -39,8 +39,4 @@ E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,27): warning C43
 E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(63,21): warning C4018:  '<': signed/unsigned mismatch
 E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(63,21): warning C4018: E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCRoom.cpp(138) : warning C4715: 'BCRoom::GetClient': not all control paths return a value
 E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(63,21): warning C4018: E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCRoom.cpp(152) : warning C4715: 'BCRoom::GetRival': not all control paths return a value
-  LINK : E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe not found or not built by the last incremental link; performing full link
-BWLib.lib(BWNet.obj) : warning LNK4099: PDB '' was not found with 'BWLib.lib(BWNet.obj)' or at ''; linking object as if no debug info
-BWLib.lib(NetSocketUDP.obj) : warning LNK4099: PDB '' was not found with 'BWLib.lib(NetSocketUDP.obj)' or at ''; linking object as if no debug info
-BWLib.lib(NetAddress.obj) : warning LNK4099: PDB '' was not found with 'BWLib.lib(NetAddress.obj)' or at ''; linking object as if no debug info
   PunchNetwork.vcxproj -> E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe
