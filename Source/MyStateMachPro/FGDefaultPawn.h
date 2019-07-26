@@ -59,6 +59,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool bCanBlock;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool isInputEnabled = true;
+
 	UFUNCTION()
 		void SetCanBlock(bool blockState) { this->bCanBlock = blockState; OnCanBlockChanged.Broadcast(this->bCanBlock); }
 
@@ -71,6 +74,9 @@ public:
 
 	UFUNCTION()
 		void checkBlock();
+
+	UFUNCTION()
+		void EnablePlayerInput(bool isEnabled);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool bIsBlocking;
@@ -244,7 +250,7 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<float> InputTimeStamps;
 
-
+	
 
 	UFUNCTION()
 		void HandleStun(float deltaSeconds);

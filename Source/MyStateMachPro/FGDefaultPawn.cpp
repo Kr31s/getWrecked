@@ -85,10 +85,16 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 
+	EnablePlayerInput(isInputEnabled);
+	this->SetRotationOfPlayer();
+
+	if (!isInputEnabled) {
+		return;
+	}
+
 
 	HandleStun(DeltaSeconds); // player got stunned
 	// Process input
-	this->SetRotationOfPlayer();
 
 	// Add one atom for stick direction
 	const float DirectionThreshold = 0.5f;
@@ -430,6 +436,19 @@ void AFGDefaultPawn::checkBlock()
 	if (bCanBlock && DirectionInput.X > 0 && !isOnLeftSide)
 	{
 		bIsBlocking = true;
+		return;
+	}
+}
+
+void AFGDefaultPawn::EnablePlayerInput(bool isEnabled)
+{
+	if (isEnabled) {
+		EnableInput(Cast<APlayerController>(GetController()));
+		EnableInput(Cast<APlayerController>(this));
+	}
+	else {
+		DisableInput(Cast<APlayerController>(GetController()));
+		DisableInput(Cast<APlayerController>(this));
 		return;
 	}
 }

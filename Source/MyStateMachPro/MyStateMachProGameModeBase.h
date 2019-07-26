@@ -118,6 +118,13 @@ public:
 	UPROPERTY(BlueprintAssignable)
 		FOnTimeChangedSignature OnTimeChanged;
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnName1ChangedSignature, FString, name);
+	UPROPERTY(BlueprintAssignable)
+		FOnName1ChangedSignature OnName1Changed;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnName2ChangedSignature, FString, name);
+	UPROPERTY(BlueprintAssignable)
+		FOnName2ChangedSignature OnName2Changed;
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMatchNumberChangedSignature, EMatcheTypes, newNumber);
 	UPROPERTY(BlueprintAssignable)
