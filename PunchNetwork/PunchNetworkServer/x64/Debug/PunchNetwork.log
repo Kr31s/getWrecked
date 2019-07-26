@@ -1,21 +1,5 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (PunchNetwork.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  BCClient.cpp
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,31): warning C4305:  'initializing': truncation from 'int' to 'unsigned char'
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,27): warning C4309:  'initializing': truncation of constant value
-  BCMessage.cpp
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.cpp(20,20): warning C4018:  '<=': signed/unsigned mismatch
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,31): warning C4305:  'initializing': truncation from 'int' to 'unsigned char'
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,27): warning C4309:  'initializing': truncation of constant value
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(17,20): warning C4018:  '<=': signed/unsigned mismatch
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(35,20): warning C4018:  '<': signed/unsigned mismatch
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(52,118): warning C4305:  '=': truncation from 'int' to 'unsigned char'
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(52,111): warning C4309:  '=': truncation of constant value
-  BCRoom.cpp
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(73,136): warning C4244:  '=': conversion from '__int64' to 'unsigned char', possible loss of data
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,31): warning C4305:  'initializing': truncation from 'int' to 'unsigned char'
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,27): warning C4309:  'initializing': truncation of constant value
   BCServer.cpp
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCRoom.cpp(15,20): warning C4018:  '<=': signed/unsigned mismatch
 E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,31): warning C4305:  'initializing': truncation from 'int' to 'unsigned char'
 E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,27): warning C4309:  'initializing': truncation of constant value
 E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(31,44): warning C4154:  deletion of an array expression; conversion to pointer supplied
@@ -26,17 +10,10 @@ E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(87,20): warning C
 E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(90,5): warning C4067:  unexpected tokens following preprocessor directive - expected a newline
 E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(124,101): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
 E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(125,130): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(163,67): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(165,100): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(209,101): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(210,130): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(226,64): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-  mainServer.cpp
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(228,112): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,31): warning C4305:  'initializing': truncation from 'int' to 'unsigned char'
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,27): warning C4309:  'initializing': truncation of constant value
-  Generating Code...
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(63,21): warning C4018:  '<': signed/unsigned mismatch
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(63,21): warning C4018: E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCRoom.cpp(138) : warning C4715: 'BCRoom::GetClient': not all control paths return a value
-E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(63,21): warning C4018: E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCRoom.cpp(152) : warning C4715: 'BCRoom::GetRival': not all control paths return a value
+E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(147,67): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(149,100): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(192,101): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(193,130): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(207,64): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(209,112): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
   PunchNetwork.vcxproj -> E:\Git\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe

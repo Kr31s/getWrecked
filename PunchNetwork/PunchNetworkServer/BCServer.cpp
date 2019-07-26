@@ -134,22 +134,6 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 	p_rounds = p_receiveArray[2];
 	p_gameTime = p_receiveArray[3];
 
-	if (p_rounds == 0 || p_gameTime == 0)
-	{
-		if (p_rounds == 0)
-		{
-			if (p_gameTime == 0)
-			{
-				//Any state
-				return;
-			}
-		}
-	}
-	else
-	{
-		--p_rounds;
-		--p_gameTime;
-
 		//find room for player
 		for (unsigned int roomCounter = 0; roomCounter < BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].size(); ++roomCounter)
 		{
@@ -182,7 +166,6 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 				return;
 			}
 		}
-	}
 	//send data without function because no client available
 	p_receiveArray[2] = false;
 	m_serverSocket.Send(p_receiveAddress, (char*)p_receiveArray, 46);
@@ -220,8 +203,6 @@ void BCServer::CreateRoom(NetAddress& p_receiveAddress, char* p_receiveArray, un
 	p_rounds = p_receiveArray[2];
 	p_gameTime = p_receiveArray[3];
 
-	--p_rounds;
-	--p_gameTime;
 	sMutexClientIDList.lock();
 	p_receiveArray[4] = BCClient(p_receiveAddress, p_receiveArray).m_clientID;
 	sMutexClientIDList.unlock();
@@ -235,7 +216,7 @@ void BCServer::LeaveRoom(NetAddress& p_receiveAddress, char* p_receiveArray)
 	m_roomIDList->at((int)p_receiveArray[2]).RemoveRival(p_receiveAddress, p_receiveArray);
 }
 void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
-{
+{Println((int)p_receiveArray[2])
 	if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).FindClient(p_receiveAddress))
 	{
 		//net address is in room

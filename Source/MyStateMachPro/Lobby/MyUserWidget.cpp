@@ -46,7 +46,7 @@ void UMyUserWidget::LeaveRoom()
 	NetworkSystem::NetSys->LeaveRoom();
 }
 
-bool  UMyUserWidget::CreateClient()
+bool UMyUserWidget::CreateClient()
 {
 	UMyUserWidget::myUserWidget = this;
 
