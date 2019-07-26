@@ -334,16 +334,17 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else if (MoveLinkToFollow.SMR.DataIndex)
 		{
-			//try {
+			try {
 			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Orange, TEXT("MOVE"));
 
 			// Consume the input we used to get to this move.
+
 			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
 			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 3, false);
 			InputStream.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex, false);
-			//}
-			//catch (...) {
-			//}
+			}
+			catch (const std::exception e) {
+			}
 		}
 
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("In A Move U Can Deal Damage"));
@@ -689,8 +690,8 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 	{
 		DisableInput(Cast<APlayerController>(this));
 		stunTimer += deltaSeconds;
-		InputStream.Reset();
-		InputTimeStamps.Reset();
+		//InputStream.Reset();
+		//InputTimeStamps.Reset();
 		if (stunTimer >= 2.0F/* || !isStunned*/)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset GotHit"));
