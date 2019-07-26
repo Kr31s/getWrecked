@@ -4,6 +4,7 @@
 #include "AnimationColliderComponent.h"
 #include "DemoFrameActor.h"
 #include "MyHitBoxComponent.h"
+#include "PlayerComponents/ScsNodeSearchTamplates.h"
 
 #pragma optimize("", off)
 // Sets default values for this component's properties
@@ -118,7 +119,7 @@ void UAnimationColliderComponent::DeOrActivateComponents(UHitBoxIDComp* Collider
 
 void UAnimationColliderComponent::StartAnim(UFGMove * CurrentMove)
 {
-	if (!RealColliderActorRef && !ColliderHolderRef)
+	/*if (!RealColliderActorRef && !ColliderHolderRef)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Green, TEXT("FUCK"));
 		return;
@@ -129,39 +130,43 @@ void UAnimationColliderComponent::StartAnim(UFGMove * CurrentMove)
 	if (Cast<AFGDefaultPawn>(GetOwner()))
 	{
 		if (m_MoveToCollider.Find(CurrentMove))
-		{
+		{	
+			
+			auto Components{ GetScsDataNodesForType<UHitBoxIDComp>( m_MoveToCollider.Find(CurrentMove)->Get() ) };
+			auto* pComp{ Cast<UHitBoxIDComp>(Components[0]->ComponentTemplate) };
+
 			ColliderHolderRef->SetChildActorClass(*m_MoveToCollider.Find(CurrentMove));
 			DeOrActivateComponents(Cast<UHitBoxIDComp>(ColliderHolderRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[this->m_state]));
 		}
-	}
+	}*/
 }
 
 
 void UAnimationColliderComponent::NextColliderSetup()
 {
-	++m_state;
-	if (!Owner)
-	{
-		return;
-	}
-	if (Owner->gotHit)
-	{
-		if (RealColliderActorRef)
-		{
-			//RealColliderActorRef->DestroyChildActor();
-			return;
-		}
-	}
+	//++m_state;
+	//if (!Owner)
+	//{
+	//	return;
+	//}
+	//if (Owner->gotHit)
+	//{
+	//	if (RealColliderActorRef)
+	//	{
+	//		//RealColliderActorRef->DestroyChildActor();
+	//		return;
+	//	}
+	//}
 
-	if (RealColliderActorRef)
-	{
-		if (RealColliderActorRef->GetChildActor()) {
+	//if (RealColliderActorRef)
+	//{
+	//	if (RealColliderActorRef->GetChildActor()) {
 
-			DeOrActivateComponents(Cast<UHitBoxIDComp>(ColliderHolderRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[FMath::Clamp(this->m_state, 0, ColliderHolderRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass()).Num() - 1)]));
+	//		DeOrActivateComponents(Cast<UHitBoxIDComp>(ColliderHolderRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[FMath::Clamp(this->m_state, 0, ColliderHolderRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass()).Num() - 1)]));
 
-			//DeOrActivateComponents(Cast<UHitBoxIDComp>(RealColliderActorRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[this->m_state]));
-		}
-	}
+	//		//DeOrActivateComponents(Cast<UHitBoxIDComp>(RealColliderActorRef->GetChildActor()->GetComponentsByClass(UHitBoxIDComp::StaticClass())[this->m_state]));
+	//	}
+	//}
 }
 
 
