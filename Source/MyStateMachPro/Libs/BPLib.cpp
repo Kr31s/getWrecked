@@ -13,7 +13,7 @@ TArray<FColliderInfo> UBPLib::GetCollIDBoxByIndex(UClass *FromClass, int index)
 	}
 
 	TArray<FColliderInfo> Out{};
-	for (auto&& ChildNode : Nodes[index]->ChildNodes)
+	for (auto&& ChildNode : Nodes[FMath::Clamp(index, 0, Nodes.Num() - 1)]->ChildNodes)
 	{
 		auto* pAsComp{ Cast<UMyHitBoxComponent>(ChildNode->ComponentTemplate) };
 		checkf(pAsComp, TEXT("Child component of UHitBoxIDComp not of time UMyHitBoxComponent"));
