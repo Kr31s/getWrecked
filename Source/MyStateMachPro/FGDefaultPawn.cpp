@@ -83,8 +83,7 @@ void AFGDefaultPawn::BeginPlay()
 void AFGDefaultPawn::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-
+	GetCharacterMovement()->Velocity = FVector(GetVelocity().X, 0.0F, -700.0F);
 	EnablePlayerInput(isInputEnabled);
 	this->SetRotationOfPlayer();
 

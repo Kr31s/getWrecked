@@ -91,9 +91,6 @@ void AMyStateMachProGameModeBase::StartPlay() {
 
 	player1->Opponent = UGameplayStatics::GetPlayerCharacter(this, 1);
 	player2->Opponent = UGameplayStatics::GetPlayerCharacter(this, 0);
-	player1->master = true;
-	player1->isOnLeftSide = true;
-	player2->isOnLeftSide = false;
 	startTimer = prepTime;
 	player1Score = 0;
 	player2Score = 0;
@@ -129,7 +126,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 
 		player1->isStunned = false;
 		player2->isStunned = false;
-		if (NetworkSystem::NetSys != nullptr && NetworkSystem::NetSys->roomOwner)
+		if (NetworkSystem::NetSys == nullptr || NetworkSystem::NetSys->roomOwner)
 		{
 			player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
 			player2->SetActorLocation(FVector(230, 0.0F, 100.0F));
