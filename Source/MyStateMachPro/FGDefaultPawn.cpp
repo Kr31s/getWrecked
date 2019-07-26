@@ -334,7 +334,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else if (MoveLinkToFollow.SMR.DataIndex)
 		{
-			try {
+			//try {
 			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Orange, TEXT("MOVE"));
 
 			// Consume the input we used to get to this move.
@@ -342,9 +342,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
 			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 3, false);
 			InputStream.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex, false);
-			}
-			catch (const std::exception e) {
-			}
+			//}
+			//catch (const std::exception e) {
+			//}
 		}
 
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("In A Move U Can Deal Damage"));
