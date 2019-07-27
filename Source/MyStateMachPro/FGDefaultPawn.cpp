@@ -340,7 +340,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			// Consume the input we used to get to this move.
 
 			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
-			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 3, false);
+			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 5, false);
 			InputStream.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex, false);
 			//}
 			//catch (const std::exception e) {
