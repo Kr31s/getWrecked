@@ -34,7 +34,7 @@ void UMyUserWidget::CreateRoom(int p_timeValue, int p_roundValue, const FString&
 
 void UMyUserWidget::JoinRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
 {
-	AMyStateMachProGameModeBase::m_playerName = p_Name;
+	AMyStateMachProGameModeBase::m_opponentName = p_Name;
 	AMyStateMachProGameModeBase::m_roundVal = p_roundValue;
 	AMyStateMachProGameModeBase::m_timeVal = p_timeValue;
 
