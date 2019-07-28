@@ -155,10 +155,12 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			if (this->isOnLeftSide)
 			{
+				movingForward = -1;
 				InputDirection = DirectionUpBackAtom; // Jump + Back
 			}
 			else
 			{
+				movingForward = 1;
 				InputDirection = DirectionUpForwardAtom; // Jump Forward
 
 			}
@@ -183,7 +185,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			movingForward = 0;
 			isCrouching = false;
 		}
-		else
+		else if (DirectionInput.Y > 0.9F)
 		{
 
 			InputDirection = DirectionUpAtom; // Jump
@@ -252,10 +254,12 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			if (this->isOnLeftSide)
 			{
+				movingForward = 1;
 				InputDirection = DirectionUpForwardAtom; // Jump Forward
 			}
 			else
 			{
+				movingForward = -1;
 				InputDirection = DirectionUpBackAtom; // Jump Back
 			}
 			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump)
