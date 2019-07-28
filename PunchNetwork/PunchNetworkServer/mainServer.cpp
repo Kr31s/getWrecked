@@ -145,10 +145,13 @@ unsigned long long GetTriangleNummber(unsigned long long value)
 	}
 	return answer;
 }
-
+#include <windows.h>
 int main()
 {
-
+	
+	HANDLE a = GetCurrentProcess();
+	std::cout << GetProcessId(a);
+	
 	BCServer::sTheServer = new BCServer(4023, true);
 
 	std::thread t1(ServerThread);
