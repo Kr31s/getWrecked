@@ -148,6 +148,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	}
 	if (startTimer > 0.0f)
 	{
+		player1->isInputEnabled = false;
+		player2->isInputEnabled = false;
 		startTimer -= DeltaSeconds;
 		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Magenta, FString::SanitizeFloat(startTimer));
 		return;
