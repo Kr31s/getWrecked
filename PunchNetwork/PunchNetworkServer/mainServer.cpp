@@ -145,10 +145,11 @@ unsigned long long GetTriangleNummber(unsigned long long value)
 	}
 	return answer;
 }
-
+#include <windows.h>
 int main()
 {
-
+	SetConsoleTitle("PunchNetwork");
+	
 	BCServer::sTheServer = new BCServer(4023, true);
 
 	std::thread t1(ServerThread);

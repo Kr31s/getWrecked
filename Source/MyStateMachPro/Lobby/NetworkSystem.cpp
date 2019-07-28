@@ -33,7 +33,7 @@ void NetworkSystem::setGameMode(AMyStateMachProGameModeBase* p_gameMode)
 
 bool NetworkSystem::InitNetSystem()
 {
-	this->serverAddress = NetAddress(127, 0, 0, 1, 4023);
+	this->serverAddress = NetAddress(93, 201, 64, 55, 4023);
 
 	BWNet::InitializeSocketLayer();
 
@@ -300,7 +300,7 @@ void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
 		{
 			m_opponentName[i] = p_receiveArray[i + 5];
 		}
-
+		AMyStateMachProGameModeBase::m_playerName = FString(UTF8_TO_TCHAR(m_opponentName));
 		myRoomID = p_receiveArray[3];
 		clientID = p_receiveArray[4];
 
@@ -319,6 +319,8 @@ void NetworkSystem::RoomJoin(char* p_receiveArray)
 	{
 		m_opponentName[i] = p_receiveArray[i + 2];
 	}
+	AMyStateMachProGameModeBase::m_opponentName = FString(UTF8_TO_TCHAR(m_opponentName));
+
 	UMyUserWidget::myUserWidget->RivalJoinMessage(FString(UTF8_TO_TCHAR(m_opponentName)));
 	UE_LOG(LogTemp, Warning, TEXT("RivalJoinMessage"));
 }
