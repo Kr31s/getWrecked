@@ -148,9 +148,7 @@ unsigned long long GetTriangleNummber(unsigned long long value)
 #include <windows.h>
 int main()
 {
-	
-	HANDLE a = GetCurrentProcess();
-	std::cout << GetProcessId(a);
+	SetConsoleTitle("PunchNetwork");
 	
 	BCServer::sTheServer = new BCServer(4023, true);
 
