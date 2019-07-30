@@ -135,16 +135,6 @@ void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, uns
 
 }
 
-unsigned long long GetTriangleNummber(unsigned long long value)
-{
-	unsigned long long answer = 0;
-
-	for (int i = 0; i <= value; i++)
-	{
-		answer += i;
-	}
-	return answer;
-}
 #include <windows.h>
 int main()
 {

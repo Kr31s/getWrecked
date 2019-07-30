@@ -202,6 +202,7 @@ void BCServer::CreateRoom(NetAddress& p_receiveAddress, char* p_receiveArray, un
 
 	p_rounds = p_receiveArray[2];
 	p_gameTime = p_receiveArray[3];
+	p_receiveArray[2] = true;
 
 	sMutexClientIDList.lock();
 	p_receiveArray[4] = BCClient(p_receiveAddress, p_receiveArray).m_clientID;
@@ -216,14 +217,13 @@ void BCServer::LeaveRoom(NetAddress& p_receiveAddress, char* p_receiveArray)
 	m_roomIDList->at((int)p_receiveArray[2]).RemoveRival(p_receiveAddress, p_receiveArray);
 }
 void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
-{Println((int)p_receiveArray[2])
-	if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).FindClient(p_receiveAddress))
+{
+  	if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).FindClient(p_receiveAddress))
 	{
 		//net address is in room
 		if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[2]).IsOwner(p_receiveAddress))
 		{
 			Println("Value change Owner");
-
 
 			p_receiveArray[40] = p_receiveArray[2];
 			p_receiveArray[2] = true;
@@ -242,8 +242,6 @@ void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
 		{
 			Println("Value change Member");
 
-
-
 			p_receiveArray[40] = p_receiveArray[2];
 			p_receiveArray[2] = true;
 			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Member->m_ready = p_receiveArray[5];
@@ -251,7 +249,6 @@ void BCServer::ElementChange(NetAddress& p_receiveAddress, char* p_receiveArray)
 
 			if (BCServer::sTheServer->m_roomIDList->at(p_receiveArray[40]).m_Owner == nullptr)
 				return;
-
 			p_receiveArray[0] = 7;
 			p_receiveArray[2] = p_receiveArray[3];
 			p_receiveArray[3] = p_receiveArray[4];
@@ -289,8 +286,8 @@ void BCServer::GameMessage(NetAddress& p_receiveAddress, char* p_receiveArray, u
 	return;
 	for (int i = 0; i < 9; ++i)
 	{
-		p_intValue = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 + 4 * i])) << 8;
-		p_intValue |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3 + 4 * i]));
+		p_intValue = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 + (4 * i)])) << 8;
+		p_intValue |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3 + (4 * i)]));
 
 		if (p_intValue - 1 == BCServer::sTheServer->m_clientIDList->at(p_receiveArray[1]).m_lastClientFrame)
 		{
