@@ -40,8 +40,8 @@ AMyCameraActor::AMyCameraActor()
 	//FieldOfView = 60;
 	this->GetCameraComponent()->SetFieldOfView(60.0F);
 	PrimaryActorTick.bCanEverTick = true;
-	SetActorRotation(FRotator(-5.0F,-90.0F,0.0F));
-	SetActorLocation(FVector(115.0F,300.0F,162.0F));
+	SetActorRotation(FRotator(0.0F,-90.0F,0.0F));
+	SetActorLocation(FVector(0.0F,300.0F,175.0F));
 	//this->GetCameraComponent()->
 }
 
