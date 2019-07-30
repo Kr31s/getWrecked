@@ -25,8 +25,8 @@ AMyCameraActor::AMyCameraActor()
 	RightEdgeBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	LeftEdgeBox->SetCollisionObjectType(ECC_Vehicle);
 	RightEdgeBox->SetCollisionObjectType(ECC_Vehicle);
-	LeftEdgeBox->SetBoxExtent(FVector(16.0F, 16.0F, 1000.0F));
-	RightEdgeBox->SetBoxExtent(FVector(16.0F, 16.0F, 1000.0F));
+	LeftEdgeBox->SetBoxExtent(FVector(316.0F, 16.0F, 1000.0F));
+	RightEdgeBox->SetBoxExtent(FVector(316.0F, 16.0F, 1000.0F));
 	LeftEdgeBox->SetCollisionResponseToAllChannels(ECR_Ignore);
 	RightEdgeBox->SetCollisionResponseToAllChannels(ECR_Ignore);
 	LeftEdgeBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
@@ -60,8 +60,8 @@ void AMyCameraActor::Tick(float DeltaSeconds)
 			OldMidPoint = (P1L + P2L) * 0.5f;
 		}
 		
-		float cameraLeftEdge = MidPoint.X - (600 / 2);
-		float cameraRightEdge = MidPoint.X + (600 / 2);
+		float cameraLeftEdge = MidPoint.X - (900 / 2);
+		float cameraRightEdge = MidPoint.X + (900 / 2);
 		LeftEdgeBox->SetWorldLocation(FVector(cameraLeftEdge, MidPoint.Y, GetActorLocation().Z));
 		RightEdgeBox->SetWorldLocation(FVector(cameraRightEdge, MidPoint.Y, GetActorLocation().Z));
 		float playerDistance = PlayerOne->GetDistanceTo(PlayerTwo);
