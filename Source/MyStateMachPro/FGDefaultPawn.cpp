@@ -112,11 +112,14 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				}
 				else
 				{
+					isCrouching = true;
 					InputDirection = DirectionDownBackAtom;; // Crouch + Back is On LeftSide
 				}
 			}
 			else
 			{
+				isCrouching = true;
+
 				InputDirection = DirectionDownForwardAtom;; // Crouch + Forward is On RightSide
 			}
 		}
@@ -147,6 +150,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 			if (CanMoveInLeftDirection && !bIsBlocking) {
 				this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
+				isCrouching = false;
 				MovementRestrictionComp->TickComponent();
 
 			}
@@ -167,6 +171,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump)
 			{
 				//this->GetMovementComponent()->Velocity = (FVector(-600.0F, 0.0F, 600.0F));
+				isCrouching = false;
+
 				doJump = true;
 			}
 		}
@@ -187,6 +193,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else if (DirectionInput.Y > 0.9F)
 		{
+			isCrouching = false;
 
 			InputDirection = DirectionUpAtom; // Jump
 			//UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
@@ -205,10 +212,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			if (this->isOnLeftSide)
 			{
 				InputDirection = DirectionDownForwardAtom; // Crouch + Forward on LeftSide
+				isCrouching = true;
 				UE_LOG(LogTemp, Warning, TEXT("i want to crouchForward"));
 			}
 			else
 			{
+				isCrouching = true;
+
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
@@ -246,6 +256,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			}
 
 			if (CanMoveInRightDirection && !bIsBlocking) {
+				isCrouching = false;
+
 				this->AddMovementInput(this->GetActorForwardVector(), 100.0F);
 				MovementRestrictionComp->TickComponent();
 			}
@@ -254,11 +266,15 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			if (this->isOnLeftSide)
 			{
+				isCrouching = false;
+
 				movingForward = 1;
 				InputDirection = DirectionUpForwardAtom; // Jump Forward
 			}
 			else
 			{
+				isCrouching = false;
+
 				movingForward = -1;
 				InputDirection = DirectionUpBackAtom; // Jump Back
 			}

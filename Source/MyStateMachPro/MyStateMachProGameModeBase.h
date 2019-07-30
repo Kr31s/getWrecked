@@ -79,6 +79,9 @@ public:
 		bool scoreFlag;
 
 	UPROPERTY()
+		bool isMatchOver;
+
+	UPROPERTY()
 		float startTimer;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -97,6 +100,10 @@ public:
 		float transitionMaxDuration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float roundTransitionMaxDuration;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float slowmotionMaxDuration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -107,6 +114,9 @@ public:
 
 	UFUNCTION()
 		void DetermineMatchWinner();
+
+	UFUNCTION()
+		void CheckIfMatchIsOver(int playerScore);
 
 	UPROPERTY(BlueprintReadWrite, Category = "Score")
 		int player1Score = 0;
@@ -141,6 +151,10 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnOnNextRoundNumberSignature, int, newNumber);
 	UPROPERTY(BlueprintAssignable)
 		FOnOnNextRoundNumberSignature OnNextRoundNumber;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMatchIsOverSignature, bool, newNumber);
+	UPROPERTY(BlueprintAssignable)
+		FOnMatchIsOverSignature OnMatchIsOver;
 
 	UFUNCTION()
 	void SetRoundTimer(float deltaSeconds);
