@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Camera/CameraActor.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/BoxComponent.h"
 #include "MyCameraActor.generated.h"
 
 /**
@@ -25,6 +26,9 @@ public:
 	//virtual void BeginPlay() override;
 
 	UPROPERTY()
+		float camInterpolation;
+
+	UPROPERTY()
 		AFGDefaultPawn* PlayerOne;
 
 	UPROPERTY()
@@ -36,8 +40,18 @@ public:
 	UPROPERTY()
 		USpringArmComponent* SpringArm;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		UBoxComponent* LeftEdgeBox;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		UBoxComponent* RightEdgeBox;
+
+	
 	UPROPERTY(EditAnywhere)
 		float VerticalOffset;
+
+	UPROPERTY()
+		FVector OldMidPoint;
 
 	UPROPERTY(EditAnywhere)
 		float ZDistanceModifier;

@@ -11,6 +11,27 @@ AMyCameraActor::AMyCameraActor()
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
 	SpringArm->SetupAttachment(RootComponent);
 	GetCameraComponent()->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+	SpringArm->bEnableCameraLag = true;
+
+
+	LeftEdgeBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftEdgeBox"));
+	RightEdgeBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightEdgeBox"));
+
+
+	LeftEdgeBox->SetRelativeTransform(FTransform(FVector(1.0F, 1.0F, 1.0F)));
+	LeftEdgeBox->SetupAttachment(RootComponent);
+	RightEdgeBox->SetupAttachment(RootComponent);
+	LeftEdgeBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	RightEdgeBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	LeftEdgeBox->SetCollisionObjectType(ECC_Vehicle);
+	RightEdgeBox->SetCollisionObjectType(ECC_Vehicle);
+	LeftEdgeBox->SetBoxExtent(FVector(16.0F, 16.0F, 1000.0F));
+	RightEdgeBox->SetBoxExtent(FVector(16.0F, 16.0F, 1000.0F));
+	LeftEdgeBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	RightEdgeBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	LeftEdgeBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	RightEdgeBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+
 	YValueHowCloseToPlayer = 300.0;
 	VerticalOffset = 70.0f;
 	ZDistanceModifier = 25;
@@ -21,6 +42,7 @@ AMyCameraActor::AMyCameraActor()
 	PrimaryActorTick.bCanEverTick = true;
 	SetActorRotation(FRotator(-5.0F,-90.0F,0.0F));
 	SetActorLocation(FVector(115.0F,300.0F,162.0F));
+	//this->GetCameraComponent()->
 }
 
 //void AMyCameraActor::BeginPlay() {}
@@ -33,9 +55,20 @@ void AMyCameraActor::Tick(float DeltaSeconds)
 		FVector P1L = PlayerOne->GetActorLocation();
 		FVector P2L = PlayerTwo->GetActorLocation();
 		FVector MidPoint = (P1L + P2L) * 0.5f;
+		if(OldMidPoint == FVector(0,0,0))
+		{
+			OldMidPoint = (P1L + P2L) * 0.5f;
+		}
+		
+		float cameraLeftEdge = MidPoint.X - (600 / 2);
+		float cameraRightEdge = MidPoint.X + (600 / 2);
+		LeftEdgeBox->SetWorldLocation(FVector(cameraLeftEdge, MidPoint.Y, GetActorLocation().Z));
+		RightEdgeBox->SetWorldLocation(FVector(cameraRightEdge, MidPoint.Y, GetActorLocation().Z));
 		float playerDistance = PlayerOne->GetDistanceTo(PlayerTwo);
-		MidPoint.Z += VerticalOffset;
+		MidPoint.Z = FMath::Lerp(MidPoint.Z, OldMidPoint.Z, 0.1F) + VerticalOffset;
+
 		MidPoint.Y = YValueHowCloseToPlayer;
+		OldMidPoint.Z = MidPoint.Z;
 		SetActorLocation(MidPoint);
 
 		float Pitch = FMath::RadiansToDegrees(FMath::Atan2(-VerticalOffset * 0.5f, SpringArm->TargetArmLength));

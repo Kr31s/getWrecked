@@ -184,13 +184,33 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			{
 				player1->CustomTimeDilation = transitionSpeed;
 				player2->CustomTimeDilation = transitionSpeed;
+			}else
+			{
+				player2->playerWon = true;
 			}
 			return;
 		}
 
-		SetupMatch();
-		DetermineMatchWinner();
-		transitiontime = 0;
+		CheckIfMatchIsOver(player2Score);
+		if (!isMatchOver)
+		{
+			SetupMatch();
+			transitiontime = 0;
+		}
+		else
+		{
+			player1->CustomTimeDilation = 1.0F;
+			player2->CustomTimeDilation = 1.0F;
+			while (roundTransitionMaxDuration < transitionMaxDuration) {
+				roundTransitionMaxDuration += DeltaSeconds;
+				GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(roundTransitionMaxDuration));
+				return;
+			}
+			DetermineMatchWinner();
+		}
+		//SetupMatch();
+		//DetermineMatchWinner();
+		//transitiontime = 0;
 	}
 	if (player2->RessourceComp->Health <= 0.0F)
 	{
@@ -213,13 +233,30 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			{
 				player1->CustomTimeDilation = transitionSpeed;
 				player2->CustomTimeDilation = transitionSpeed;
+			}else
+			{
+				player1->playerWon = true;
 			}
 			return;
 		}
+		CheckIfMatchIsOver(player1Score);
+		if (!isMatchOver)
+		{
+			SetupMatch();
+			transitiontime = 0;
+		}
+		else
+		{
+			player1->CustomTimeDilation = 1.0F;
+			player2->CustomTimeDilation = 1.0F;
+			while (roundTransitionMaxDuration < transitionMaxDuration) {
+				roundTransitionMaxDuration += DeltaSeconds;
+				GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(roundTransitionMaxDuration));
+				return;
+			}
+			DetermineMatchWinner();
+		}
 
-		SetupMatch();
-		DetermineMatchWinner();
-		transitiontime = 0;
 	}
 	SetRoundTimer(DeltaSeconds);
 
@@ -335,6 +372,25 @@ void AMyStateMachProGameModeBase::DetermineMatchWinner()
 	}
 }
 
+void AMyStateMachProGameModeBase::CheckIfMatchIsOver(int playerScore)
+{
+	switch (MatchCount)
+	{
+	case EMatcheTypes::BestofOne:
+		isMatchOver = playerScore > 0 ? true : false;
+		OnMatchIsOver.Broadcast(isMatchOver);
+		break;
+	case EMatcheTypes::BestofThree:
+		isMatchOver = playerScore > 1 ? true : false;
+		OnMatchIsOver.Broadcast(isMatchOver);
+		break;
+	case EMatcheTypes::BestofFive:
+		isMatchOver = playerScore > 2 ? true : false;
+		OnMatchIsOver.Broadcast(isMatchOver);
+		break;
+	}
+}
+
 void AMyStateMachProGameModeBase::SetRoundTimer(float deltaSeconds)
 {
 	roundTimer -= deltaSeconds;
@@ -350,7 +406,7 @@ void AMyStateMachProGameModeBase::RoundTimeOver()
 		player1Score++;
 		OnP1ScoreChanged.Broadcast(player1Score);
 	}
-	else if(player1->RessourceComp->Health < player2->RessourceComp->Health)
+	else if (player1->RessourceComp->Health < player2->RessourceComp->Health)
 	{
 		//player2->K2_DestroyActor();
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
