@@ -23,8 +23,8 @@ static long long GetTimeInMilli()
 
 struct GameMessageData
 {
-	unsigned short m_time;
-	unsigned short m_input;
+	unsigned short m_time = 666;
+	unsigned short m_input = 666;
 
 	GameMessageData() : m_time{ 0 }, m_input{ 0 }{};
 	GameMessageData(unsigned short p_time, unsigned short p_input) : m_time{ p_time }, m_input{ p_input }{};

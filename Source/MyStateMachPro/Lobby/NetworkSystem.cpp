@@ -33,7 +33,7 @@ void NetworkSystem::setGameMode(AMyStateMachProGameModeBase* p_gameMode)
 
 bool NetworkSystem::InitNetSystem()
 {
-	this->serverAddress = NetAddress(93, 201, 74, 166, 4023);
+	this->serverAddress = NetAddress(127, 0, 0, 1, 4023);
 
 	BWNet::InitializeSocketLayer();
 
@@ -262,17 +262,19 @@ void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 	sendArray[1] = clientID;
 
 	gameMessagesPlayer.insert(gameMessagesPlayer.begin(), GameMessageData(AMyStateMachProGameModeBase::sFrameCounter, (unsigned short)inputStream.to_ulong()));
-	gameMessagesPlayer.resize(9);
+	gameMessagesPlayer.resize(9, GameMessageData());
 
 	for (int i = 0; i < 9; ++i)
 	{
 		sendArray[2 + (4 * i)] = (gameMessagesPlayer[i].m_time) >> 8;
 		temp = (gameMessagesPlayer[i].m_time) << 8;
+
 		sendArray[3 + (4 * i)] = temp >> 8;
 		sendArray[4 + (4 * i)] = (gameMessagesPlayer[i].m_input) >> 8;
 		temp = (gameMessagesPlayer[i].m_input) << 8;
 		sendArray[5 + (4 * i)] = temp >> 8;
 	}
+
 	UE_LOG(LogTemp, Warning, TEXT("is sending"));
 
 
@@ -281,10 +283,7 @@ void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 
 void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
 {
-
-	GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Error Message 0"));
 	if (UMyUserWidget::myUserWidget == nullptr) {
-		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Error Message 0"));
 		return;
 	}
 
@@ -362,26 +361,28 @@ void NetworkSystem::PauseGameUpdate(char* p_receiveArray)
 }
 void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 {
-	unsigned short inputVal;
-	unsigned short timeVal;
+	unsigned short inputVal= p_receiveArray[2];
+	unsigned short timeVal = p_receiveArray[3];
 
-	timeVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 ])) << 8;
+	timeVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2])) << 8;
 	timeVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3]));
 
 	inputVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[4])) << 8;
 	inputVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[5]));
 
-	gameMessagesRivale.insert(gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
-	gameMessagesRivale.resize(9);
+	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString::FromInt((int)timeVal));
+
+	NetworkSystem::NetSys->gameMessagesRivale.insert(NetworkSystem::NetSys->gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
+	NetworkSystem::NetSys->gameMessagesRivale.resize(9, GameMessageData());
 
 	return;
 	for (int i = 0; i < 9; ++i)
 	{
-		timeVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 + 4 * i])) << 8;
-		timeVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3 + 4 * i]));
+		timeVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 + (4 * i)])) << 8;
+		timeVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3 + (4 * i)]));
 
-		inputVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[4 + 4 * i])) << 8;
-		inputVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[5 + 4 * i]));
+		inputVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[4 + (4 * i)])) << 8;
+		inputVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[5 + (4 * i)]));
 
 
 		if (timeVal - 1 == gameMessagesRivale[i].m_time)
@@ -389,7 +390,7 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 			for (; i > -1; --i)
 			{
 				gameMessagesRivale.insert(gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
-				gameMessagesRivale.resize(9);
+				gameMessagesRivale.resize(9, GameMessageData());
 				UE_LOG(LogTemp, Warning, TEXT("right receiviung"));
 			}
 			break;
