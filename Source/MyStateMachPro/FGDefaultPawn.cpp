@@ -706,16 +706,14 @@ int AFGDefaultPawn::DirectionSign()
 
 void AFGDefaultPawn::HandleStun(float deltaSeconds)
 {
-	if (isStunned || gotHit)
+	if (isStunned/* || gotHit*/)
 	{
 		DisableInput(Cast<APlayerController>(this));
 		stunTimer += deltaSeconds;
-		//InputStream.Reset();
-		//InputTimeStamps.Reset();
-		if (stunTimer >= 2.0F/* || !isStunned*/)
+		if (stunTimer >= 2.0F)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset GotHit"));
-			gotHit = false;
+			//gotHit = false;
 			stunTimer = 0.0F;
 		}
 		return;
