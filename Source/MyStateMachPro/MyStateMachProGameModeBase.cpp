@@ -13,6 +13,8 @@ int AMyStateMachProGameModeBase::m_timeVal = 1;
 FString AMyStateMachProGameModeBase::m_opponentName = "Hans";
 FString AMyStateMachProGameModeBase::m_playerName = "Kalle";
 
+bool AMyStateMachProGameModeBase::hasGameStarted = true;
+
 unsigned int AMyStateMachProGameModeBase::m_framesToSync = 0;
 
 AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
@@ -108,6 +110,7 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	player1Score = 0;
 	player2Score = 0;
 	roundNumber = 1;
+	OnGameStarted.Broadcast(hasGameStarted);
 	if (NetworkSystem::NetSys != nullptr)
 	{
 		//sending first message to opponent
@@ -132,6 +135,11 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		}
 		
 		
+	}
+
+	if(!hasGameStarted)
+	{
+		return;
 	}
 	if (startTimer == 3.0f) {
 
