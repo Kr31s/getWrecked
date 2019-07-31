@@ -139,7 +139,7 @@ public:
 		TArray<AActor*> ColliderParentsArray;
 
 	UPROPERTY(EditAnywhere, Category = "Moves")
-		UFGMove* BlockMove;
+		UFGMove* IdleMove;
 
 	UPROPERTY(EditAnywhere, Category = "Moves")
 		UFGMove* CrouchBlockMove;
