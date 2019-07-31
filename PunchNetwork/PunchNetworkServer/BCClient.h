@@ -9,6 +9,7 @@ public:
 	static unsigned int		sMaxLeftHeartBeats;
 
 	unsigned int			m_lastClientFrame = 0;
+	long long				m_lastSyncCall = 0;
 	bool					m_ready = false;
 
 	BCRoom*					m_myRoom = nullptr;

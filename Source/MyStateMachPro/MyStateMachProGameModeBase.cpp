@@ -108,12 +108,16 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	player1Score = 0;
 	player2Score = 0;
 	roundNumber = 1;
-
-	//sending first message to opponent
-	NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
+	if (NetworkSystem::NetSys != nullptr)
+	{
+		//sending first message to opponent
+		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
+	}
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
+
+	FrameSyncCheck();
 	if (NetworkSystem::NetSys != nullptr && NetworkSystem::NetSys->gameMessagesRivale.size() > 0)
 	{
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
