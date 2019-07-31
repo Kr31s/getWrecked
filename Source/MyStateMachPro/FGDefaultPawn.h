@@ -139,7 +139,7 @@ public:
 		TArray<AActor*> ColliderParentsArray;
 
 	UPROPERTY(EditAnywhere, Category = "Moves")
-		UFGMove* BlockMove;
+		UFGMove* IdleMove;
 
 	UPROPERTY(EditAnywhere, Category = "Moves")
 		UFGMove* CrouchBlockMove;
@@ -153,7 +153,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UActorRotationComponent* PlayerRotationComp;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* gotHitFire;
 
 	UFUNCTION(BlueprintCallable)

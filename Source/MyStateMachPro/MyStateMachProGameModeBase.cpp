@@ -143,6 +143,9 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player1->doJump = false;
 		player2->doJump = false;
 
+		player1->GetMesh()->GetAnimInstance()->StopAllMontages(0.25F);
+		player2->GetMesh()->GetAnimInstance()->StopAllMontages(0.25F);
+
 		player1->isStunned = false;
 		player2->isStunned = false;
 		if (NetworkSystem::NetSys == nullptr || NetworkSystem::NetSys->roomOwner)
@@ -167,6 +170,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	}
 	if (startTimer > 0.0f)
 	{
+
 		player1->isInputEnabled = false;
 		player2->isInputEnabled = false;
 		startTimer -= DeltaSeconds;
@@ -189,7 +193,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		if (!scoreFlag)
 		{
 			player2Score++;
-			player2->playerWon = true;
+			//player2->playerWon = true;
 			scoreFlag = true;
 		}
 		OnP2ScoreChanged.Broadcast(player2Score);
@@ -240,7 +244,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		if (!scoreFlag)
 		{
 			player1Score++;
-			player1->playerWon = true;
+			//player1->playerWon = true;
 			scoreFlag = true;
 		}
 		OnP1ScoreChanged.Broadcast(player1Score);
@@ -395,21 +399,60 @@ void AMyStateMachProGameModeBase::DetermineMatchWinner()
 
 void AMyStateMachProGameModeBase::CheckIfMatchIsOver(int playerScore)
 {
-	switch (MatchCount)
+	if(NetworkSystem::NetSys == nullptr)
 	{
-	case EMatcheTypes::BestofOne:
-		isMatchOver = playerScore > 0 ? true : false;
-		OnMatchIsOver.Broadcast(isMatchOver);
-		break;
-	case EMatcheTypes::BestofThree:
-		isMatchOver = playerScore > 1 ? true : false;
-		OnMatchIsOver.Broadcast(isMatchOver);
-		break;
-	case EMatcheTypes::BestofFive:
-		isMatchOver = playerScore > 2 ? true : false;
-		OnMatchIsOver.Broadcast(isMatchOver);
-		break;
+		switch (MatchCount)
+		{
+		case EMatcheTypes::BestofOne:
+			isMatchOver = playerScore > 0 ? true : false;
+			if(isMatchOver)
+			{
+				OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
+			}
+			break;
+		case EMatcheTypes::BestofThree:
+			isMatchOver = playerScore > 1 ? true : false;
+			if (isMatchOver)
+			{
+				OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
+			}
+			break;
+		case EMatcheTypes::BestofFive:
+			isMatchOver = playerScore > 2 ? true : false;
+			if (isMatchOver)
+			{
+				OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
+			}
+			break;
+		}
+	}else
+	{
+		switch (MatchCount)
+		{
+		case EMatcheTypes::BestofOne:
+			isMatchOver = playerScore > 0 ? true : false;
+			if (isMatchOver)
+			{
+				OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
+			}
+			break;
+		case EMatcheTypes::BestofThree:
+			isMatchOver = playerScore > 1 ? true : false;
+			if (isMatchOver)
+			{
+				OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
+			}
+			break;
+		case EMatcheTypes::BestofFive:
+			isMatchOver = playerScore > 2 ? true : false;
+			if (isMatchOver)
+			{
+				OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
+			}
+			break;
+		}
 	}
+
 }
 
 void AMyStateMachProGameModeBase::SetRoundTimer(float deltaSeconds)
