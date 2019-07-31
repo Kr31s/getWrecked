@@ -27,6 +27,7 @@ class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 
 
 public:
+	static bool hasGameStarted;
 	static int m_roundVal;
 	static int m_timeVal;
 	static FString m_opponentName;//FString(UTF8_TO_TCHAR(opponentName))
@@ -76,6 +77,7 @@ public:
 
 	UPROPERTY()
 		float roundTimer;
+
 
 	UPROPERTY()
 		bool scoreFlag;
@@ -157,6 +159,10 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMatchIsOverSignature, bool, isOnline, bool, isPlayer1Winner);
 	UPROPERTY(BlueprintAssignable)
 		FOnMatchIsOverSignature OnMatchIsOverCheckIfOnline;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameStartedSignature, bool, hasGameStarted);
+	UPROPERTY(BlueprintAssignable)
+		FOnGameStartedSignature OnGameStarted;
 
 	UFUNCTION()
 	void SetRoundTimer(float deltaSeconds);

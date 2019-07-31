@@ -7,7 +7,7 @@
 
 
 
-void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime, unsigned int& p_intValue);
+void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime, unsigned int& p_intValue1, int& p_intValue2);
 
 
 void ServerThread()
@@ -16,7 +16,8 @@ void ServerThread()
 	char	serverThreadArray[1000] = { 0 };
 
 	Messages		identifier = Messages::UnknownMessage;
-	unsigned int	intValue = NULL;
+	unsigned int	intValue1 = NULL;
+	int	intValue2 = NULL;
 	unsigned char	rounds = NULL;
 	unsigned char	gameTime = NULL;
 	unsigned char	status = NULL;
@@ -27,10 +28,11 @@ void ServerThread()
 		receiveAddress = BCServer::sTheServer->m_serverSocket.Receive((char*)serverThreadArray, sizeof(serverThreadArray));
 		if (receiveAddress.GetPortRef() != NULL)
 		{
-			DecodeMessageServer(receiveAddress, serverThreadArray, rounds, gameTime, intValue);
+			DecodeMessageServer(receiveAddress, serverThreadArray, rounds, gameTime, intValue1, intValue2);
 
 			ClearReceiveArray(serverThreadArray, sizeof(serverThreadArray));
-			intValue = NULL;
+			intValue1 = NULL;
+			intValue2 = NULL;
 			rounds = NULL;
 			gameTime = NULL;
 			identifier = Messages::UnknownMessage;
@@ -83,11 +85,11 @@ void NonServerMessage()
 
 }
 
-void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime, unsigned int& p_intValue)
+void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned char& p_rounds, unsigned char& p_gameTime, unsigned int& p_intValue1, int& p_intValue2)
 {
 	if (MessageOfIndex(p_receiveArray[0]) == Messages::GameMessage)
 	{
-		BCServer::sTheServer->GameMessage(p_receiveAddress, p_receiveArray, p_intValue);
+		BCServer::sTheServer->GameMessage(p_receiveAddress, p_receiveArray, p_intValue1, p_intValue2);
 		return;
 	}
 
@@ -143,7 +145,7 @@ int main()
 	BCServer::sTheServer = new BCServer(4023, true);
 
 	std::thread t1(ServerThread);
-	//std::thread t2(MessageThread);
+	std::thread t2(MessageThread);
 	//std::thread t3(HeartThread);
 
 	int i;
@@ -152,7 +154,7 @@ int main()
 	BCServer::sTheServer->m_serverRunning = false;
 
 	t1.join();
-	//t2.join();
+	t2.join();
 	//t3.join();
 
 	return 0;

@@ -84,15 +84,16 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	GetCharacterMovement()->Velocity = FVector(GetVelocity().X, 0.0F, -700.0F);
-	EnablePlayerInput(isInputEnabled);
 	this->SetRotationOfPlayer();
+
+	HandleStun(DeltaSeconds); // player got stunned
+	EnablePlayerInput(isInputEnabled);
 
 	if (!isInputEnabled) {
 		return;
 	}
 
 
-	HandleStun(DeltaSeconds); // player got stunned
 	// Process input
 
 	// Add one atom for stick direction
@@ -712,10 +713,11 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 		stunTimer += deltaSeconds;
 		if (stunTimer >= 2.0F || gotHit)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset GotHit"));
+			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset STUN"));
 			//gotHit = false;
-			isStunned = false;
 			stunTimer = 0.0F;
+			isStunned = false;
+
 		}
 		return;
 	}

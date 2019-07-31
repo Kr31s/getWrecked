@@ -5,15 +5,15 @@ E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(21,27):
 E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(31,44): warning C4154:  deletion of an array expression; conversion to pointer supplied
 E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(37,20): warning C4018:  '<': signed/unsigned mismatch
 E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(77,73): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(87,23): warning C4305:  '=': truncation from 'int' to 'char'
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(87,20): warning C4309:  '=': truncation of constant value
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(90,5): warning C4067:  unexpected tokens following preprocessor directive - expected a newline
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(124,101): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(125,130): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(147,67): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(149,100): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(192,101): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(193,130): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(208,64): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(210,112): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(86,5): warning C4067:  unexpected tokens following preprocessor directive - expected a newline
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(120,101): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(121,130): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(143,66): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(145,99): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(193,101): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(194,130): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(209,64): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(211,112): warning C4244:  '=': conversion from 'unsigned short' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(300,35): warning C4244:  '=': conversion from 'double' to 'char', possible loss of data
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(311,35): warning C4244:  '=': conversion from 'double' to 'char', possible loss of data
   PunchNetwork.vcxproj -> E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe
