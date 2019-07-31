@@ -27,6 +27,7 @@ class MYSTATEMACHPRO_API AMyStateMachProGameModeBase : public AGameModeBase
 
 
 public:
+	static bool hasGameStarted;
 	static int m_roundVal;
 	static int m_timeVal;
 	static FString m_opponentName;//FString(UTF8_TO_TCHAR(opponentName))
@@ -77,7 +78,6 @@ public:
 	UPROPERTY()
 		float roundTimer;
 
-	static bool hasGameStarted;
 
 	UPROPERTY()
 		bool scoreFlag;
