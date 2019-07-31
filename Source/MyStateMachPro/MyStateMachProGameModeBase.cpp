@@ -40,14 +40,16 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 
 void AMyStateMachProGameModeBase::FrameSyncCheck()
 {
-	if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 2) 
+	if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 2)
 	{
+		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 		--AMyStateMachProGameModeBase::m_framesToSync;
-		if (AMyStateMachProGameModeBase::m_framesToSync <= 0) 
+		if (AMyStateMachProGameModeBase::m_framesToSync <= 0)
 		{
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
 		}
-	}else if (m_framesToSync > 0) {
+	}
+	else if (m_framesToSync > 0) {
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 2);
 	}
 
@@ -124,17 +126,16 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	if (NetworkSystem::NetSys != nullptr && NetworkSystem::NetSys->gameMessagesRivale.size() > 0)
 	{
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
-		++AMyStateMachProGameModeBase::sFrameCounter;
 
-		for(int i = 0; i< 249;++i)
+		for (int i = 0; i < 249; ++i)
 		{
 			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
-				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_time));
+				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
+				break;
 			}
-			break;
 		}
-		
-		
+
+
 	}
 
 	if(!hasGameStarted)
@@ -214,7 +215,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			{
 				player1->CustomTimeDilation = transitionSpeed;
 				player2->CustomTimeDilation = transitionSpeed;
-			}else
+			}
+			else
 			{
 				player2->playerWon = true;
 			}
@@ -263,7 +265,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			{
 				player1->CustomTimeDilation = transitionSpeed;
 				player2->CustomTimeDilation = transitionSpeed;
-			}else
+			}
+			else
 			{
 				player1->playerWon = true;
 			}

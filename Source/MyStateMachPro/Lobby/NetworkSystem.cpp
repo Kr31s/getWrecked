@@ -270,6 +270,8 @@ void NetworkSystem::PauseGame(bool& stop)
 }
 void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString::FromInt(AMyStateMachProGameModeBase::sFrameCounter));
+
 	unsigned short temp;
 	sendArray[0] = 10;
 	sendArray[1] = myRoomID;
@@ -288,11 +290,10 @@ void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 		sendArray[5 + (4 * i)] = temp >> 8;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("is sending"));
 
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 1000);
-
+	++AMyStateMachProGameModeBase::sFrameCounter;
 	ClearSendArray();
 }
 
@@ -374,7 +375,7 @@ void NetworkSystem::ElementUpdate(char* p_receiveArray)
 void NetworkSystem::PauseGameUpdate(char* p_receiveArray)
 {
 }
-void NetworkSystem::SyncGame(char* p_receiveArray) 
+void NetworkSystem::SyncGame(char* p_receiveArray)
 {
 	AMyStateMachProGameModeBase::m_framesToSync = (unsigned int)p_receiveArray[2];
 }
@@ -394,14 +395,21 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 		inputVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[4 + (4 * i)])) << 8;
 		inputVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[5 + (4 * i)]));
 
+		UE_LOG(LogTemp, Warning, TEXT("is sending %d"), (int)timeVal);
 
-		if (timeVal - 1 == gameMessagesRivale[i].m_time)
+		if (timeVal == gameMessagesRivale[0].m_time + 1)
 		{
 			for (; i > -1; --i)
 			{
+				timeVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 + (4 * i)])) << 8;
+				timeVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3 + (4 * i)]));
+
+				inputVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[4 + (4 * i)])) << 8;
+				inputVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[5 + (4 * i)]));
+
 				NetworkSystem::NetSys->gameMessagesRivale.insert(NetworkSystem::NetSys->gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
-				NetworkSystem::NetSys->gameMessagesRivale.resize(249,GameMessageData());
 			}
+			NetworkSystem::NetSys->gameMessagesRivale.resize(249, GameMessageData());
 			break;
 		}
 	}
