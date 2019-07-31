@@ -168,7 +168,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				InputDirection = DirectionUpForwardAtom; // Jump Forward
 
 			}
-			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump)
+			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == IdleMove)
 			{
 				//this->GetMovementComponent()->Velocity = (FVector(-600.0F, 0.0F, 600.0F));
 				isCrouching = false;
@@ -198,7 +198,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			InputDirection = DirectionUpAtom; // Jump
 			//UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
 			//this->Jump();
-			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump)
+			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == IdleMove)
 			{
 				//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
 				doJump = true;
@@ -278,7 +278,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				movingForward = -1;
 				InputDirection = DirectionUpBackAtom; // Jump Back
 			}
-			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump)
+			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == IdleMove)
 			{
 				//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
 				doJump = true;
@@ -710,10 +710,11 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 	{
 		DisableInput(Cast<APlayerController>(this));
 		stunTimer += deltaSeconds;
-		if (stunTimer >= 2.0F)
+		if (stunTimer >= 2.0F || gotHit)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset GotHit"));
 			//gotHit = false;
+			isStunned = false;
 			stunTimer = 0.0F;
 		}
 		return;

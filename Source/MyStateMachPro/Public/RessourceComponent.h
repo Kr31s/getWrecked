@@ -40,6 +40,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float PowerMeter;
 
+	UPROPERTY()
+		float stunMeterDecayTimer = 0.0F;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float stunMeterDecayMaxTime = 2.0F;
+
 	UFUNCTION(BlueprintCallable)
 		void ReduceHealth(float damageValue);
 

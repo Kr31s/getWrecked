@@ -60,9 +60,17 @@ void URessourceComponent::IncreasePowerMeter(float value)
 void URessourceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-		if (StunMeter >= 0.01F) {
-			IncreaseStunMeter(-0.0001F);
+	if(Cast<AFGDefaultPawn>(GetOwner())->gotHit)
+	{
+		stunMeterDecayTimer = 0;
+	}else
+	{
+		stunMeterDecayTimer += DeltaTime;
+		if (StunMeter >= 0.01F && stunMeterDecayTimer > stunMeterDecayMaxTime) {
+			IncreaseStunMeter(-0.001F);
 		}
+	}
+
 	// ...
 }
 
