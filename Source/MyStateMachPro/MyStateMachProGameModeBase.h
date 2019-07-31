@@ -77,6 +77,8 @@ public:
 	UPROPERTY()
 		float roundTimer;
 
+	static bool hasGameStarted;
+
 	UPROPERTY()
 		bool scoreFlag;
 
@@ -157,6 +159,10 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMatchIsOverSignature, bool, isOnline, bool, isPlayer1Winner);
 	UPROPERTY(BlueprintAssignable)
 		FOnMatchIsOverSignature OnMatchIsOverCheckIfOnline;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameStartedSignature, bool, hasGameStarted);
+	UPROPERTY(BlueprintAssignable)
+		FOnGameStartedSignature OnGameStarted;
 
 	UFUNCTION()
 	void SetRoundTimer(float deltaSeconds);
