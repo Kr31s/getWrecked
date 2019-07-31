@@ -13,7 +13,7 @@ void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, uns
 void ServerThread()
 {
 	NetAddress receiveAddress;
-	char	serverThreadArray[46] = { 0 };
+	char	serverThreadArray[1000] = { 0 };
 
 	Messages		identifier = Messages::UnknownMessage;
 	unsigned int	intValue = NULL;
@@ -42,7 +42,7 @@ void ServerThread()
 }
 void MessageThread()
 {
-	char	messageThreadArray[46] = { 0 };
+	char	messageThreadArray[1000] = { 0 };
 
 	while (BCServer::sTheServer->m_serverRunning)
 	{

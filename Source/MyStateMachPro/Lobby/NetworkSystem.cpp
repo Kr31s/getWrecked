@@ -103,6 +103,9 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 	case 12:
 		this->StartGame();
 		break;
+	case 13:
+		this->SyncGame(p_receiveArray);
+		break;
 
 	default:
 		//unknown command
@@ -153,10 +156,17 @@ void NetworkSystem::SendReceiveMessageClient()
 
 void NetworkSystem::ClearReceiveArray()
 {
-	int a = sizeof(sendArray) / sizeof(*sendArray);
+	int a = sizeof(m_receiveArray) / sizeof(*m_receiveArray);
 	for (int i = 0; i < a; ++i)
 	{
 		m_receiveArray[i] = 0;
+	}
+}
+void NetworkSystem::ClearSendArray()
+{
+	int a = sizeof(sendArray) / sizeof(*sendArray);
+	for (int i = 0; i < a; ++i)
+	{
 		sendArray[i] = 0;
 	}
 }
@@ -192,7 +202,7 @@ void NetworkSystem::RoomRequest(int& p_timeValue, int& p_roundValue, const FStri
 	//sendArray[45] = BCMessage(sendArray).m_messageID;
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
-
+	ClearSendArray();
 }
 void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FString& p_name)
 {
@@ -220,8 +230,8 @@ void NetworkSystem::CreateRoom(int& p_timeValue, int& p_roundValue, const FStrin
 	sendArray[3] = p_timeValue;
 	sendArray[45] = BCMessage(sendArray).m_messageID;
 
-	socketUDP.Send(serverAddress, (char*)sendArray, 46).m_errorCode;
-
+	socketUDP.Send(serverAddress, (char*)sendArray, 1000).m_errorCode;
+	ClearSendArray();
 }
 void NetworkSystem::LeaveRoom()
 {
@@ -233,6 +243,7 @@ void NetworkSystem::LeaveRoom()
 		sendArray[45] = BCMessage(sendArray).m_messageID;
 
 		socketUDP.Send(serverAddress, (char*)sendArray, 46);
+		ClearSendArray();
 	}
 }
 void NetworkSystem::ElementChanged(int& slot1Pos, int& slot2Pos, bool& ready)
@@ -246,6 +257,7 @@ void NetworkSystem::ElementChanged(int& slot1Pos, int& slot2Pos, bool& ready)
 	sendArray[45] = BCMessage(sendArray).m_messageID;
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
+	ClearSendArray();
 }
 void NetworkSystem::PauseGame(bool& stop)
 {
@@ -254,17 +266,18 @@ void NetworkSystem::PauseGame(bool& stop)
 	sendArray[45] = BCMessage(sendArray).m_messageID;
 
 	socketUDP.Send(serverAddress, (char*)sendArray, 46);
+	ClearSendArray();
 }
 void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 {
 	unsigned short temp;
 	sendArray[0] = 10;
-	sendArray[1] = clientID;
+	sendArray[1] = myRoomID;
 
 	gameMessagesPlayer.insert(gameMessagesPlayer.begin(), GameMessageData(AMyStateMachProGameModeBase::sFrameCounter, (unsigned short)inputStream.to_ulong()));
-	gameMessagesPlayer.resize(9, GameMessageData());
+	gameMessagesPlayer.resize(249, GameMessageData());
 
-	for (int i = 0; i < 9; ++i)
+	for (int i = 0; i < 249; ++i)
 	{
 		sendArray[2 + (4 * i)] = (gameMessagesPlayer[i].m_time) >> 8;
 		temp = (gameMessagesPlayer[i].m_time) << 8;
@@ -278,7 +291,9 @@ void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 	UE_LOG(LogTemp, Warning, TEXT("is sending"));
 
 
-	socketUDP.Send(serverAddress, (char*)sendArray, 46);
+	socketUDP.Send(serverAddress, (char*)sendArray, 1000);
+
+	ClearSendArray();
 }
 
 void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
@@ -359,24 +374,19 @@ void NetworkSystem::ElementUpdate(char* p_receiveArray)
 void NetworkSystem::PauseGameUpdate(char* p_receiveArray)
 {
 }
+void NetworkSystem::SyncGame(char* p_receiveArray) 
+{
+	AMyStateMachProGameModeBase::m_framesToSync = (unsigned int)p_receiveArray[2];
+}
 void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 {
-	unsigned short inputVal= p_receiveArray[2];
-	unsigned short timeVal = p_receiveArray[3];
+	if (NetworkSystem::NetSys->gameMessagesRivale.size() == 0) {
+		NetworkSystem::NetSys->gameMessagesRivale.resize(249, GameMessageData());
+	}
+	unsigned short inputVal;
+	unsigned short timeVal;
 
-	timeVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2])) << 8;
-	timeVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3]));
-
-	inputVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[4])) << 8;
-	inputVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[5]));
-
-	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString::FromInt((int)timeVal));
-
-	NetworkSystem::NetSys->gameMessagesRivale.insert(NetworkSystem::NetSys->gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
-	NetworkSystem::NetSys->gameMessagesRivale.resize(9, GameMessageData());
-
-	return;
-	for (int i = 0; i < 9; ++i)
+	for (int i = 0; i < 249; ++i)
 	{
 		timeVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 + (4 * i)])) << 8;
 		timeVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3 + (4 * i)]));
@@ -389,15 +399,12 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 		{
 			for (; i > -1; --i)
 			{
-				gameMessagesRivale.insert(gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
-				gameMessagesRivale.resize(9, GameMessageData());
-				UE_LOG(LogTemp, Warning, TEXT("right receiviung"));
+				NetworkSystem::NetSys->gameMessagesRivale.insert(NetworkSystem::NetSys->gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
+				NetworkSystem::NetSys->gameMessagesRivale.resize(249,GameMessageData());
 			}
 			break;
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("wrong receiviung"));
-
 }
 void NetworkSystem::StartGame()
 {

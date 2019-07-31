@@ -48,8 +48,8 @@ public:
 	FMessageReceiveThread* MessageReceiveThread;
 	FResendMessageThread* ResendMessageThread;
 
-	char m_receiveArray[46];
-	char sendArray[46];
+	char m_receiveArray[1000];
+	char sendArray[1000];
 	char heartBeatArray[46];
 
 	int myRoomID = -1;
@@ -60,8 +60,8 @@ public:
 	unsigned short frameValue = 0;
 	unsigned short inputValue = 0;
 
-	std::vector<GameMessageData> gameMessagesRivale{9};
-	std::vector<GameMessageData> gameMessagesPlayer{9};
+	std::vector<GameMessageData> gameMessagesRivale;
+	std::vector<GameMessageData> gameMessagesPlayer;
 
 	bool roomOwner;
 
@@ -83,6 +83,7 @@ public:
 	void SendReceiveMessageClient();
 
 	void ClearReceiveArray();
+	void ClearSendArray();
 	void ShutdownNetwork();
 
 	//MessagesToSend
@@ -101,6 +102,7 @@ public:
 	void OpponentLeftRoom(char* receiveArray);
 	void ElementUpdate(char* receiveArray);
 	void PauseGameUpdate(char* receiveArray);
+	void SyncGame(char* receiveArray);
 	void OppentGameMessage(char* receiveArray);
 	void StartGame();
 };

@@ -32,6 +32,8 @@ public:
 	static FString m_opponentName;//FString(UTF8_TO_TCHAR(opponentName))
 	static FString m_playerName;
 
+	static unsigned int m_framesToSync;
+
 
 	static unsigned int sFrameCounter;
 
@@ -40,7 +42,7 @@ public:
 	virtual void BeginDestroy() override;
 
 	AMyStateMachProGameModeBase();
-	void SpawnSecondPlayer();
+	void FrameSyncCheck();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MatchCount")
 		EMatcheTypes MatchCount;

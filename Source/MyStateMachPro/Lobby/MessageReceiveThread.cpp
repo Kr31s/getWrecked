@@ -34,7 +34,7 @@ uint32 FMessageReceiveThread::Run()
 {
 	while (FMessageReceiveThread::threadRuning)
 	{
-		if (m_clientSocket->Receive(m_receiveArray, 50).GetPortRef() != NULL)
+		if (m_clientSocket->Receive(m_receiveArray, 1000).GetPortRef() != NULL)
 		{
 			NetworkSystem::NetSys->TaskMessageReceiveThread(m_receiveArray);
 		}

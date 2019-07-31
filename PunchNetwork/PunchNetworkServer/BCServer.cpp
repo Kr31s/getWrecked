@@ -88,9 +88,9 @@ void BCServer::SendData(unsigned int p_clientID, SendType p_status, char* p_data
 		p_dataArray[0] = 0;
 	}
 #if DebugModus == true
-	ErrorCheck(BCServer::sTheServer->m_clientIDList->at(p_clientID).m_netaddress, (char*)p_dataArray, 46.m_errorCode);
+	ErrorCheck(BCServer::sTheServer->m_clientIDList->at(p_clientID).m_netaddress, (char*)p_dataArray, 1000).m_errorCode);
 #else
-	m_serverSocket.Send(BCServer::sTheServer->m_clientIDList->at(p_clientID).m_netaddress, (char*)p_dataArray, 46);
+	m_serverSocket.Send(BCServer::sTheServer->m_clientIDList->at(p_clientID).m_netaddress, (char*)p_dataArray, 1000);
 #endif
 }
 
@@ -281,26 +281,16 @@ void BCServer::PauseGame(NetAddress& p_receiveAddress, char* p_receiveArray)
 }
 void BCServer::GameMessage(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned int& p_intValue)
 {
-	p_receiveArray[0] = 11;
-	BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(p_receiveArray[1]).m_myRoom->GetRival(p_receiveAddress)->m_clientID, SendType::Answer, p_receiveArray);
-	return;
-	for (int i = 0; i < 9; ++i)
-	{
-		p_intValue = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2 + (4 * i)])) << 8;
-		p_intValue |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3 + (4 * i)]));
-
-		if (p_intValue - 1 == BCServer::sTheServer->m_clientIDList->at(p_receiveArray[1]).m_lastClientFrame)
-		{
 			p_intValue = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2])) << 8;
 			p_intValue |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3]));
-			BCServer::sTheServer->m_clientIDList->at(p_receiveArray[1]).m_lastClientFrame = p_intValue;
 
-			//Println("Difference player Frame: " << static_cast<int>(BCServer::sTheServer->m_clientIDList->at(1).m_lastClientFrame) - static_cast<int>(BCServer::sTheServer->m_clientIDList->at(0).m_lastClientFrame));
+			BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).GetClient(p_receiveAddress)->m_lastClientFrame = p_intValue;
+
+
+			Println("Difference player Frame: " << static_cast<int>(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).m_Owner->m_lastClientFrame) - static_cast<int>(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).m_Member->m_lastClientFrame));
+
+
 			p_receiveArray[0] = 11;
-			BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(p_receiveArray[1]).m_myRoom->GetRival(p_receiveAddress)->m_clientID, SendType::Answer, p_receiveArray);
+			BCServer::sTheServer->SendData(BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).GetRival(p_receiveAddress)->m_clientID, SendType::Answer, p_receiveArray);
 			return;
-		}
-	}
-
-	Println("Lost GameInput in message");
 }

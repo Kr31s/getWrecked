@@ -13,6 +13,8 @@ int AMyStateMachProGameModeBase::m_timeVal = 1;
 FString AMyStateMachProGameModeBase::m_opponentName = "Hans";
 FString AMyStateMachProGameModeBase::m_playerName = "Kalle";
 
+unsigned int AMyStateMachProGameModeBase::m_framesToSync = 0;
+
 AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -34,6 +36,21 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 	roundTimer = roundTime;
 }
 
+void AMyStateMachProGameModeBase::FrameSyncCheck()
+{
+	if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 2) 
+	{
+		--AMyStateMachProGameModeBase::m_framesToSync;
+		if (AMyStateMachProGameModeBase::m_framesToSync <= 0) 
+		{
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
+		}
+	}else if (m_framesToSync > 0) {
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 2);
+	}
+
+}
+
 
 void AMyStateMachProGameModeBase::BeginDestroy() {
 	Super::BeginDestroy();
@@ -48,10 +65,6 @@ void AMyStateMachProGameModeBase::BeginDestroy() {
 void AMyStateMachProGameModeBase::StartPlay() {
 
 	Super::StartPlay();
-	//MyMainMenu = CreateWidget<UUserWidget>(GetWorld(), wMainMenu);
-
-	//MyMainMenu->AddToViewport();
-
 	if (UWorld * World = GetWorld())
 	{
 		MainGameCamera = Cast<AMyCameraActor>(World->SpawnActor(AMyCameraActor::StaticClass(), &FTransform::Identity));
@@ -96,25 +109,25 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	player2Score = 0;
 	roundNumber = 1;
 
+	//sending first message to opponent
+	NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
-	if (NetworkSystem::NetSys != nullptr && player1 != nullptr)
+	if (NetworkSystem::NetSys != nullptr && NetworkSystem::NetSys->gameMessagesRivale.size() > 0)
 	{
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 		++AMyStateMachProGameModeBase::sFrameCounter;
-		UE_LOG(LogTemp, Warning, TEXT("test %d"), (int)player1->SendInputStream[0]);
-		
 
-		player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[0].m_input));
-		/*for(int i = 0; i<9;++i)
+		for(int i = 0; i< 249;++i)
 		{
-			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter) {
+			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
 				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_time));
 			}
 			break;
 		}
-		*/
+		
+		
 	}
 	if (startTimer == 3.0f) {
 
