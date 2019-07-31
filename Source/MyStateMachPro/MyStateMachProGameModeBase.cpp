@@ -125,11 +125,15 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	FrameSyncCheck();
 	if (NetworkSystem::NetSys != nullptr && NetworkSystem::NetSys->gameMessagesRivale.size() > 0)
 	{
+		if (!AMyStateMachProGameModeBase::hasGameStarted) {
+			AMyStateMachProGameModeBase::hasGameStarted = true;
+			OnGameStarted.Broadcast(hasGameStarted);
+		}
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 
 		for (int i = 0; i < 249; ++i)
 		{
-			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
+			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter-9) {
 				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
 				break;
 			}
@@ -138,7 +142,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 
 	}
 
-	if(!hasGameStarted)
+	if (!hasGameStarted)
 	{
 		return;
 	}
@@ -407,13 +411,13 @@ void AMyStateMachProGameModeBase::DetermineMatchWinner()
 
 void AMyStateMachProGameModeBase::CheckIfMatchIsOver(int playerScore)
 {
-	if(NetworkSystem::NetSys == nullptr)
+	if (NetworkSystem::NetSys == nullptr)
 	{
 		switch (MatchCount)
 		{
 		case EMatcheTypes::BestofOne:
 			isMatchOver = playerScore > 0 ? true : false;
-			if(isMatchOver)
+			if (isMatchOver)
 			{
 				OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
 			}
@@ -433,7 +437,8 @@ void AMyStateMachProGameModeBase::CheckIfMatchIsOver(int playerScore)
 			}
 			break;
 		}
-	}else
+	}
+	else
 	{
 		switch (MatchCount)
 		{
