@@ -214,7 +214,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			{
 				InputDirection = DirectionDownForwardAtom; // Crouch + Forward on LeftSide
 				isCrouching = true;
-				UE_LOG(LogTemp, Warning, TEXT("i want to crouchForward"));
 			}
 			else
 			{
@@ -372,11 +371,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 		// Set and start the new move.
 		CurrentMove = MoveLinkToFollow.Link->Move;
-		if (this == UGameplayStatics::GetPlayerCharacter(this, 0))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("CurrentMove: %s"), *CurrentMove->MoveName.ToString());
-			UE_LOG(LogTemp, Warning, TEXT("CurrentMove: %s"), *CurrentMove->GetName());
-		}
+		//if (this == UGameplayStatics::GetPlayerCharacter(this, 0))
+		//{
+		//	UE_LOG(LogTemp, Warning, TEXT("CurrentMove: %s"), *CurrentMove->MoveName.ToString());
+		//	UE_LOG(LogTemp, Warning, TEXT("CurrentMove: %s"), *CurrentMove->GetName());
+		//}
 
 		TimeInCurrentMove = 0.0f;
 		DoMove(CurrentMove);
@@ -721,10 +720,10 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 		}
 		return;
 	}
-	else
-	{
-		EnableInput(Cast<APlayerController>(this));
-	}
+	//else
+	//{
+	//	EnableInput(Cast<APlayerController>(this));
+	//}
 }
 void AFGDefaultPawn::CrouchValues(bool inCrouch)
 {
