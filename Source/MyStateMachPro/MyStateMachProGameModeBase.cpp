@@ -392,21 +392,60 @@ void AMyStateMachProGameModeBase::DetermineMatchWinner()
 
 void AMyStateMachProGameModeBase::CheckIfMatchIsOver(int playerScore)
 {
-	switch (MatchCount)
+	if(NetworkSystem::NetSys == nullptr)
 	{
-	case EMatcheTypes::BestofOne:
-		isMatchOver = playerScore > 0 ? true : false;
-		OnMatchIsOver.Broadcast(isMatchOver);
-		break;
-	case EMatcheTypes::BestofThree:
-		isMatchOver = playerScore > 1 ? true : false;
-		OnMatchIsOver.Broadcast(isMatchOver);
-		break;
-	case EMatcheTypes::BestofFive:
-		isMatchOver = playerScore > 2 ? true : false;
-		OnMatchIsOver.Broadcast(isMatchOver);
-		break;
+		switch (MatchCount)
+		{
+		case EMatcheTypes::BestofOne:
+			isMatchOver = playerScore > 0 ? true : false;
+			if(isMatchOver)
+			{
+				OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
+			}
+			break;
+		case EMatcheTypes::BestofThree:
+			isMatchOver = playerScore > 1 ? true : false;
+			if (isMatchOver)
+			{
+				OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
+			}
+			break;
+		case EMatcheTypes::BestofFive:
+			isMatchOver = playerScore > 2 ? true : false;
+			if (isMatchOver)
+			{
+				OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
+			}
+			break;
+		}
+	}else
+	{
+		switch (MatchCount)
+		{
+		case EMatcheTypes::BestofOne:
+			isMatchOver = playerScore > 0 ? true : false;
+			if (isMatchOver)
+			{
+				OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
+			}
+			break;
+		case EMatcheTypes::BestofThree:
+			isMatchOver = playerScore > 1 ? true : false;
+			if (isMatchOver)
+			{
+				OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
+			}
+			break;
+		case EMatcheTypes::BestofFive:
+			isMatchOver = playerScore > 2 ? true : false;
+			if (isMatchOver)
+			{
+				OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
+			}
+			break;
+		}
 	}
+
 }
 
 void AMyStateMachProGameModeBase::SetRoundTimer(float deltaSeconds)

@@ -154,9 +154,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 		FOnOnNextRoundNumberSignature OnNextRoundNumber;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMatchIsOverSignature, bool, newNumber);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMatchIsOverSignature, bool, isOnline, bool, isPlayer1Winner);
 	UPROPERTY(BlueprintAssignable)
-		FOnMatchIsOverSignature OnMatchIsOver;
+		FOnMatchIsOverSignature OnMatchIsOverCheckIfOnline;
 
 	UFUNCTION()
 	void SetRoundTimer(float deltaSeconds);
