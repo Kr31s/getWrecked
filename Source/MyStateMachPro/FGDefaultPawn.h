@@ -153,7 +153,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UActorRotationComponent* PlayerRotationComp;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* gotHitFire;
 
 	UFUNCTION(BlueprintCallable)

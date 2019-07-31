@@ -125,6 +125,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 						if (!Enemy->bIsBlocking && Owner->canApplyDamage)
 						{
 							Enemy->gotHit = true;
+							Enemy->isInputEnabled = false;
 							Enemy->RessourceComp->ReduceHealth(Owner->GetCurrentMove()->DamageValue);
 							Enemy->RessourceComp->IncreaseStunMeter(0.05F);
 							Owner->CustomTimeDilation = 0.3F;
@@ -144,6 +145,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 						if (Enemy->bIsBlocking)
 						{
 							Enemy->gotHit = true;
+							//Enemy->isInputEnabled = false;
 						}
 
 						break;
