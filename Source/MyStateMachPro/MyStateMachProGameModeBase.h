@@ -43,7 +43,7 @@ public:
 	virtual void BeginDestroy() override;
 
 	AMyStateMachProGameModeBase();
-	void FrameSyncCheck();
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MatchCount")
 		EMatcheTypes MatchCount;

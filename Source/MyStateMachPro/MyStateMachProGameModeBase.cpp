@@ -38,22 +38,6 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 	roundTimer = roundTime;
 }
 
-void AMyStateMachProGameModeBase::FrameSyncCheck()
-{
-	if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 2)
-	{
-		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
-		--AMyStateMachProGameModeBase::m_framesToSync;
-		if (AMyStateMachProGameModeBase::m_framesToSync <= 0)
-		{
-			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
-		}
-	}
-	else if (m_framesToSync > 0) {
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 2);
-	}
-
-}
 
 
 void AMyStateMachProGameModeBase::BeginDestroy() {
@@ -119,14 +103,12 @@ void AMyStateMachProGameModeBase::StartPlay() {
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 	}
 	else {
-		/*AMyStateMachProGameModeBase::hasGameStarted = true;
-		OnGameStarted.Broadcast(hasGameStarted);*/
+		AMyStateMachProGameModeBase::hasGameStarted = true;
+		OnGameStarted.Broadcast(hasGameStarted);
 	}
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
-
-	FrameSyncCheck();
 	if (NetworkSystem::NetSys != nullptr && NetworkSystem::NetSys->gameMessagesRivale.size() > 0)
 	{
 		if (!AMyStateMachProGameModeBase::hasGameStarted) {
@@ -134,18 +116,13 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			OnGameStarted.Broadcast(hasGameStarted);
 		}
 
-		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
-
 		for (int i = 0; i < 249; ++i)
 		{
 			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
 				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
-				GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Green, FString::SanitizeFloat(333333333.33f));
 				break;
 			}
 		}
-
-
 	}
 
 	if (!hasGameStarted)
