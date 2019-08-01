@@ -236,6 +236,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void DoMove(UFGMove* NewMove);
 
+	UFUNCTION(BlueprintImplementableEvent)
+		void ResetStunMontage();
+
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 

@@ -128,6 +128,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 							Enemy->isInputEnabled = false;
 							Enemy->RessourceComp->ReduceHealth(Owner->GetCurrentMove()->DamageValue);
 							Enemy->RessourceComp->IncreaseStunMeter(0.05F);
+							Owner->RessourceComp->IncreasePowerMeter(Owner->CurrentMove->PowerMeterRaiseValue);
 							Owner->CustomTimeDilation = 0.3F;
 							Enemy->CustomTimeDilation = 0.3F;
 							//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));

@@ -63,7 +63,7 @@ public:
 	UPROPERTY()
 		UUserWidget* MyMainMenu;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		AFGDefaultPawn* player1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -72,12 +72,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		FString player2Name;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		AFGDefaultPawn* player2;
 
 	UPROPERTY()
 		float roundTimer;
 
+	UPROPERTY()
+		bool enableInputOnRoundStart;
 
 	UPROPERTY()
 		bool scoreFlag;
@@ -166,6 +168,9 @@ public:
 
 	UFUNCTION()
 	void SetRoundTimer(float deltaSeconds);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void ResetVictoryMontage();
 
 	UFUNCTION()
 		void RoundTimeOver();

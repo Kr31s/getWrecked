@@ -31,8 +31,8 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 	player2Name = m_opponentName;
 
 	MatchCount = static_cast<EMatcheTypes>(m_roundVal);
-	transitionMaxDuration = 6.0F;
-	slowmotionMaxDuration = 3.0F;
+	transitionMaxDuration = 7.0F;
+	slowmotionMaxDuration = 3.5F;
 	transitionSpeed = 0.1F;
 	roundTime = 60 + (30 * m_timeVal);
 	roundTimer = roundTime;
@@ -95,6 +95,7 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	roundTimer = roundTime;
 	player1Name = m_playerName;
 	player2Name = m_opponentName;
+	enableInputOnRoundStart = true;
 
 	OnName1Changed.Broadcast(player1Name);
 	OnName2Changed.Broadcast(player2Name);
@@ -129,12 +130,14 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			AMyStateMachProGameModeBase::hasGameStarted = true;
 			OnGameStarted.Broadcast(hasGameStarted);
 		}
-		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
+
+			NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 
 		for (int i = 0; i < 249; ++i)
 		{
 			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter-9) {
 				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
+				GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Green, FString::SanitizeFloat(333333333.33f));
 				break;
 			}
 		}
@@ -189,9 +192,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Magenta, FString::SanitizeFloat(startTimer));
 		return;
 	}
-	else if (startTimer < 0.0F && !player1->playerWon && !player2->playerWon) {
+	if (enableInputOnRoundStart) {
 		player1->isInputEnabled = true;
 		player2->isInputEnabled = true;
+		enableInputOnRoundStart = false;
 	}
 
 
@@ -222,6 +226,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			}
 			else
 			{
+				player1->CustomTimeDilation = 1.0F;
+				player2->CustomTimeDilation = 1.0F;
 				player2->playerWon = true;
 			}
 			return;
@@ -272,6 +278,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			}
 			else
 			{
+				player1->CustomTimeDilation = 1.0F;
+				player2->CustomTimeDilation = 1.0F;
 				player1->playerWon = true;
 			}
 			return;
@@ -322,6 +330,8 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	player2->RessourceComp->SetStunMeter(0.0F);
 	player1->RessourceComp->SetPowerMeter(0.0F);
 	player2->RessourceComp->SetPowerMeter(0.0F);
+	ResetVictoryMontage();
+	enableInputOnRoundStart = true;
 	//Reset UI Healthbar
 //	player1->RessourceComp->OnHealthChanged.Broadcast(player1, player1->RessourceComp->Health);
 //	player2->RessourceComp->OnHealthChanged.Broadcast(player2, player2->RessourceComp->Health);
