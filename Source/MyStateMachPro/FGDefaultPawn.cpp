@@ -86,7 +86,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	GetCharacterMovement()->Velocity = FVector(GetVelocity().X, 0.0F, -700.0F);
 	this->SetRotationOfPlayer();
 
-	HandleStun(DeltaSeconds); // player got stunned
+	if (isStunned)
+	{
+		HandleStun(DeltaSeconds); // player got stunned
+		return;
+	}
 	EnablePlayerInput(isInputEnabled);
 
 	if (!isInputEnabled) {
@@ -662,6 +666,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
 
 
+		GetCapsuleComponent()->SetCapsuleHalfHeight(90.0F);
 
 
 		if (this->CanMoveInLeftDirection && directionmodifier <= 0
@@ -677,7 +682,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		// Push opponent Away do land on destination point
 		if ((timeInJump / jumpDuration) > 0.8 && bCollisionWithOppenent)
 		{
-			//opponent left from me 
+			//opponent left from me
 			if (this->GetActorLocation().X > Opponent->GetActorLocation().X)
 			{
 				Opponent->SetActorLocation(FVector(Opponent->GetActorLocation().X - 15.0F, Opponent->GetActorLocation().Y, Opponent->GetActorLocation().Z));
@@ -692,10 +697,11 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 	else
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset"));
-
+		GetMesh()->GetAnimInstance()->StopAllMontages(0.0F);
 		jumpInitializeFlag = false;
 		doJump = false;
 		timeInJump = 0;
+		GetCapsuleComponent()->SetCapsuleHalfHeight(100.0F);
 
 	}
 }
@@ -706,24 +712,25 @@ int AFGDefaultPawn::DirectionSign()
 
 void AFGDefaultPawn::HandleStun(float deltaSeconds)
 {
-	if (isStunned/* || gotHit*/)
-	{
-		DisableInput(Cast<APlayerController>(this));
-		stunTimer += deltaSeconds;
-		if (stunTimer >= 2.0F || gotHit)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset STUN"));
-			//gotHit = false;
-			stunTimer = 0.0F;
-			isStunned = false;
 
-		}
-		return;
+	//DisableInput(Cast<APlayerController>(this));
+	stunTimer += deltaSeconds;
+	if (gotHit)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("GOT HIT Check"));
+		stunTimer = 0.0F;
+		isStunned = false;
 	}
-	//else
-	//{
-	//	EnableInput(Cast<APlayerController>(this));
-	//}
+	else if (stunTimer >= 5.0F)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset STUN"));
+		//gotHit = false;
+		stunTimer = 0.0F;
+		isStunned = false;
+
+	}
+
+
 }
 void AFGDefaultPawn::CrouchValues(bool inCrouch)
 {

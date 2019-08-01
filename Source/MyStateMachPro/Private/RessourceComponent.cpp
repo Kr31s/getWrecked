@@ -46,7 +46,7 @@ void URessourceComponent::IncreaseStunMeter(float value)
 	else
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Emerald, TEXT("StunOver"));
-		Cast<AFGDefaultPawn>(GetOwner())->isStunned = false;
+		//Cast<AFGDefaultPawn>(GetOwner())->isStunned = false;
 	}
 
 }
