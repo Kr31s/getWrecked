@@ -46,8 +46,6 @@ void AFGDefaultPawn::BeginPlay()
 
 	this->GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AFGDefaultPawn::OnHit);
 	//this->GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AFGDefaultPawn::ExitOverlap);
-
-
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
 	}
@@ -438,10 +436,14 @@ void AFGDefaultPawn::SetRotationOfPlayer()
 		if (this->isOnLeftSide)
 		{
 			this->GetMesh()->SetRelativeScale3D(FVector(1.0F, -1.0F, 1.0F));
+			//GetMesh()->SkeletalMesh->SkelMirrorAxis = EAxis::X;
+
 		}
 		else
 		{
 			this->GetMesh()->SetRelativeScale3D(FVector(1.0F, 1.0F, 1.0F));
+			//GetMesh()->SkeletalMesh->SkelMirrorAxis = EAxis::Y;
+
 		}
 	}
 }
