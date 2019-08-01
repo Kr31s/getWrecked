@@ -31,8 +31,8 @@ AMyStateMachProGameModeBase::AMyStateMachProGameModeBase()
 	player2Name = m_opponentName;
 
 	MatchCount = static_cast<EMatcheTypes>(m_roundVal);
-	transitionMaxDuration = 6.0F;
-	slowmotionMaxDuration = 3.0F;
+	transitionMaxDuration = 7.0F;
+	slowmotionMaxDuration = 3.5F;
 	transitionSpeed = 0.1F;
 	roundTime = 60 + (30 * m_timeVal);
 	roundTimer = roundTime;
@@ -229,6 +229,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			}
 			else
 			{
+				player1->CustomTimeDilation = 1.0F;
+				player2->CustomTimeDilation = 1.0F;
 				player2->playerWon = true;
 			}
 			return;
@@ -279,6 +281,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			}
 			else
 			{
+				player1->CustomTimeDilation = 1.0F;
+				player2->CustomTimeDilation = 1.0F;
 				player1->playerWon = true;
 			}
 			return;
@@ -329,7 +333,7 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	player2->RessourceComp->SetStunMeter(0.0F);
 	player1->RessourceComp->SetPowerMeter(0.0F);
 	player2->RessourceComp->SetPowerMeter(0.0F);
-
+	ResetVictoryMontage();
 	enableInputOnRoundStart = true;
 	//Reset UI Healthbar
 //	player1->RessourceComp->OnHealthChanged.Broadcast(player1, player1->RessourceComp->Health);
