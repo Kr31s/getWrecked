@@ -10,6 +10,22 @@ FStateMachineResult UFGMoveLink::TryLink(const AFGDefaultPawn* RefObject, const 
 	if (InputStateMachine && Move)
 	{
 		bool bCanCancel = false;
+		//if (RefObject->doJump)
+		//{
+		//	if (RefObject->GetMovementComponent()->IsMovingOnGround())
+		//	{
+		//		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Black, TEXT("OnGround"));
+
+		//	}
+		//	if (RefObject->timeInJump > 0.5F)
+		//	{
+		//		bCanCancel = true;
+		//		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Black, TEXT("CancelAirmoveOnHittingGround"));
+
+		//		return InputStateMachine->RunState(RefObject, DataSource, DataIndex, RemainingSteps);
+
+		//	}
+		//}
 		for (const FVector2D& CancelWindow : CancelWindows)
 		{
 			if (RefObject->GetTimeInMove() == FMath::Clamp(RefObject->GetTimeInMove(), CancelWindow.X, CancelWindow.Y))
@@ -18,10 +34,11 @@ FStateMachineResult UFGMoveLink::TryLink(const AFGDefaultPawn* RefObject, const 
 				break;
 			}
 		}
-		if(RefObject->gotHit)
-		{
-			return FStateMachineResult();
-		}
+
+		//if (RefObject->gotHit)
+		//{
+		//	return FStateMachineResult();
+		//}
 		// If no cancel windows are provided, assume the move is always available.
 		if (bCanCancel || !CancelWindows.Num())
 		{
