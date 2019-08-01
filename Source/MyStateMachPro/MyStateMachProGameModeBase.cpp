@@ -95,6 +95,7 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	roundTimer = roundTime;
 	player1Name = m_playerName;
 	player2Name = m_opponentName;
+	enableInputOnRoundStart = true;
 
 	OnName1Changed.Broadcast(player1Name);
 	OnName2Changed.Broadcast(player2Name);
@@ -189,9 +190,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Magenta, FString::SanitizeFloat(startTimer));
 		return;
 	}
-	else if (startTimer < 0.0F && !player1->playerWon && !player2->playerWon) {
+	if (enableInputOnRoundStart) {
 		player1->isInputEnabled = true;
 		player2->isInputEnabled = true;
+		enableInputOnRoundStart = false;
 	}
 
 
@@ -322,6 +324,8 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	player2->RessourceComp->SetStunMeter(0.0F);
 	player1->RessourceComp->SetPowerMeter(0.0F);
 	player2->RessourceComp->SetPowerMeter(0.0F);
+
+	enableInputOnRoundStart = true;
 	//Reset UI Healthbar
 //	player1->RessourceComp->OnHealthChanged.Broadcast(player1, player1->RessourceComp->Health);
 //	player2->RessourceComp->OnHealthChanged.Broadcast(player2, player2->RessourceComp->Health);
