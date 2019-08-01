@@ -119,9 +119,9 @@ void AMyStateMachProGameModeBase::StartPlay() {
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 	}
 	else {
-		AMyStateMachProGameModeBase::hasGameStarted = true;
+		/*AMyStateMachProGameModeBase::hasGameStarted = true;
+		OnGameStarted.Broadcast(hasGameStarted);*/
 	}
-	OnGameStarted.Broadcast(hasGameStarted);
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
