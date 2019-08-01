@@ -729,7 +729,7 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 
 	//DisableInput(Cast<APlayerController>(this));
 	stunTimer += deltaSeconds;
-	if (gotHit)
+	if (gotHit && stunTimer > 0.5F)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("GOT HIT Check"));
 		stunTimer = 0.0F;
