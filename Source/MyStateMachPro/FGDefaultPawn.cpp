@@ -392,7 +392,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 
-void AFGDefaultPawn::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
+void AFGDefaultPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
@@ -406,7 +406,7 @@ void AFGDefaultPawn::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 }
 
 
-void AFGDefaultPawn::ExitOverlap(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
+void AFGDefaultPawn::ExitOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
@@ -434,7 +434,7 @@ void AFGDefaultPawn::SetRotationOfPlayer()
 	}
 }
 
-void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent * InInputComponent)
+void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent)
 {
 	Super::SetupPlayerInputComponent(InInputComponent);
 
@@ -682,7 +682,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		// Push opponent Away do land on destination point
 		if ((timeInJump / jumpDuration) > 0.8 && bCollisionWithOppenent)
 		{
-			//opponent left from me 
+			//opponent left from me
 			if (this->GetActorLocation().X > Opponent->GetActorLocation().X)
 			{
 				Opponent->SetActorLocation(FVector(Opponent->GetActorLocation().X - 15.0F, Opponent->GetActorLocation().Y, Opponent->GetActorLocation().Z));

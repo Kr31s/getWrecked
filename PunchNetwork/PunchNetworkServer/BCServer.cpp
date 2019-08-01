@@ -139,9 +139,9 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 			//write message to tell the requested the status of his message
 			p_receiveArray[0] = 0;
 			p_receiveArray[2] = true;
-			sMutexClientIDList.lock();
+			sMutexMessageIDList.lock();
 			p_receiveArray[4] = BCClient(p_receiveAddress, p_receiveArray).m_clientID;
-			sMutexClientIDList.unlock();
+			sMutexMessageIDList.unlock();
 			p_receiveArray[3] = BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_roomID;
 
 			int a = p_receiveArray[3];
@@ -205,9 +205,9 @@ void BCServer::CreateRoom(NetAddress& p_receiveAddress, char* p_receiveArray, un
 	p_gameTime = p_receiveArray[3];
 	p_receiveArray[2] = true;
 
-	sMutexClientIDList.lock();
+	sMutexMessageIDList.lock();
 	p_receiveArray[4] = BCClient(p_receiveAddress, p_receiveArray).m_clientID;
-	sMutexClientIDList.unlock();
+	sMutexMessageIDList.unlock();
 	p_receiveArray[3] = BCRoom(&BCServer::sTheServer->m_clientIDList->at(p_receiveArray[4]), p_rounds, p_gameTime).m_roomID;
 	SendData(p_receiveArray[4], SendType::Answer, p_receiveArray);
 	Print("Room created with ID ");
