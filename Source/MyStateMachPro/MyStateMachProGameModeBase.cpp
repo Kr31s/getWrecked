@@ -129,12 +129,14 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			AMyStateMachProGameModeBase::hasGameStarted = true;
 			OnGameStarted.Broadcast(hasGameStarted);
 		}
-		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
+
+			NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 
 		for (int i = 0; i < 249; ++i)
 		{
 			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter-9) {
 				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
+				GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Green, FString::SanitizeFloat(333333333.33f));
 				break;
 			}
 		}

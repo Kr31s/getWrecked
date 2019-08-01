@@ -18,7 +18,6 @@ class BCClient;
 class BCMessage;
 
 
-static std::mutex sMutexClientIDList;
 static std::mutex sMutexMessageIDList;
 
 
