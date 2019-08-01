@@ -87,8 +87,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	if (isStunned)
 	{
 		HandleStun(DeltaSeconds); // player got stunned
-		if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
-
+		if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted
+			&& UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0) {
+			FrameSyncCheck();
 			NetworkSystem::NetSys->GameMessage(SendInputStream);
 		}
 		return;
@@ -96,8 +97,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	EnablePlayerInput(isInputEnabled);
 
 	if (!isInputEnabled) {
-		if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
-
+		if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted 
+			&& UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0) {
+			FrameSyncCheck();
 			NetworkSystem::NetSys->GameMessage(SendInputStream);
 		}
 		return;
@@ -329,9 +331,10 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			InputStream.Add(ButtonAtoms[(int32)EFGButtonState::Up]);
 		}
 	}
-	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
-
-	NetworkSystem::NetSys->GameMessage(SendInputStream);
+	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted
+		&& UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0) {
+		FrameSyncCheck();
+		NetworkSystem::NetSys->GameMessage(SendInputStream);
 	}
 
 	// Cache old button state so we can distinguish between held and just pressed.
@@ -393,7 +396,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 		TimeInCurrentMove = 0.0f;
 		DoMove(CurrentMove);
-		this->RessourceComp->IncreasePowerMeter(CurrentMove->PowerMeterRaiseValue/2);
+		this->RessourceComp->IncreasePowerMeter(CurrentMove->PowerMeterRaiseValue / 2);
 	}
 	else
 	{
@@ -401,6 +404,22 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	}
 }
 
+void AFGDefaultPawn::FrameSyncCheck()
+{
+	if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 2)
+	{
+		NetworkSystem::NetSys->GameMessage(SendInputStream);
+		--AMyStateMachProGameModeBase::m_framesToSync;
+		if (AMyStateMachProGameModeBase::m_framesToSync <= 0)
+		{
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
+		}
+	}
+	else if (AMyStateMachProGameModeBase::m_framesToSync > 0) {
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 2);
+	}
+
+}
 
 void AFGDefaultPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
