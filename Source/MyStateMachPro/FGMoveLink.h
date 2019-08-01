@@ -30,6 +30,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		TArray<FVector2D> CancelWindows;
 
+	UPROPERTY(EditAnywhere)
+		bool cancelOnGrounded = false;
+
 	// Clears input buffer when using this link
 	UPROPERTY(EditAnywhere)
 		uint32 bClearInput : 1;

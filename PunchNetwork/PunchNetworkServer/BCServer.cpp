@@ -289,12 +289,12 @@ void BCServer::GameMessage(NetAddress& p_receiveAddress, char* p_receiveArray, u
 	p_receiveArray[0] = 11;
 	p_intValue1 = (unsigned int)p_receiveArray[1];
 	BCServer::sTheServer->SendData(BCServer::sTheServer->m_roomIDList->at(p_intValue1).GetRival(p_receiveAddress)->m_clientID, SendType::Answer, p_receiveArray);
-	p_intValue2 = static_cast<int>(BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Owner->m_lastClientFrame) - static_cast<int>(BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Member->m_lastClientFrame);
 	//Println("Difference frame (Owner to Member): " << p_intValue2);
 
-	if (GetTimeInMilli() - BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_lastSyncCall < 5000)
+	if (GetTimeInMilli() - BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_lastSyncCall < 1000)
 		return;
 
+	p_intValue2 = static_cast<int>(BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Owner->m_lastClientFrame) - static_cast<int>(BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Member->m_lastClientFrame);
 	if (p_intValue2 > 1)
 	{
 		//Member has delay sync him
