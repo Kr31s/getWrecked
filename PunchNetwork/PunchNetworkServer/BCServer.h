@@ -30,6 +30,6 @@ public:
 	void LeaveRoom(NetAddress& receiveAddress, char* receiveArray);
 	void ElementChange(NetAddress& receiveAddress, char* receiveArray);
 	void PauseGame(NetAddress& receiveAddress, char* receiveArray);
-	void GameMessage(NetAddress& receiveAddress, char* receiveArray, unsigned int& intValue);
+	void GameMessage(NetAddress& receiveAddress, char* receiveArray, unsigned int& intValue1, int& intValue2);
 };
 

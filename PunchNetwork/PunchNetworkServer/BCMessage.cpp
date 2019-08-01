@@ -47,10 +47,7 @@ void BCMessage::CheckResendMessages(char* p_receiveArray)
 		{
 			sMutexClientIDList.lock();
 			Println("HearthAtk");
-			Println("first " << GetTimeInMilli() - BCServer::sTheServer->m_messageIDList->at(i).m_timeStamp);
-			Println("second " << (BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping + (unsigned char)20));
-			BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_ping = 2000000;
-			if (BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).lostHeartBeat(p_receiveArray))
+			if (BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).lostHeartBeat(p_receiveArray) && (int)BCServer::sTheServer->m_messageIDList->at(i).m_messageArray[0] != 5)
 			{
 				BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(i).m_clientID).m_clientID, SendType::NeedAnswer, BCServer::sTheServer->m_messageIDList->at(i).m_messageArray);
 			}
