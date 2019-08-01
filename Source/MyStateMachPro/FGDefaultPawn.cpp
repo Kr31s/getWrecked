@@ -666,6 +666,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
 
 
+		GetCapsuleComponent()->SetCapsuleHalfHeight(90.0F);
 
 
 		if (this->CanMoveInLeftDirection && directionmodifier <= 0
@@ -696,10 +697,11 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 	else
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset"));
-
+		GetMesh()->GetAnimInstance()->StopAllMontages(0.0F);
 		jumpInitializeFlag = false;
 		doJump = false;
 		timeInJump = 0;
+		GetCapsuleComponent()->SetCapsuleHalfHeight(100.0F);
 
 	}
 }

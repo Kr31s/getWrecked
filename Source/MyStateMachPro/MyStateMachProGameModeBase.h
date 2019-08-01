@@ -78,6 +78,8 @@ public:
 	UPROPERTY()
 		float roundTimer;
 
+	UPROPERTY()
+		bool enableInputOnRoundStart;
 
 	UPROPERTY()
 		bool scoreFlag;
