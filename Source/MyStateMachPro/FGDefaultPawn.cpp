@@ -89,11 +89,19 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	if (isStunned)
 	{
 		HandleStun(DeltaSeconds); // player got stunned
+		if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
+
+			NetworkSystem::NetSys->GameMessage(SendInputStream);
+		}
 		return;
 	}
 	EnablePlayerInput(isInputEnabled);
 
 	if (!isInputEnabled) {
+		if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
+
+			NetworkSystem::NetSys->GameMessage(SendInputStream);
+		}
 		return;
 	}
 
@@ -322,6 +330,10 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		{
 			InputStream.Add(ButtonAtoms[(int32)EFGButtonState::Up]);
 		}
+	}
+	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
+
+	NetworkSystem::NetSys->GameMessage(SendInputStream);
 	}
 
 	// Cache old button state so we can distinguish between held and just pressed.

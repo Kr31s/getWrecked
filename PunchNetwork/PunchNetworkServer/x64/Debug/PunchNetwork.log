@@ -1,6 +1,26 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (PunchNetwork.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  mainServer.cpp
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(21,31): warning C4305:  "Initialisierung": Verkürzung von "int" in "unsigned char"
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(21,27): warning C4309:  "Initialisierung": Verkürzung eines konstanten Wertes
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(62,21): warning C4018:  "<": Konflikt zwischen "signed" und "unsigned"
+  BCMessage.cpp
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,31): warning C4305:  "Initialisierung": Verkürzung von "int" in "unsigned char"
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,27): warning C4309:  "Initialisierung": Verkürzung eines konstanten Wertes
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(17,20): warning C4018:  "<=": Konflikt zwischen "signed" und "unsigned"
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(35,20): warning C4018:  "<": Konflikt zwischen "signed" und "unsigned"
+  BCServer.cpp
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCMessage.cpp(74,136): warning C4244:  "=": Konvertierung von "__int64" in "unsigned char", möglicher Datenverlust
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,31): warning C4305:  "Initialisierung": Verkürzung von "int" in "unsigned char"
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,27): warning C4309:  "Initialisierung": Verkürzung eines konstanten Wertes
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(31,44): warning C4154:  Löschen eines Arrayausdrucks; Konvertierung in Zeiger
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(37,20): warning C4018:  "<": Konflikt zwischen "signed" und "unsigned"
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(77,73): warning C4244:  "=": Konvertierung von "unsigned short" in "char", möglicher Datenverlust
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(85,5): warning C4067:  Unerwartete Token nach Präprozessordirektive - Zeilenvorschub erwartet.
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(119,101): warning C4244:  "=": Konvertierung von "unsigned short" in "char", möglicher Datenverlust
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(120,130): warning C4244:  "=": Konvertierung von "unsigned short" in "char", möglicher Datenverlust
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(142,66): warning C4244:  "=": Konvertierung von "unsigned short" in "char", möglicher Datenverlust
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(144,99): warning C4244:  "=": Konvertierung von "unsigned short" in "char", möglicher Datenverlust
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(192,101): warning C4244:  "=": Konvertierung von "unsigned short" in "char", möglicher Datenverlust
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(193,130): warning C4244:  "=": Konvertierung von "unsigned short" in "char", möglicher Datenverlust
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(208,64): warning C4244:  "=": Konvertierung von "unsigned short" in "char", möglicher Datenverlust
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(210,112): warning C4244:  "=": Konvertierung von "unsigned short" in "char", möglicher Datenverlust
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(302,34): warning C4244:  "=": Konvertierung von "double" in "char", möglicher Datenverlust
+  Code wird generiert...
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(312,34): warning C4244:  "=": Konvertierung von "double" in "char", möglicher Datenverlust
   PunchNetwork.vcxproj -> E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe

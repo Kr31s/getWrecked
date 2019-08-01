@@ -75,7 +75,6 @@ void BCServer::SendData(unsigned int p_clientID, SendType p_status, char* p_data
 	case SendType::NeedAnswer:
 		p_dataArray[1] = 1;
 		p_dataArray[45] = BCMessage(p_clientID, GetTimeInMilli(), p_dataArray).m_messageID;
-		Println("m_messageID" << (int)p_dataArray[45]);
 		break;
 
 	case SendType::Answer:
@@ -291,29 +290,29 @@ void BCServer::GameMessage(NetAddress& p_receiveAddress, char* p_receiveArray, u
 	p_intValue1 = (unsigned int)p_receiveArray[1];
 	BCServer::sTheServer->SendData(BCServer::sTheServer->m_roomIDList->at(p_intValue1).GetRival(p_receiveAddress)->m_clientID, SendType::Answer, p_receiveArray);
 	p_intValue2 = static_cast<int>(BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Owner->m_lastClientFrame) - static_cast<int>(BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Member->m_lastClientFrame);
-	Println("Difference frame (Owner to Member): " << p_intValue2);
+	//Println("Difference frame (Owner to Member): " << p_intValue2);
+
+	if (GetTimeInMilli() - BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_lastSyncCall < 5000)
+		return;
+
 	if (p_intValue2 > 1)
 	{
 		//Member has delay sync him
-		if (GetTimeInMilli() - BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Member->m_lastSyncCall > 1000) {
-			p_receiveArray[0] = 13;
-			p_receiveArray[2] = BWMath::abs(p_intValue2);
-			BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Member->m_lastSyncCall = GetTimeInMilli();
+		p_receiveArray[0] = 13;
+		p_receiveArray[2] = BWMath::abs(p_intValue2);
+		BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_lastSyncCall = GetTimeInMilli();
 
-			BCServer::sTheServer->SendData(BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Member->m_clientID, SendType::NeedAnswer, p_receiveArray);
-		}
+		BCServer::sTheServer->SendData(BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Member->m_clientID, SendType::NeedAnswer, p_receiveArray);
+		Println("m_Member" << p_intValue2);
 	}
 	else if (p_intValue2 < -1)
 	{
 		//Owner has delay sync him
-		if (GetTimeInMilli() - BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Owner->m_lastSyncCall > 1000) {
-			p_receiveArray[0] = 13;
-			p_receiveArray[2] = BWMath::abs(p_intValue2);
-			BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Owner->m_lastSyncCall = GetTimeInMilli();
+		p_receiveArray[0] = 13;
+		p_receiveArray[2] = BWMath::abs(p_intValue2);
+		BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_lastSyncCall = GetTimeInMilli();
 
-			BCServer::sTheServer->SendData(BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Owner->m_clientID, SendType::NeedAnswer, p_receiveArray);
-		}
+		BCServer::sTheServer->SendData(BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Owner->m_clientID, SendType::NeedAnswer, p_receiveArray);
+		Println("m_Owner" << p_intValue2);
 	}
-
-	return;
 }

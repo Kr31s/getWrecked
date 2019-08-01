@@ -75,5 +75,4 @@ void BCMessage::GetReplyMessage(unsigned int p_messageID)
 	Println("New Ping: " << (int)BCServer::sTheServer->m_clientIDList->at(BCServer::sTheServer->m_messageIDList->at(p_messageID).m_clientID).m_ping);
 	BCServer::sTheServer->m_messageIDList->at(p_messageID).m_finished = true;
 	sMutexMessageIDList.unlock();
-	Println("Reply message received");
 }

@@ -13,7 +13,7 @@ int AMyStateMachProGameModeBase::m_timeVal = 1;
 FString AMyStateMachProGameModeBase::m_opponentName = "Hans";
 FString AMyStateMachProGameModeBase::m_playerName = "Kalle";
 
-bool AMyStateMachProGameModeBase::hasGameStarted = true;
+bool AMyStateMachProGameModeBase::hasGameStarted = false;
 
 unsigned int AMyStateMachProGameModeBase::m_framesToSync = 0;
 
@@ -113,12 +113,15 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	player1Score = 0;
 	player2Score = 0;
 	roundNumber = 1;
-	OnGameStarted.Broadcast(hasGameStarted);
 	if (NetworkSystem::NetSys != nullptr)
 	{
 		//sending first message to opponent
 		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 	}
+	else {
+		AMyStateMachProGameModeBase::hasGameStarted = true;
+	}
+	OnGameStarted.Broadcast(hasGameStarted);
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
@@ -131,11 +134,11 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			OnGameStarted.Broadcast(hasGameStarted);
 		}
 
-			NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
+		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 
 		for (int i = 0; i < 249; ++i)
 		{
-			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter-9) {
+			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
 				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
 				GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Green, FString::SanitizeFloat(333333333.33f));
 				break;
