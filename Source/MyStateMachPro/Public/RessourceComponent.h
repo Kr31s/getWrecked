@@ -55,6 +55,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void IncreasePowerMeter(float value);
 
+
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSignature,AActor*, target, float, newHealth);
 	UPROPERTY(BlueprintAssignable)
 		FOnHealthChangedSignature OnHealthChanged;

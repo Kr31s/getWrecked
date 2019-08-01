@@ -383,7 +383,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 		TimeInCurrentMove = 0.0f;
 		DoMove(CurrentMove);
-		this->RessourceComp->IncreasePowerMeter(CurrentMove->PowerMeterRaiseValue);
+		this->RessourceComp->IncreasePowerMeter(CurrentMove->PowerMeterRaiseValue/2);
 	}
 	else
 	{
@@ -720,13 +720,15 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("GOT HIT Check"));
 		stunTimer = 0.0F;
 		isStunned = false;
+		ResetStunMontage();
 	}
-	else if (stunTimer >= 5.0F)
+	else if (stunTimer >= 5.6F)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset STUN"));
 		//gotHit = false;
 		stunTimer = 0.0F;
 		isStunned = false;
+		ResetStunMontage();
 
 	}
 
