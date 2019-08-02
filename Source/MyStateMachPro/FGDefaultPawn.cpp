@@ -332,6 +332,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	//else{	//InputStream = RecievedInputStream(10);}
 
 	// Add one atom for each buttons state.
+	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted
+		&& UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0) {
 	for (int32 i = 0; i < (int32)EFGInputButtons::Count; ++i)
 	{
 		if (ButtonsDown & (1 << i))
@@ -350,8 +352,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			InputStream.Add(ButtonAtoms[(int32)EFGButtonState::Up]);
 		}
 	}
-	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted
-		&& UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0) {
 		FrameSyncCheck();
 		NetworkSystem::NetSys->GameMessage(SendInputStream);
 	}
