@@ -354,16 +354,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	}
 		FrameSyncCheck();
 		NetworkSystem::NetSys->GameMessage(SendInputStream);
-	}
-	else if(NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted){
-		for (int i = 0; i < 249; ++i)
-		{
-			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
-				DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
-				break;
-			}
-		}
-	}
 
 	// Cache old button state so we can distinguish between held and just pressed.
 	ButtonsDown_Old = ButtonsDown;
@@ -384,6 +374,16 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
 			}
 			break;
+		}
+	}
+	}
+	else if(NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted){
+		for (int i = 0; i < 249; ++i)
+		{
+			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
+				DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
+				break;
+			}
 		}
 	}
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
