@@ -355,7 +355,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		FrameSyncCheck();
 		NetworkSystem::NetSys->GameMessage(SendInputStream);
 	}
-	else {
+	else if(NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted){
 		for (int i = 0; i < 249; ++i)
 		{
 			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
