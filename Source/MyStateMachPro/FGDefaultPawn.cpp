@@ -205,7 +205,7 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 	const float DirectionThreshold = 0.5f;
 
 	UFGDirectionalInputAtom* InputDirection = nullptr;
-
+	//DIRECTIONS
 	if (DirectionInput.X < -DirectionThreshold)
 	{
 		if (DirectionInput.Y < -DirectionThreshold)
@@ -427,6 +427,9 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 
 	// Add one atom for each buttons state.
 	//if (UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0 && NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
+
+
+	// FaceButtons
 	for (int32 i = 0; i < (int32)EFGInputButtons::Count; ++i)
 	{
 		if (ButtonsDown & (1 << i))

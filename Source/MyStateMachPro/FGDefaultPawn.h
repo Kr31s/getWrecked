@@ -260,6 +260,10 @@ protected:
 		void ResetStunMontage();
 
 	UFUNCTION()
+		void FillInputsIntoStream(float deltaTime);
+
+
+	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UFUNCTION()
