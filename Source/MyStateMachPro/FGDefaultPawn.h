@@ -147,7 +147,13 @@ public:
 		UFGMove* IdleMove;
 
 	UPROPERTY(EditAnywhere, Category = "Moves")
-		UFGMove* CrouchBlockMove;
+		UFGMove* NeutralJump;
+
+	UPROPERTY(EditAnywhere, Category = "Moves")
+		UFGMove* FW_Jump;
+	
+	UPROPERTY(EditAnywhere, Category = "Moves")
+		UFGMove* BW_Jump;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		URessourceComponent* RessourceComp;

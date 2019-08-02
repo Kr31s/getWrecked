@@ -121,7 +121,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
-					//CurrentMove = CrouchBlockMove;
 				}
 				else
 				{
@@ -174,20 +173,28 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			{
 				movingForward = -1;
 				InputDirection = DirectionUpBackAtom; // Jump + Back
+				if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == BW_Jump)
+				{
+					//this->GetMovementComponent()->Velocity = (FVector(-600.0F, 0.0F, 600.0F));
+					isCrouching = false;
+
+					doJump = true;
+				}
 			}
 			else
 			{
 				movingForward = 1;
 				InputDirection = DirectionUpForwardAtom; // Jump Forward
+				if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == FW_Jump)
+				{
+					//this->GetMovementComponent()->Velocity = (FVector(-600.0F, 0.0F, 600.0F));
+					isCrouching = false;
+
+					doJump = true;
+				}
 
 			}
-			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == IdleMove)
-			{
-				//this->GetMovementComponent()->Velocity = (FVector(-600.0F, 0.0F, 600.0F));
-				isCrouching = false;
 
-				doJump = true;
-			}
 		}
 	} // Neutral Movement
 	else if (DirectionInput.X < DirectionThreshold)
@@ -211,7 +218,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			InputDirection = DirectionUpAtom; // Jump
 			//UE_LOG(LogTemp, Warning, TEXT("i want to jump"));
 			//this->Jump();
-			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == IdleMove)
+			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == NeutralJump)
 			{
 				//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
 				doJump = true;
@@ -234,7 +241,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
-					//CurrentMove = CrouchBlockMove;
 				}
 				else
 				{
@@ -282,6 +288,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 				movingForward = 1;
 				InputDirection = DirectionUpForwardAtom; // Jump Forward
+				if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == FW_Jump)
+				{
+					//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
+					doJump = true;
+				}
 			}
 			else
 			{
@@ -289,12 +300,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 				movingForward = -1;
 				InputDirection = DirectionUpBackAtom; // Jump Back
+				if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == BW_Jump)
+				{
+					//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
+					doJump = true;
+				}
 			}
-			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == IdleMove)
-			{
-				//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
-				doJump = true;
-			}
+
 		}
 	}
 	this->CrouchValues(isCrouching);
