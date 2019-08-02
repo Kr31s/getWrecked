@@ -46,6 +46,8 @@ void AFGDefaultPawn::BeginPlay()
 
 	this->GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AFGDefaultPawn::OnHit);
 	//this->GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AFGDefaultPawn::ExitOverlap);
+
+
 	if (!CurrentMove) {
 		UE_LOG(LogTemp, Warning, TEXT("No initial move."));
 	}
@@ -87,21 +89,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	if (isStunned)
 	{
 		HandleStun(DeltaSeconds); // player got stunned
-		if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted
-			&& UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0) {
-			FrameSyncCheck();
-			NetworkSystem::NetSys->GameMessage(SendInputStream);
-		}
 		return;
 	}
 	EnablePlayerInput(isInputEnabled);
 
 	if (!isInputEnabled) {
-		if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted 
-			&& UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0) {
-			FrameSyncCheck();
-			NetworkSystem::NetSys->GameMessage(SendInputStream);
-		}
 		return;
 	}
 
@@ -343,11 +335,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			InputStream.Add(ButtonAtoms[(int32)EFGButtonState::Up]);
 		}
 	}
-	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted
-		&& UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0) {
-		FrameSyncCheck();
-		NetworkSystem::NetSys->GameMessage(SendInputStream);
-	}
 
 	// Cache old button state so we can distinguish between held and just pressed.
 	ButtonsDown_Old = ButtonsDown;
@@ -408,7 +395,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 		TimeInCurrentMove = 0.0f;
 		DoMove(CurrentMove);
-		this->RessourceComp->IncreasePowerMeter(CurrentMove->PowerMeterRaiseValue / 2);
+		this->RessourceComp->IncreasePowerMeter(CurrentMove->PowerMeterRaiseValue);
 	}
 	else
 	{
@@ -416,24 +403,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	}
 }
 
-void AFGDefaultPawn::FrameSyncCheck()
-{
-	if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 2)
-	{
-		NetworkSystem::NetSys->GameMessage(SendInputStream);
-		--AMyStateMachProGameModeBase::m_framesToSync;
-		if (AMyStateMachProGameModeBase::m_framesToSync <= 0)
-		{
-			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
-		}
-	}
-	else if (AMyStateMachProGameModeBase::m_framesToSync > 0) {
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 2);
-	}
 
-}
-
-void AFGDefaultPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AFGDefaultPawn::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
@@ -447,7 +418,7 @@ void AFGDefaultPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 }
 
 
-void AFGDefaultPawn::ExitOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void AFGDefaultPawn::ExitOverlap(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
 	if (OtherActor == Opponent) {
 		auto* pAsPawn{ Cast<AFGDefaultPawn>(Opponent) };
@@ -467,19 +438,15 @@ void AFGDefaultPawn::SetRotationOfPlayer()
 		if (this->isOnLeftSide)
 		{
 			this->GetMesh()->SetRelativeScale3D(FVector(1.0F, -1.0F, 1.0F));
-			//GetMesh()->SkeletalMesh->SkelMirrorAxis = EAxis::X;
-
 		}
 		else
 		{
 			this->GetMesh()->SetRelativeScale3D(FVector(1.0F, 1.0F, 1.0F));
-			//GetMesh()->SkeletalMesh->SkelMirrorAxis = EAxis::Y;
-
 		}
 	}
 }
 
-void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent* InInputComponent)
+void AFGDefaultPawn::SetupPlayerInputComponent(UInputComponent * InInputComponent)
 {
 	Super::SetupPlayerInputComponent(InInputComponent);
 
@@ -710,17 +677,8 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 
 		jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
 
-		if(isCrouching)
-		{
-			GetCapsuleComponent()->SetCapsuleHalfHeight(60.0F);
-			this->GetCapsuleComponent()->SetCapsuleRadius(34.0F, true);
 
-		}else
-		{
-			GetCapsuleComponent()->SetCapsuleHalfHeight(90.0F);
-			this->GetCapsuleComponent()->SetCapsuleRadius(40.0F, true);
-
-		}
+		GetCapsuleComponent()->SetCapsuleHalfHeight(90.0F);
 
 
 		if (this->CanMoveInLeftDirection && directionmodifier <= 0
@@ -736,7 +694,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		// Push opponent Away do land on destination point
 		if ((timeInJump / jumpDuration) > 0.8 && bCollisionWithOppenent)
 		{
-			//opponent left from me
+			//opponent left from me 
 			if (this->GetActorLocation().X > Opponent->GetActorLocation().X)
 			{
 				Opponent->SetActorLocation(FVector(Opponent->GetActorLocation().X - 15.0F, Opponent->GetActorLocation().Y, Opponent->GetActorLocation().Z));
@@ -769,20 +727,18 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 
 	//DisableInput(Cast<APlayerController>(this));
 	stunTimer += deltaSeconds;
-	if (gotHit && stunTimer > 0.5F)
+	if (gotHit)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("GOT HIT Check"));
 		stunTimer = 0.0F;
 		isStunned = false;
-		ResetStunMontage();
 	}
-	else if (stunTimer >= 5.6F)
+	else if (stunTimer >= 5.0F)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset STUN"));
 		//gotHit = false;
 		stunTimer = 0.0F;
 		isStunned = false;
-		ResetStunMontage();
 
 	}
 
