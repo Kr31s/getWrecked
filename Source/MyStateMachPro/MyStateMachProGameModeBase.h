@@ -177,12 +177,4 @@ public:
 
 	UFUNCTION()
 		void RoundTimeOver();
-
-
-	UFUNCTION(BlueprintImplementableEvent)
-		void ResetVictoryMontage();
-
-	UFUNCTION(BlueprintImplementableEvent)
-		void ResetLoosingMontage();
-
 };
