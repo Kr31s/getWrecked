@@ -169,12 +169,14 @@ public:
 	UFUNCTION()
 	void SetRoundTimer(float deltaSeconds);
 
+	UFUNCTION()
+		void RoundTimeOver();
+
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void ResetVictoryMontage();
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void ResetLoosingMontage();
 
-	UFUNCTION()
-		void RoundTimeOver();
 };

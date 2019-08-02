@@ -177,6 +177,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				{
 					//this->GetMovementComponent()->Velocity = (FVector(-600.0F, 0.0F, 600.0F));
 					isCrouching = false;
+					movingForward = -1;
 
 					doJump = true;
 				}
@@ -189,6 +190,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				{
 					//this->GetMovementComponent()->Velocity = (FVector(-600.0F, 0.0F, 600.0F));
 					isCrouching = false;
+					movingForward = 1;
 
 					doJump = true;
 				}
@@ -220,6 +222,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			//this->Jump();
 			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == NeutralJump)
 			{
+				movingForward = 0;
 				//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
 				doJump = true;
 			}
@@ -291,6 +294,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == FW_Jump)
 				{
 					//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
+					movingForward = 1;
+
 					doJump = true;
 				}
 			}
@@ -303,6 +308,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == BW_Jump)
 				{
 					//this->GetMovementComponent()->Velocity = (FVector(600.0F, 0.0F, 600.0F));
+					movingForward = -1;
+
 					doJump = true;
 				}
 			}
