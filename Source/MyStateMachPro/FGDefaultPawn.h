@@ -131,6 +131,9 @@ public:
 	UPROPERTY(Editanywhere, BlueprintReadWrite)
 		bool doJump;
 
+	UPROPERTY(Editanywhere, BlueprintReadWrite)
+		bool prepareJump = false;
+
 	UPROPERTY()
 		float directionmodifier;
 

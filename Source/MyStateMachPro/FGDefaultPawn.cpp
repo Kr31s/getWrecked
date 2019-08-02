@@ -716,7 +716,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		timeInJump = 0;
 		jumpStartLocation = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
 		directionmodifier = FMath::Sign(direction);
-
+		prepareJump = true;
 		jumpInitializeFlag = true;
 	}
 	if (timeInJump <= jumpDuration)
@@ -725,6 +725,12 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		float curveValue = DiagonalCurve->GetFloatValue(timeInJump / jumpDuration);
 
 		jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
+
+
+		if(timeInJump > 0.5F && prepareJump)
+		{
+			prepareJump = false;
+		}
 
 		if(isCrouching)
 		{
