@@ -105,6 +105,5 @@ public:
 	void SyncGame(char* receiveArray);
 	void OppentGameMessage(char* receiveArray);
 	void StartGame();
-	void NextRound();
 };
 

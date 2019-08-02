@@ -35,8 +35,7 @@ bool NetworkSystem::InitNetSystem()
 {
 	AMyStateMachProGameModeBase::hasGameStarted = false;
 
-	//this->serverAddress = NetAddress(192, 168, 178, 68, 4023);
-	this->serverAddress = NetAddress(10, 1, 1, 200, 4023);
+	this->serverAddress = NetAddress(127, 0, 0, 1, 4023);
 	BWNet::InitializeSocketLayer();
 
 	if (socketUDP.OpenSocket(0).m_errorCode == 0)
@@ -107,9 +106,6 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 		break;
 	case 13:
 		this->SyncGame(p_receiveArray);
-		break;
-	case 14:
-		this->NextRound();
 		break;
 
 	default:
@@ -275,6 +271,8 @@ void NetworkSystem::PauseGame(bool& stop)
 }
 void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString::FromInt(AMyStateMachProGameModeBase::sFrameCounter));
+
 	unsigned short temp;
 	sendArray[0] = 10;
 	sendArray[1] = myRoomID;
@@ -288,7 +286,6 @@ void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 		temp = (gameMessagesPlayer[i].m_time) << 8;
 
 		sendArray[3 + (4 * i)] = temp >> 8;
-
 		sendArray[4 + (4 * i)] = (gameMessagesPlayer[i].m_input) >> 8;
 		temp = (gameMessagesPlayer[i].m_input) << 8;
 		sendArray[5 + (4 * i)] = temp >> 8;
@@ -399,6 +396,8 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 		inputVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[4 + (4 * i)])) << 8;
 		inputVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[5 + (4 * i)]));
 
+		UE_LOG(LogTemp, Warning, TEXT("is sending %d"), (int)timeVal);
+
 		if (timeVal == gameMessagesRivale[0].m_time + 1)
 		{
 			for (; i > -1; --i)
@@ -420,8 +419,4 @@ void NetworkSystem::StartGame()
 {
 	UMyUserWidget::myUserWidget->DeactivateThreadDestroy();
 	UGameplayStatics::OpenLevel(UMyUserWidget::myUserWidget, "/Game/Maps/Temple_v01_marlon", TRAVEL_Absolute);
-}
-void NetworkSystem::NextRound() 
-{
-
 }
