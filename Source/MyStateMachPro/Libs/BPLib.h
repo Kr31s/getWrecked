@@ -12,9 +12,10 @@ struct FColliderInfo
 public:
 	FColliderInfo() = default;
 
-	FColliderInfo(FVector BoxExtent, FVector RelativeLocation, EBoxType BoxType) :
+	FColliderInfo(FVector BoxExtent, FVector RelativeLocation, FRotator RelativRotation, EBoxType BoxType) :
 		BoxExtent(BoxExtent),
 		RelativeLocation(RelativeLocation),
+		RelativRotation(RelativRotation),
 		BoxType(BoxType)
 	{
 	}
@@ -24,6 +25,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector RelativeLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FRotator RelativRotation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EBoxType BoxType;

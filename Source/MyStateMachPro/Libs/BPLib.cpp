@@ -18,7 +18,7 @@ TArray<FColliderInfo> UBPLib::GetCollIDBoxByIndex(UClass *FromClass, int index)
 		auto* pAsComp{ Cast<UMyHitBoxComponent>(ChildNode->ComponentTemplate) };
 		checkf(pAsComp, TEXT("Child component of UHitBoxIDComp not of time UMyHitBoxComponent"));
 
-		Out.Add({ pAsComp->GetScaledBoxExtent(), pAsComp->RelativeLocation,  pAsComp->Etype });
+		Out.Add({ pAsComp->GetScaledBoxExtent(), pAsComp->RelativeLocation, pAsComp->RelativeRotation,  pAsComp->Etype });
 
 	}
 	
