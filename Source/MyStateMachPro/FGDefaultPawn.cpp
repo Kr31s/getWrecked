@@ -161,7 +161,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			}
 
 			if (CanMoveInLeftDirection && !bIsBlocking) {
-				this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
+				//this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
 				isCrouching = false;
 				MovementRestrictionComp->TickComponent();
 
@@ -353,8 +353,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 			//FrameSyncCheck();
 			//NetworkSystem::NetSys->GameMessage(SendInputStream);
-		}
-	/*else if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
+	/*	}
+	else if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
 		for (int i = 0; i < 249; ++i)
 		{
 			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
@@ -402,7 +402,15 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 
 		// Set and start the new move.
+
+
+
 		CurrentMove = MoveLinkToFollow.Link->Move;
+
+		if (CurrentMove == MoveLeft)
+		{
+			this->AddMovementInput(this->GetActorForwardVector(), -100.0F);
+		}
 		TimeInCurrentMove = 0.0f;
 		DoMove(CurrentMove);
 		this->RessourceComp->IncreasePowerMeter(CurrentMove->PowerMeterRaiseValue / 2);

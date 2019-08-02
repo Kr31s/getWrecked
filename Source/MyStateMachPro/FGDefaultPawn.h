@@ -153,6 +153,9 @@ public:
 		UFGMove* IdleMove;
 
 	UPROPERTY(EditAnywhere, Category = "Moves")
+		UFGMove* MoveLeft;
+
+	UPROPERTY(EditAnywhere, Category = "Moves")
 		UFGMove* NeutralJump;
 
 	UPROPERTY(EditAnywhere, Category = "Moves")
