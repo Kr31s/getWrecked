@@ -14,6 +14,6 @@ E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(192,1
 E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(193,130): warning C4244:  "=": Konvertierung von "unsigned short" in "char", möglicher Datenverlust
 E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(208,64): warning C4244:  "=": Konvertierung von "unsigned short" in "char", möglicher Datenverlust
 E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(210,112): warning C4244:  "=": Konvertierung von "unsigned short" in "char", möglicher Datenverlust
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(306,34): warning C4244:  "=": Konvertierung von "double" in "char", möglicher Datenverlust
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(316,34): warning C4244:  "=": Konvertierung von "double" in "char", möglicher Datenverlust
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(313,34): warning C4244:  "=": Konvertierung von "double" in "char", möglicher Datenverlust
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCServer.cpp(323,34): warning C4244:  "=": Konvertierung von "double" in "char", möglicher Datenverlust
   PunchNetwork.vcxproj -> E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe

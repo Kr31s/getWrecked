@@ -190,6 +190,11 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 
 	if (player1->RessourceComp->Health <= 0.0F)
 	{
+		NetworkSystem::NetSys->ticking = false;
+		AMyStateMachProGameModeBase::sFrameCounter = 0;
+		AMyStateMachProGameModeBase::m_framesToSync = 0;
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
+
 		//player1->K2_DestroyActor();
 		//UGameplayStatics::SetGamePaused(this, true);
 		if (!scoreFlag)
@@ -248,6 +253,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	}
 	if (player2->RessourceComp->Health <= 0.0F)
 	{
+		NetworkSystem::NetSys->ticking = false;
+		AMyStateMachProGameModeBase::sFrameCounter = 0;
+		AMyStateMachProGameModeBase::m_framesToSync = 0;
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
 		//player2->K2_DestroyActor();
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
@@ -302,16 +311,22 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		}
 
 	}
-	SetRoundTimer(DeltaSeconds);
 
 
 
 	if (roundTimer <= 0.0F)
 	{
+		NetworkSystem::NetSys->ticking = false;
+		AMyStateMachProGameModeBase::sFrameCounter = 0;
+		AMyStateMachProGameModeBase::m_framesToSync = 0;
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
 		RoundTimeOver();
 		player1->isInputEnabled = false;
 		player2->isInputEnabled = false;
+		return;
 	}
+
+	SetRoundTimer(DeltaSeconds);
 }
 
 void AMyStateMachProGameModeBase::SetupMatch()
@@ -483,6 +498,11 @@ void AMyStateMachProGameModeBase::CheckIfMatchIsOver(int playerScore)
 
 void AMyStateMachProGameModeBase::SetRoundTimer(float deltaSeconds)
 {
+	if (!NetworkSystem::NetSys->ticking) 
+	{
+		NetworkSystem::NetSys->ticking = true;
+	}
+
 	roundTimer -= deltaSeconds;
 	OnTimeChanged.Broadcast(this->roundTimer);
 }

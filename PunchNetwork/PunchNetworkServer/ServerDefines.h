@@ -37,7 +37,6 @@ enum class Messages
 	ElementChange = 6,
 	PauseGame = 8,
 	GameMessage = 10,
-	NextRound = 14
 };
 
 static Messages MessageOfIndex(int i) { return static_cast<Messages>(i); }
