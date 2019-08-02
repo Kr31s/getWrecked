@@ -143,6 +143,9 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 
 		player1->isStunned = false;
 		player2->isStunned = false;
+		player1->isCrouching = false;
+		player2->isCrouching = false;
+
 		if (NetworkSystem::NetSys == nullptr || NetworkSystem::NetSys->roomOwner)
 		{
 			player1->SetActorLocation(FVector(-230, 0.0F, 100.0F));
@@ -162,8 +165,9 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		roundTimer = roundTime;
 		player1->SetDirectionInputX(0.0F);
 		player2->SetDirectionInputX(0.0F);
-		player1->GetMovementComponent()->Velocity = FVector(0, 0, 0);
-		player2->GetMovementComponent()->Velocity = FVector(0, 0, 0);
+		player1->movingForward = 0;
+		player2->movingForward = 0;
+
 	}
 	if (startTimer > 0.0f)
 	{
@@ -198,6 +202,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player1->isInputEnabled = false;
 		player2->isInputEnabled = false;
 
+		player1->movingForward = 0;
+		player2->movingForward = 0;
+		player1->isCrouching = false;
+		player2->isCrouching = false;
 		while (transitiontime < transitionMaxDuration) {
 			transitiontime += DeltaSeconds;
 			//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, TEXT("WHILE-TRANSITION"));
@@ -211,6 +219,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				player1->CustomTimeDilation = 1.0F;
 				player2->CustomTimeDilation = 1.0F;
 				player2->playerWon = true;
+				player1->playerLost = true;
+				
 			}
 			return;
 		}
@@ -250,6 +260,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		OnP1ScoreChanged.Broadcast(player1Score);
 		player1->isInputEnabled = false;
 		player2->isInputEnabled = false;
+		player1->movingForward = 0;
+		player2->movingForward = 0;
+		player1->isCrouching = false;
+		player2->isCrouching = false;
 
 		while (transitiontime < transitionMaxDuration) {
 			transitiontime += DeltaSeconds;
@@ -263,6 +277,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				player1->CustomTimeDilation = 1.0F;
 				player2->CustomTimeDilation = 1.0F;
 				player1->playerWon = true;
+				player2->playerLost = true;
+
 			}
 			return;
 		}
@@ -306,6 +322,9 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	player2->CustomTimeDilation = 1.0F;
 	player1->playerWon = false;
 	player2->playerWon = false;
+	player1->playerLost = false;
+	player2->playerLost = false;
+
 	player1->RessourceComp->SetHealth(1.0F);
 	player2->RessourceComp->SetHealth(1.0F);
 	player1->RessourceComp->SetStunMeter(0.0F);
@@ -313,6 +332,7 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	player1->RessourceComp->SetPowerMeter(0.0F);
 	player2->RessourceComp->SetPowerMeter(0.0F);
 	ResetVictoryMontage();
+	ResetLoosingMontage();
 	enableInputOnRoundStart = true;
 	//Reset UI Healthbar
 //	player1->RessourceComp->OnHealthChanged.Broadcast(player1, player1->RessourceComp->Health);
