@@ -44,7 +44,7 @@ public:
 		float stunMeterDecayTimer = 0.0F;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float stunMeterDecayMaxTime = 3.0F;
+		float stunMeterDecayMaxTime = 2.0F;
 
 	UFUNCTION(BlueprintCallable)
 		void ReduceHealth(float damageValue);
