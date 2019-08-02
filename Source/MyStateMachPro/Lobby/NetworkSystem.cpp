@@ -108,7 +108,7 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 	case 13:
 		this->SyncGame(p_receiveArray);
 		break;
-	
+
 
 	default:
 		//unknown command
@@ -273,7 +273,7 @@ void NetworkSystem::PauseGame(bool& stop)
 }
 void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 {
-	if (!NetworkSystem::NetSys->ticking) 
+	if (!NetworkSystem::NetSys->ticking)
 		return;
 
 	unsigned short temp;
@@ -413,7 +413,7 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 				NetworkSystem::NetSys->gameMessagesRivale.insert(NetworkSystem::NetSys->gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
 			}
 			NetworkSystem::NetSys->gameMessagesRivale.resize(249, GameMessageData());
-			break;
+			return;
 		}
 	}
 }

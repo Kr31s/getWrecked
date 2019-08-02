@@ -355,6 +355,15 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		FrameSyncCheck();
 		NetworkSystem::NetSys->GameMessage(SendInputStream);
 	}
+	else {
+		for (int i = 0; i < 249; ++i)
+		{
+			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
+				DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
+				break;
+			}
+		}
+	}
 
 	// Cache old button state so we can distinguish between held and just pressed.
 	ButtonsDown_Old = ButtonsDown;

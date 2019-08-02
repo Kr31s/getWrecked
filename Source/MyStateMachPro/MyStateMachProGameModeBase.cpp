@@ -116,13 +116,6 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			OnGameStarted.Broadcast(hasGameStarted);
 		}
 
-		for (int i = 0; i < 249; ++i)
-		{
-			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
-				player2->DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
-				break;
-			}
-		}
 	}
 
 	if (!hasGameStarted)
