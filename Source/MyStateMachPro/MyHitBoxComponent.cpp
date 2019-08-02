@@ -131,7 +131,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 							Owner->RessourceComp->IncreasePowerMeter(Owner->CurrentMove->PowerMeterRaiseValue);
 							Owner->CustomTimeDilation = 0.3F;
 							Enemy->CustomTimeDilation = 0.3F;
-							//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
+							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("HitBoxCollision"));
 
 							const FVector EmitterSpawnLocation2 = OverlappedComponent->GetComponentLocation();
 							UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Owner->gotHitFire, FVector(EmitterSpawnLocation2.X, 0, EmitterSpawnLocation2.Z), FRotator(0.0f, 0.0f, 0.0f), FVector(0.3F, 0.3F, 0.3F), true);
@@ -155,7 +155,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 						Enemy->SetCanBlock(true);
 						//Enemy->checkBlock();
 
-						//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("BlockBoxCollision"));
+						GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("BlockBoxCollision"));
 
 						break;
 

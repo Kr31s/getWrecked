@@ -98,6 +98,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		bool playerWon = false;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		bool playerLost = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int movingForward = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

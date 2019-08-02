@@ -279,6 +279,16 @@ void BCServer::PauseGame(NetAddress& p_receiveAddress, char* p_receiveArray)
 
 	m_roomIDList->at(p_receiveArray[1]).m_gamePaused = !m_roomIDList->at(p_receiveArray[1]).m_gamePaused;
 }
+void BCServer::NextRound(NetAddress& receiveAddress, char* receiveArray)
+{
+	if (BCServer::sTheServer->m_clientIDList->at(receiveAddress[2]).m_myRoom->m_currentRound == (int)receiveAddress[3]) 
+	{
+		return;
+	}
+	BCServer::sTheServer->m_clientIDList->at(receiveAddress[2]).m_myRoom->m_currentRound = (int)receiveAddress[3];
+	BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(receiveAddress[2]).m_clientID, SendType::NeedAnswer, receiveArray);
+	BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(receiveAddress[2]).m_myRoom->GetRival(BCServer::sTheServer->m_clientIDList->at(receiveAddress[2]).m_netaddress)->m_clientID, SendType::NeedAnswer, receiveArray);
+}
 void BCServer::GameMessage(NetAddress& p_receiveAddress, char* p_receiveArray, unsigned int& p_intValue1, int& p_intValue2)
 {
 	p_intValue1 = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2])) << 8;
@@ -295,6 +305,10 @@ void BCServer::GameMessage(NetAddress& p_receiveAddress, char* p_receiveArray, u
 		return;
 
 	p_intValue2 = static_cast<int>(BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Owner->m_lastClientFrame) - static_cast<int>(BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Member->m_lastClientFrame);
+
+	Println("Owner ping" << (int)BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Owner->m_ping);
+	Println("Member ping" << (int)BCServer::sTheServer->m_roomIDList->at(p_intValue1).m_Member->m_ping);
+
 	if (p_intValue2 > 1)
 	{
 		//Member has delay sync him

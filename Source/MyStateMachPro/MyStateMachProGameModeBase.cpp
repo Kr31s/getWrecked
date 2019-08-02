@@ -195,6 +195,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		if (!scoreFlag)
 		{
 			player2Score++;
+			player1->playerLost = true;
 			//player2->playerWon = true;
 			scoreFlag = true;
 		}
@@ -253,6 +254,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		if (!scoreFlag)
 		{
 			player1Score++;
+			player2->playerLost = true;
+
 			//player1->playerWon = true;
 			scoreFlag = true;
 		}
@@ -276,6 +279,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				player1->CustomTimeDilation = 1.0F;
 				player2->CustomTimeDilation = 1.0F;
 				player1->playerWon = true;
+
 			}
 			return;
 		}
@@ -319,6 +323,9 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	player2->CustomTimeDilation = 1.0F;
 	player1->playerWon = false;
 	player2->playerWon = false;
+	player1->playerLost = false;
+	player2->playerLost = false;
+
 	player1->RessourceComp->SetHealth(1.0F);
 	player2->RessourceComp->SetHealth(1.0F);
 	player1->RessourceComp->SetStunMeter(0.0F);
@@ -326,6 +333,7 @@ void AMyStateMachProGameModeBase::SetupMatch()
 	player1->RessourceComp->SetPowerMeter(0.0F);
 	player2->RessourceComp->SetPowerMeter(0.0F);
 	ResetVictoryMontage();
+	ResetLoosingMontage();
 	enableInputOnRoundStart = true;
 	//Reset UI Healthbar
 //	player1->RessourceComp->OnHealthChanged.Broadcast(player1, player1->RessourceComp->Health);
