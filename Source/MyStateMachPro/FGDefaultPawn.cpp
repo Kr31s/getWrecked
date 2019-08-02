@@ -105,47 +105,49 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		return;
 	}
 
-
-	// Process input
-
-	// Add one atom for stick direction
-	//Back Movement
-
-	FillInputsIntoStream(DeltaSeconds);
-	
-			//FrameSyncCheck();
-			//NetworkSystem::NetSys->GameMessage(SendInputStream);
-	/*	}
-	else if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
-		for (int i = 0; i < 249; ++i)
+	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
+		if (UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0)
 		{
-			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
-				DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
-				break;
-			}
+			FillInputsIntoStream(DeltaSeconds);
+			FrameSyncCheck();
+			NetworkSystem::NetSys->GameMessage(SendInputStream);
 		}
-	}*/
-		// Cache old button state so we can distinguish between held and just pressed.
-		ButtonsDown_Old = ButtonsDown;
-
-		// Always add an input time stamp to match the input sequence.
-		float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
-		InputTimeStamps.Add(CurrentTime);
-
-		// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
-		for (int32 i = 0; i < InputStream.Num(); ++i)
-		{
-			if ((InputTimeStamps[i] + InputExpirationTime) >= CurrentTime)
+		else {
+			for (int i = 0; i < 249; ++i)
 			{
-				// Remove everything before this, then exit the loop.
-				if (i > 0)
-				{
-					InputTimeStamps.RemoveAt(0, i, false);
-					InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
+				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
+					DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
+					break;
 				}
-				break;
 			}
 		}
+	}
+	else 
+	{
+		FillInputsIntoStream(DeltaSeconds);
+	}
+
+	// Cache old button state so we can distinguish between held and just pressed.
+	ButtonsDown_Old = ButtonsDown;
+
+	// Always add an input time stamp to match the input sequence.
+	float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
+	InputTimeStamps.Add(CurrentTime);
+
+	// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
+	for (int32 i = 0; i < InputStream.Num(); ++i)
+	{
+		if ((InputTimeStamps[i] + InputExpirationTime) >= CurrentTime)
+		{
+			// Remove everything before this, then exit the loop.
+			if (i > 0)
+			{
+				InputTimeStamps.RemoveAt(0, i, false);
+				InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
+			}
+			break;
+		}
+	}
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted/* && GetCharacterMovement()->IsMovingOnGround() -- check if everything works as intended*/)
 	{
