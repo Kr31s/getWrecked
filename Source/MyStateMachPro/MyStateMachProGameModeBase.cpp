@@ -195,6 +195,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		if (!scoreFlag)
 		{
 			player2Score++;
+			player1->playerLost = true;
 			//player2->playerWon = true;
 			scoreFlag = true;
 		}
@@ -219,7 +220,6 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				player1->CustomTimeDilation = 1.0F;
 				player2->CustomTimeDilation = 1.0F;
 				player2->playerWon = true;
-				player1->playerLost = true;
 				
 			}
 			return;
@@ -254,6 +254,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		if (!scoreFlag)
 		{
 			player1Score++;
+			player2->playerLost = true;
+
 			//player1->playerWon = true;
 			scoreFlag = true;
 		}
@@ -277,7 +279,6 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				player1->CustomTimeDilation = 1.0F;
 				player2->CustomTimeDilation = 1.0F;
 				player1->playerWon = true;
-				player2->playerLost = true;
 
 			}
 			return;

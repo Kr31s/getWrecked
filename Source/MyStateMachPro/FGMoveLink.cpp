@@ -12,7 +12,7 @@ FStateMachineResult UFGMoveLink::TryLink(const AFGDefaultPawn* RefObject, const 
 		bool bCanCancel = false;
 			if (RefObject->GetMovementComponent()->IsMovingOnGround() && cancelOnGrounded)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Black, TEXT("OnGround"));
+				//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Black, TEXT("OnGround"));
 				return InputStateMachine->RunState(RefObject, DataSource, DataIndex, RemainingSteps);
 			}
 		//	if (RefObject->timeInJump > 0.5F)

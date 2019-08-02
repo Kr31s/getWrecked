@@ -172,6 +172,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void ResetVictoryMontage();
 
+	UFUNCTION(BlueprintImplementableEvent)
+		void ResetLoosingMontage();
+
 	UFUNCTION()
 		void RoundTimeOver();
 };
