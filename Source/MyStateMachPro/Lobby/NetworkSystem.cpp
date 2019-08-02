@@ -5,6 +5,7 @@
 
 
 NetworkSystem* NetworkSystem::NetSys = NULL;
+bool NetworkSystem::ticking = true;
 
 bool NetworkSystem::StartingMessageReceiveThread() {
 	MessageReceiveThread = FMessageReceiveThread::InitThread(&socketUDP, m_receiveArray);
@@ -35,7 +36,8 @@ bool NetworkSystem::InitNetSystem()
 {
 	AMyStateMachProGameModeBase::hasGameStarted = false;
 
-	this->serverAddress = NetAddress(127, 0, 0, 1, 4023);
+	//this->serverAddress = NetAddress(192, 168, 178, 68, 4023);
+	this->serverAddress = NetAddress(10, 1, 1, 200, 4023);
 	BWNet::InitializeSocketLayer();
 
 	if (socketUDP.OpenSocket(0).m_errorCode == 0)
@@ -107,6 +109,7 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 	case 13:
 		this->SyncGame(p_receiveArray);
 		break;
+	
 
 	default:
 		//unknown command
@@ -271,7 +274,8 @@ void NetworkSystem::PauseGame(bool& stop)
 }
 void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, FString::FromInt(AMyStateMachProGameModeBase::sFrameCounter));
+	if (!NetworkSystem::NetSys->ticking) 
+		return;
 
 	unsigned short temp;
 	sendArray[0] = 10;
@@ -286,6 +290,7 @@ void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 		temp = (gameMessagesPlayer[i].m_time) << 8;
 
 		sendArray[3 + (4 * i)] = temp >> 8;
+
 		sendArray[4 + (4 * i)] = (gameMessagesPlayer[i].m_input) >> 8;
 		temp = (gameMessagesPlayer[i].m_input) << 8;
 		sendArray[5 + (4 * i)] = temp >> 8;
@@ -395,8 +400,6 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 
 		inputVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[4 + (4 * i)])) << 8;
 		inputVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[5 + (4 * i)]));
-
-		UE_LOG(LogTemp, Warning, TEXT("is sending %d"), (int)timeVal);
 
 		if (timeVal == gameMessagesRivale[0].m_time + 1)
 		{

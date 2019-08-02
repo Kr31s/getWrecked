@@ -1,3 +1,6 @@
+
+
+
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
@@ -17,14 +20,14 @@ class UFGDirectionalInputAtom;
 class UFGButtonInputAtom;
 class UFGMove;
 /**
- * 
+ *
  */
 UCLASS()
 class MYSTATEMACHPRO_API AFGDefaultPawn : public ACharacter
 {
 	GENERATED_BODY()
-	
-public: 
+
+public:
 
 	std::bitset<12> SendInputStream;
 	void DoMovesFromInputStream(std::bitset<12> inputStream);
@@ -33,6 +36,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* InInputComponent) override;
+
+	void FrameSyncCheck();
 
 	FORCEINLINE float GetTimeInMove() const { return TimeInCurrentMove; }
 
@@ -96,6 +101,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		bool playerWon = false;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		bool playerLost = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int movingForward = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -109,8 +117,8 @@ public:
 		bool bCollisionWithOppenent;
 
 	UPROPERTY()
-		float timeInJump;	
-	
+		float timeInJump;
+
 	UPROPERTY(Editanywhere, BlueprintReadWrite)
 		float jumpDuration = 1.0F;
 
@@ -125,7 +133,7 @@ public:
 
 	UPROPERTY()
 		float directionmodifier;
-	
+
 	UPROPERTY()
 		FVector jumpTargetLocation;
 
@@ -142,11 +150,17 @@ public:
 		UFGMove* IdleMove;
 
 	UPROPERTY(EditAnywhere, Category = "Moves")
-		UFGMove* CrouchBlockMove;
+		UFGMove* NeutralJump;
+
+	UPROPERTY(EditAnywhere, Category = "Moves")
+		UFGMove* FW_Jump;
+
+	UPROPERTY(EditAnywhere, Category = "Moves")
+		UFGMove* BW_Jump;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		URessourceComponent* RessourceComp;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UMovementRestrictionComponent* MovementRestrictionComp;
 
@@ -200,41 +214,44 @@ protected:
 
 	// Input atoms are removed when they pass this age threshold. All moves must be executed in under this time.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float InputExpirationTime;
+		float InputExpirationTime;
 
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
-	UFGDirectionalInputAtom* DirectionDownBackAtom;
+		UFGDirectionalInputAtom* DirectionDownBackAtom;
 
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
-	UFGDirectionalInputAtom* DirectionDownAtom;
+		UFGDirectionalInputAtom* DirectionDownAtom;
 
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
-	UFGDirectionalInputAtom* DirectionDownForwardAtom;
+		UFGDirectionalInputAtom* DirectionDownForwardAtom;
 
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
-	UFGDirectionalInputAtom* DirectionBackAtom;
+		UFGDirectionalInputAtom* DirectionBackAtom;
 
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
-	UFGDirectionalInputAtom* DirectionNeutralAtom;
+		UFGDirectionalInputAtom* DirectionNeutralAtom;
 
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
-	UFGDirectionalInputAtom* DirectionForwardAtom;
+		UFGDirectionalInputAtom* DirectionForwardAtom;
 
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
-	UFGDirectionalInputAtom* DirectionUpBackAtom;
+		UFGDirectionalInputAtom* DirectionUpBackAtom;
 
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
-	UFGDirectionalInputAtom* DirectionUpAtom;
+		UFGDirectionalInputAtom* DirectionUpAtom;
 
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
-	UFGDirectionalInputAtom* DirectionUpForwardAtom;
+		UFGDirectionalInputAtom* DirectionUpForwardAtom;
 
 	// Order in this array is the same as EFGButtonState: Up, JustPressed, Held
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
-	TArray<UFGButtonInputAtom*> ButtonAtoms;
+		TArray<UFGButtonInputAtom*> ButtonAtoms;
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void DoMove(UFGMove* NewMove);
+		void DoMove(UFGMove* NewMove);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void ResetStunMontage();
 
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -248,9 +265,9 @@ protected:
 private:
 	//~ This array relates to InputStream. InputStream must not be updated without this stream being updated as well.
 	UPROPERTY(VisibleInstanceOnly)
-	TArray<float> InputTimeStamps;
+		TArray<float> InputTimeStamps;
 
-	
+
 
 	UFUNCTION()
 		void HandleStun(float deltaSeconds);
@@ -258,9 +275,9 @@ private:
 	void CrouchValues(bool inCrouch);
 
 	UFUNCTION(BlueprintCallable)
-	void DiagonalJump(float direction, FVector position, float time, float Height, float Distance);
+		void DiagonalJump(float direction, FVector position, float time, float Height, float Distance);
 
-	
+
 	//UPROPERTY(VisibleInstanceOnly)
 	//TArray<USM_InputAtom*> RecievedInputStream;
 	long long start;
