@@ -43,7 +43,7 @@ public:
 	virtual void BeginDestroy() override;
 
 	AMyStateMachProGameModeBase();
-	
+	void FrameSyncCheck();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MatchCount")
 		EMatcheTypes MatchCount;
@@ -63,7 +63,7 @@ public:
 	UPROPERTY()
 		UUserWidget* MyMainMenu;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY()
 		AFGDefaultPawn* player1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -72,7 +72,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		FString player2Name;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY()
 		AFGDefaultPawn* player2;
 
 	UPROPERTY()
@@ -92,7 +92,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 		int roundNumber;
-	
+
 	UPROPERTY(EditAnywhere)
 		float prepTime = 3;
 

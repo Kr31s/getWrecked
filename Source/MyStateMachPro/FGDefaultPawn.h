@@ -37,8 +37,6 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* InInputComponent) override;
 
-	void FrameSyncCheck();
-
 	FORCEINLINE float GetTimeInMove() const { return TimeInCurrentMove; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -100,9 +98,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		bool playerWon = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		bool playerLost = false;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int movingForward = 0;
 
@@ -249,9 +244,6 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void DoMove(UFGMove* NewMove);
-
-	UFUNCTION(BlueprintImplementableEvent)
-		void ResetStunMontage();
 
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
