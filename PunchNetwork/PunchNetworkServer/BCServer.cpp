@@ -286,8 +286,9 @@ void BCServer::GameMessage(NetAddress& p_receiveAddress, char* p_receiveArray, u
 	p_intValue1 = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[2])) << 8;
 	p_intValue1 |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[3]));
 
-	if (p_intValue1 == (((BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).m_timeState + 1) * 30) + 60) * 60) {
+	if (p_intValue1 == 0) {
 		BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).m_lastSyncCall = GetTimeInMilli();
+		Println("ZERO");
 	}
 
 	BCServer::sTheServer->m_roomIDList->at(p_receiveArray[1]).GetClient(p_receiveAddress)->m_lastClientFrame = p_intValue1;

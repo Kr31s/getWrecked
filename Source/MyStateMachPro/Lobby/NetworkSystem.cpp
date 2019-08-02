@@ -5,6 +5,7 @@
 
 
 NetworkSystem* NetworkSystem::NetSys = NULL;
+bool NetworkSystem::ticking = true;
 
 bool NetworkSystem::StartingMessageReceiveThread() {
 	MessageReceiveThread = FMessageReceiveThread::InitThread(&socketUDP, m_receiveArray);
@@ -108,9 +109,7 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 	case 13:
 		this->SyncGame(p_receiveArray);
 		break;
-	case 14:
-		this->NextRound();
-		break;
+	
 
 	default:
 		//unknown command
@@ -275,6 +274,9 @@ void NetworkSystem::PauseGame(bool& stop)
 }
 void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 {
+	if (!NetworkSystem::NetSys->ticking) 
+		return;
+
 	unsigned short temp;
 	sendArray[0] = 10;
 	sendArray[1] = myRoomID;
@@ -420,8 +422,4 @@ void NetworkSystem::StartGame()
 {
 	UMyUserWidget::myUserWidget->DeactivateThreadDestroy();
 	UGameplayStatics::OpenLevel(UMyUserWidget::myUserWidget, "/Game/Maps/Temple_v01_marlon", TRAVEL_Absolute);
-}
-void NetworkSystem::NextRound() 
-{
-
 }
