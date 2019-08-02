@@ -12,6 +12,7 @@ public:
 
 	bool m_gamePaused = false;
 
+	unsigned short m_currentRound;
 	unsigned short m_roundState;
 	unsigned short m_timeState;
 

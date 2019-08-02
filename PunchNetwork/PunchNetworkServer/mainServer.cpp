@@ -125,6 +125,9 @@ void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, uns
 	case Messages::PauseGame:
 		BCServer::sTheServer->PauseGame(p_receiveAddress, p_receiveArray);
 		break;
+	case Messages::NextRound:
+		BCServer::sTheServer->NextRound(p_receiveAddress, p_receiveArray);
+		break;
 	default:
 		NonServerMessage();
 		break;
