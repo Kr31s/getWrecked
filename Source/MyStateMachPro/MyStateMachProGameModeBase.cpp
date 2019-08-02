@@ -162,6 +162,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		roundTimer = roundTime;
 		player1->SetDirectionInputX(0.0F);
 		player2->SetDirectionInputX(0.0F);
+		player1->GetMovementComponent()->Velocity = FVector(0, 0, 0);
+		player2->GetMovementComponent()->Velocity = FVector(0, 0, 0);
 	}
 	if (startTimer > 0.0f)
 	{

@@ -698,8 +698,17 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 
 		jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
 
+		if(isCrouching)
+		{
+			GetCapsuleComponent()->SetCapsuleHalfHeight(60.0F);
+			this->GetCapsuleComponent()->SetCapsuleRadius(34.0F, true);
 
-		GetCapsuleComponent()->SetCapsuleHalfHeight(90.0F);
+		}else
+		{
+			GetCapsuleComponent()->SetCapsuleHalfHeight(90.0F);
+			this->GetCapsuleComponent()->SetCapsuleRadius(40.0F, true);
+
+		}
 
 
 		if (this->CanMoveInLeftDirection && directionmodifier <= 0
