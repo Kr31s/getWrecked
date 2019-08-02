@@ -97,7 +97,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	EnablePlayerInput(isInputEnabled);
 
 	if (!isInputEnabled) {
-		if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted 
+		if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted
 			&& UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0) {
 			FrameSyncCheck();
 			NetworkSystem::NetSys->GameMessage(SendInputStream);
@@ -332,52 +332,34 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	//else{	//InputStream = RecievedInputStream(10);}
 
 	// Add one atom for each buttons state.
-	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted
-		&& UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0) {
-	for (int32 i = 0; i < (int32)EFGInputButtons::Count; ++i)
-	{
-		if (ButtonsDown & (1 << i))
+	if (UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0) {
+		for (int32 i = 0; i < (int32)EFGInputButtons::Count; ++i)
 		{
-			if (ButtonsDown_Old & (1 << i))
+			if (ButtonsDown & (1 << i))
 			{
-				InputStream.Add(ButtonAtoms[(int32)EFGButtonState::HeldDown]);
+				if (ButtonsDown_Old & (1 << i))
+				{
+					InputStream.Add(ButtonAtoms[(int32)EFGButtonState::HeldDown]);
+				}
+				else
+				{
+					InputStream.Add(ButtonAtoms[(int32)EFGButtonState::JustPressed]);
+				}
 			}
 			else
 			{
-				InputStream.Add(ButtonAtoms[(int32)EFGButtonState::JustPressed]);
+				InputStream.Add(ButtonAtoms[(int32)EFGButtonState::Up]);
 			}
 		}
-		else
-		{
-			InputStream.Add(ButtonAtoms[(int32)EFGButtonState::Up]);
-		}
-	}
+
+		if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
+
 		FrameSyncCheck();
 		NetworkSystem::NetSys->GameMessage(SendInputStream);
-
-	// Cache old button state so we can distinguish between held and just pressed.
-	ButtonsDown_Old = ButtonsDown;
-
-	// Always add an input time stamp to match the input sequence.
-	float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
-	InputTimeStamps.Add(CurrentTime);
-
-	// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
-	for (int32 i = 0; i < InputStream.Num(); ++i)
-	{
-		if ((InputTimeStamps[i] + InputExpirationTime) >= CurrentTime)
-		{
-			// Remove everything before this, then exit the loop.
-			if (i > 0)
-			{
-				InputTimeStamps.RemoveAt(0, i, false);
-				InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
-			}
-			break;
 		}
+
 	}
-	}
-	else if(NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted){
+	else if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
 		for (int i = 0; i < 249; ++i)
 		{
 			if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
@@ -386,12 +368,30 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			}
 		}
 	}
+		// Cache old button state so we can distinguish between held and just pressed.
+		ButtonsDown_Old = ButtonsDown;
+
+		// Always add an input time stamp to match the input sequence.
+		float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
+		InputTimeStamps.Add(CurrentTime);
+
+		// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
+		for (int32 i = 0; i < InputStream.Num(); ++i)
+		{
+			if ((InputTimeStamps[i] + InputExpirationTime) >= CurrentTime)
+			{
+				// Remove everything before this, then exit the loop.
+				if (i > 0)
+				{
+					InputTimeStamps.RemoveAt(0, i, false);
+					InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
+				}
+				break;
+			}
+		}
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted/* && GetCharacterMovement()->IsMovingOnGround() -- check if everything works as intended*/)
 	{
-
-		UE_LOG(LogTemp, Warning, TEXT("Switching to state %s"), *MoveLinkToFollow.Link->Move->MoveName.ToString());
-
 		if (MoveLinkToFollow.Link->bClearInput || MoveLinkToFollow.Link->Move->bClearInputOnEntry || CurrentMove->bClearInputOnExit)
 		{
 			InputStream.Reset();
@@ -399,29 +399,15 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else if (MoveLinkToFollow.SMR.DataIndex)
 		{
-			//try {
-			GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Orange, TEXT("MOVE"));
-
 			// Consume the input we used to get to this move.
 
 			check((MoveLinkToFollow.SMR.DataIndex % (1 + (int32)EFGInputButtons::Count)) == 0);
 			InputTimeStamps.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex / 5, false);
 			InputStream.RemoveAt(0, MoveLinkToFollow.SMR.DataIndex, false);
-			//}
-			//catch (const std::exception e) {
-			//}
 		}
-
-		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("In A Move U Can Deal Damage"));
 
 		// Set and start the new move.
 		CurrentMove = MoveLinkToFollow.Link->Move;
-		//if (this == UGameplayStatics::GetPlayerCharacter(this, 0))
-		//{
-		//	UE_LOG(LogTemp, Warning, TEXT("CurrentMove: %s"), *CurrentMove->MoveName.ToString());
-		//	UE_LOG(LogTemp, Warning, TEXT("CurrentMove: %s"), *CurrentMove->GetName());
-		//}
-
 		TimeInCurrentMove = 0.0f;
 		DoMove(CurrentMove);
 		this->RessourceComp->IncreasePowerMeter(CurrentMove->PowerMeterRaiseValue / 2);
@@ -727,17 +713,18 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
 
 
-		if(timeInJump > 0.5F && prepareJump)
+		if (timeInJump > 0.5F && prepareJump)
 		{
 			prepareJump = false;
 		}
 
-		if(isCrouching)
+		if (isCrouching)
 		{
 			GetCapsuleComponent()->SetCapsuleHalfHeight(60.0F);
 			this->GetCapsuleComponent()->SetCapsuleRadius(34.0F, true);
 
-		}else
+		}
+		else
 		{
 			GetCapsuleComponent()->SetCapsuleHalfHeight(90.0F);
 			this->GetCapsuleComponent()->SetCapsuleRadius(40.0F, true);
