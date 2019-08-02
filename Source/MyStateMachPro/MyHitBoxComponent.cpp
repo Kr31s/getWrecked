@@ -152,6 +152,8 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 						break;
 					case EBoxType::Block:
 						// FIX COLLIDING WITH SELF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+						blockCollisionCounter++;
 						Enemy->SetCanBlock(true);
 						//Enemy->checkBlock();
 
@@ -191,11 +193,16 @@ void UMyHitBoxComponent::CollisionEndEvent(UPrimitiveComponent* OverlappedCompon
 					switch (Etype)
 					{
 					case EBoxType::Block:
+						blockCollisionCounter--;
+						if (blockCollisionCounter == 0)
+						{
 							Enemy->SetCanBlock(false);
-							
-							//Enemy->checkBlock();
-							GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EndOverlapCollision"));
-							break;
+
+						}
+
+						//Enemy->checkBlock();
+						GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Blue, TEXT("EndOverlapCollision"));
+						break;
 
 
 					case EBoxType::Hit:

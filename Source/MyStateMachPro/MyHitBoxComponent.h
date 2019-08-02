@@ -29,6 +29,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Body")
 		uint8 someValue = 1;
 
+	UPROPERTY()
+		int blockCollisionCounter = 0;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite , Category = "Body")
 		EBoxType Etype;
