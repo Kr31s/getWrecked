@@ -6,11 +6,13 @@ class BCRoom
 public:
 	static unsigned int sTotalRoomID;
 
-	bool m_full = false;
+	bool m_full = false;         
 	unsigned short m_roomID;
+	long long m_lastSyncCall = 0;
 
 	bool m_gamePaused = false;
 
+	unsigned short m_currentRound;
 	unsigned short m_roundState;
 	unsigned short m_timeState;
 

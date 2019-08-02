@@ -48,9 +48,7 @@ void MessageThread()
 
 	while (BCServer::sTheServer->m_serverRunning)
 	{
-		sMutexMessageIDList.lock();
 		BCMessage::CheckResendMessages(messageThreadArray);
-		sMutexMessageIDList.unlock();
 	}
 	Println("MessageThread closed");
 }
@@ -61,18 +59,16 @@ void HeartThread()
 
 	while (BCServer::sTheServer->m_serverRunning)
 	{
-		sMutexClientIDList.lock();
 		for (int i = 0; i < BCClient::sTotalClientID; ++i)
 		{
+			sMutexMessageIDList.lock();
 			if (BCServer::sTheServer->m_clientIDList->find(i) == BCServer::sTheServer->m_clientIDList->end())
 			{
 				continue;
 			}
-
 			BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, SendType::NeedAnswer, heartThreadArray);
-
+			sMutexMessageIDList.unlock();
 		}
-		sMutexClientIDList.unlock();
 
 		Println("Sleep 2sec");
 		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
@@ -141,11 +137,11 @@ void DecodeMessageServer(NetAddress& p_receiveAddress, char* p_receiveArray, uns
 int main()
 {
 	SetConsoleTitle("PunchNetwork");
-	
+
 	BCServer::sTheServer = new BCServer(4023, true);
 
 	std::thread t1(ServerThread);
-	std::thread t2(MessageThread);
+	//std::thread t2(MessageThread);
 	//std::thread t3(HeartThread);
 
 	int i;
@@ -154,7 +150,7 @@ int main()
 	BCServer::sTheServer->m_serverRunning = false;
 
 	t1.join();
-	t2.join();
+	//t2.join();
 	//t3.join();
 
 	return 0;

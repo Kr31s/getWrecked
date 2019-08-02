@@ -44,7 +44,7 @@ public:
 		float stunMeterDecayTimer = 0.0F;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float stunMeterDecayMaxTime = 2.0F;
+		float stunMeterDecayMaxTime = 3.0F;
 
 	UFUNCTION(BlueprintCallable)
 		void ReduceHealth(float damageValue);
@@ -54,6 +54,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void IncreasePowerMeter(float value);
+
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSignature,AActor*, target, float, newHealth);
 	UPROPERTY(BlueprintAssignable)

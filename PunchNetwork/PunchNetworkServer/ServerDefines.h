@@ -18,7 +18,6 @@ class BCClient;
 class BCMessage;
 
 
-static std::mutex sMutexClientIDList;
 static std::mutex sMutexMessageIDList;
 
 
@@ -37,7 +36,7 @@ enum class Messages
 	LeaveRoom = 3,
 	ElementChange = 6,
 	PauseGame = 8,
-	GameMessage = 10
+	GameMessage = 10,
 };
 
 static Messages MessageOfIndex(int i) { return static_cast<Messages>(i); }

@@ -39,6 +39,7 @@ public:
 
 
 	static NetworkSystem* NetSys;
+	static bool ticking;
 	std::mutex sMutexMessageList;
 	std::map<unsigned int, BCMessage> m_messageIDList;
 
@@ -76,7 +77,6 @@ public:
 
 	void TaskMessageReceiveThread(char* receivearray);
 	void TaskResendMessageThread();
-	void GetAnswerMessage(short messageID);
 
 	bool InitNetSystem();
 
