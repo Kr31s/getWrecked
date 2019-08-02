@@ -35,8 +35,8 @@ bool NetworkSystem::InitNetSystem()
 {
 	AMyStateMachProGameModeBase::hasGameStarted = false;
 
-	this->serverAddress = NetAddress(192, 168, 178, 68, 4023);
-	//this->serverAddress = NetAddress(10, 1, 1, 200, 4023);
+	//this->serverAddress = NetAddress(192, 168, 178, 68, 4023);
+	this->serverAddress = NetAddress(10, 1, 1, 200, 4023);
 	BWNet::InitializeSocketLayer();
 
 	if (socketUDP.OpenSocket(0).m_errorCode == 0)
@@ -107,6 +107,9 @@ void NetworkSystem::TaskMessageReceiveThread(char* p_receiveArray)
 		break;
 	case 13:
 		this->SyncGame(p_receiveArray);
+		break;
+	case 14:
+		this->NextRound();
 		break;
 
 	default:
@@ -396,8 +399,6 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 		inputVal = static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[4 + (4 * i)])) << 8;
 		inputVal |= static_cast<unsigned int>(static_cast<unsigned char>(p_receiveArray[5 + (4 * i)]));
 
-		UE_LOG(LogTemp, Warning, TEXT("is sending %d"), (int)timeVal);
-
 		if (timeVal == gameMessagesRivale[0].m_time + 1)
 		{
 			for (; i > -1; --i)
@@ -419,4 +420,8 @@ void NetworkSystem::StartGame()
 {
 	UMyUserWidget::myUserWidget->DeactivateThreadDestroy();
 	UGameplayStatics::OpenLevel(UMyUserWidget::myUserWidget, "/Game/Maps/Temple_v01_marlon", TRAVEL_Absolute);
+}
+void NetworkSystem::NextRound() 
+{
+
 }
