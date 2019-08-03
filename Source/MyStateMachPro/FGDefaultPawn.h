@@ -38,7 +38,6 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* InInputComponent) override;
 
 	void FrameSyncCheck();
-	void FillInputsIntoStream(float deltaTime);
 	FORCEINLINE float GetTimeInMove() const { return TimeInCurrentMove; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -153,7 +152,16 @@ public:
 		UFGMove* IdleMove;
 
 	UPROPERTY(EditAnywhere, Category = "Moves")
-		UFGMove* MoveLeft;
+		UFGMove* MoveFW;
+
+	UPROPERTY(EditAnywhere, Category = "Moves")
+		UFGMove* MoveBW;
+
+	UPROPERTY(EditAnywhere, Category = "Moves")
+		UFGMove* CrouchIdle;
+
+	UPROPERTY(EditAnywhere, Category = "Moves")
+		UFGMove* CrouchDown;
 
 	UPROPERTY(EditAnywhere, Category = "Moves")
 		UFGMove* NeutralJump;

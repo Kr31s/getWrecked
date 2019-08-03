@@ -90,13 +90,18 @@ void AMyCameraActor::Tick(float DeltaSeconds)
 		}
 		if (PlayerOne->bCollisionWithOppenent && PlayerTwo->bCollisionWithOppenent && !PlayerOne->doJump && !PlayerTwo->doJump)
 		{
-			if ((PlayerOne->GetVelocity().X > 340 || PlayerOne->GetVelocity().X < -340) && (PlayerTwo->GetVelocity().X > 340 || PlayerTwo->GetVelocity().X < -340)) {
-				return;
+			//if ((PlayerOne->GetVelocity().X > 340 || PlayerOne->GetVelocity().X < -340) && (PlayerTwo->GetVelocity().X > 340 || PlayerTwo->GetVelocity().X < -340)) {
+			//	return;
+			//}
+			if (PlayerOne->CurrentMove == PlayerOne->MoveFW && PlayerTwo->CurrentMove == PlayerTwo->IdleMove)
+			{
+				//PlayerOne->SetActorLocation(PlayerOne->GetActorLocation() + FVector(FMath::Sign(PlayerTwo->GetVelocity().X) * 2.5F, 0, 0));
+				PlayerTwo->SetActorLocation(PlayerTwo->GetActorLocation() + FVector(FMath::Sign(PlayerOne->GetVelocity().X) * 2.5F, 0, 0));
 			}
-			if (PlayerOne->CurrentMove == PlayerOne->IdleMove && PlayerTwo->CurrentMove == PlayerTwo->IdleMove)
+			if (PlayerTwo->CurrentMove == PlayerTwo->MoveFW && PlayerOne->CurrentMove == PlayerOne->IdleMove)
 			{
 				PlayerOne->SetActorLocation(PlayerOne->GetActorLocation() + FVector(FMath::Sign(PlayerTwo->GetVelocity().X) * 2.5F, 0, 0));
-				PlayerTwo->SetActorLocation(PlayerTwo->GetActorLocation() + FVector(FMath::Sign(PlayerOne->GetVelocity().X) * 2.5F, 0, 0));
+				//PlayerTwo->SetActorLocation(PlayerTwo->GetActorLocation() + FVector(FMath::Sign(PlayerOne->GetVelocity().X) * 2.5F, 0, 0));
 			}
 
 		}
