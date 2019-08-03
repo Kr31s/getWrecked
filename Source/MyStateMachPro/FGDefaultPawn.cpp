@@ -307,14 +307,14 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 				}
 				else
 				{
-					//movingForward = -1;
+					movingForward = -1;
 				}
 				InputDirection = DirectionBackAtom; // Back on Leftside
 			}
 			else
 			{
 				InputDirection = DirectionForwardAtom; // Forward on Rightside
-				//movingForward = 1;
+				movingForward = 1;
 
 			}
 
@@ -334,7 +334,7 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 			//	if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == BW_Jump)
 			//	{
 			//		isCrouching = false;
-			//		movingForward = -1;
+					movingForward = -1;
 			//		doJump = true;
 			//	}
 			}
@@ -345,7 +345,7 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 			//	if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == FW_Jump)
 			//	{
 			//		isCrouching = false;
-			//		movingForward = 1;
+					movingForward = 1;
 			//		doJump = true;
 			//	}
 			}
@@ -356,12 +356,12 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 		if (DirectionInput.Y < -DirectionThreshold)
 		{
 			InputDirection = DirectionDownAtom; // Crouch
-			//isCrouching = true;
+			isCrouching = true;
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
 			InputDirection = DirectionNeutralAtom; // Idle
-			//movingForward = 0;
+			movingForward = 0;
 			//isCrouching = false;
 		}
 		else if (DirectionInput.Y > 0.9F)
@@ -371,7 +371,7 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 			InputDirection = DirectionUpAtom; // Jump
 			//if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == NeutralJump)
 			//{
-			//	movingForward = 0;
+				movingForward = 0;
 			//	doJump = true;
 			//}
 		}
@@ -403,7 +403,7 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 			if (this->isOnLeftSide)
 			{
 				InputDirection = DirectionForwardAtom; // Forward on LeftSide
-				//movingForward = 1;
+				movingForward = 1;
 			}
 			else
 			{
@@ -417,7 +417,7 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 				else
 				{
 					InputDirection = DirectionBackAtom; // Back on RightSide
-					//movingForward = -1;
+					movingForward = -1;
 
 				}
 
@@ -435,22 +435,22 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 			if (this->isOnLeftSide)
 			{
 				//isCrouching = false;
-				//movingForward = 1;
+				movingForward = 1;
 				InputDirection = DirectionUpForwardAtom; // Jump Forward
 				//if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == FW_Jump)
 				//{
-				//	movingForward = 1;
+					movingForward = 1;
 				//	doJump = true;
 				//}
 			}
 			else
 			{
 				//isCrouching = false;
-				//movingForward = -1;
+				movingForward = -1;
 				InputDirection = DirectionUpBackAtom; // Jump Back
 				//if (this->GetMovementComponent()->IsMovingOnGround() && !doJump && CurrentMove == BW_Jump)
 				//{
-				//	movingForward = -1;
+					movingForward = -1;
 				//	doJump = true;
 				//}
 			}
