@@ -40,6 +40,8 @@ public:
 
 	static NetworkSystem* NetSys;
 	static bool ticking;
+	static bool roomFull;
+	static bool startGame;
 	std::mutex sMutexMessageList;
 	std::map<unsigned int, BCMessage> m_messageIDList;
 

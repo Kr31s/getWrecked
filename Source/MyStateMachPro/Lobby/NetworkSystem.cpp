@@ -6,6 +6,8 @@
 
 NetworkSystem* NetworkSystem::NetSys = NULL;
 bool NetworkSystem::ticking = true;
+bool NetworkSystem::startGame = false;
+bool NetworkSystem::roomFull = false;
 
 bool NetworkSystem::StartingMessageReceiveThread() {
 	MessageReceiveThread = FMessageReceiveThread::InitThread(&socketUDP, m_receiveArray);
@@ -35,7 +37,7 @@ void NetworkSystem::setGameMode(AMyStateMachProGameModeBase* p_gameMode)
 bool NetworkSystem::InitNetSystem()
 {
 	AMyStateMachProGameModeBase::hasGameStarted = false;
-	this->serverAddress = NetAddress(93, 203, 68, 141, 4023);
+	this->serverAddress = NetAddress(93, 201, 67, 79, 4023);
 	//this->serverAddress = NetAddress(10, 1, 1, 200, 4023);
 	BWNet::InitializeSocketLayer();
 
@@ -304,10 +306,6 @@ void NetworkSystem::GameMessage(std::bitset<12> & inputStream)
 
 void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
 {
-	if (UMyUserWidget::myUserWidget == nullptr) {
-		return;
-	}
-
 	UE_LOG(LogTemp, Warning, TEXT("START"));
 
 	for (int i = 0; (i < 46); ++i)
@@ -323,7 +321,7 @@ void NetworkSystem::RoomRequestAnswer(char* p_receiveArray)
 		AMyStateMachProGameModeBase::m_playerName = FString(UTF8_TO_TCHAR(m_opponentName));
 		myRoomID = p_receiveArray[3];
 		clientID = p_receiveArray[4];
-
+		NetworkSystem::roomFull = true;
 		roomOwner = false;
 	}
 	else
@@ -340,8 +338,7 @@ void NetworkSystem::RoomJoin(char* p_receiveArray)
 		m_opponentName[i] = p_receiveArray[i + 2];
 	}
 	AMyStateMachProGameModeBase::m_opponentName = FString(UTF8_TO_TCHAR(m_opponentName));
-
-	UMyUserWidget::myUserWidget->RivalJoinMessage(FString(UTF8_TO_TCHAR(m_opponentName)));
+	NetworkSystem::roomFull = true;
 	UE_LOG(LogTemp, Warning, TEXT("RivalJoinMessage"));
 }
 void NetworkSystem::CreateRoomAnswer(char* p_receiveArray)
@@ -356,10 +353,7 @@ void NetworkSystem::CreateRoomAnswer(char* p_receiveArray)
 	{
 		//failed room creation
 	}
-	if (UMyUserWidget::myUserWidget != NULL)
-	{
 		UMyUserWidget::myUserWidget->CreateRoomMessage((bool)status);
-	}
 }
 void NetworkSystem::LeaveRoomAnswer(char* p_receiveArray)
 {
@@ -386,6 +380,9 @@ void NetworkSystem::SyncGame(char* p_receiveArray)
 }
 void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 {
+	if (!NetworkSystem::startGame) {
+		NetworkSystem::startGame = true;
+	}
 	if (NetworkSystem::NetSys->gameMessagesRivale.size() == 0) {
 		NetworkSystem::NetSys->gameMessagesRivale.resize(249, GameMessageData());
 	}

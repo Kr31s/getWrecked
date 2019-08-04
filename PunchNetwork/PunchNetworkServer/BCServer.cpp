@@ -150,11 +150,6 @@ void BCServer::RoomRequest(NetAddress& p_receiveAddress, char* p_receiveArray, u
 			CharArrayAddChar(p_receiveArray, 5, BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_nickname, 0, 20);
 			SendData(p_receiveArray[4], SendType::Answer, p_receiveArray);
 
-			//update member of the lobby status from the owner
-			p_receiveArray[0] = 7;
-			p_receiveArray[4] = BCServer::sTheServer->m_roomList[p_rounds * 3 + p_gameTime].at(roomCounter)->m_Owner->m_ready;
-			SendData(p_receiveArray[4], SendType::NeedAnswer, p_receiveArray);
-
 
 			//write message to inform the owner of the room
 			p_receiveArray[0] = 1;

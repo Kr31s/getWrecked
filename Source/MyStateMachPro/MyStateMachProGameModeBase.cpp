@@ -97,31 +97,32 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	player1Score = 0;
 	player2Score = 0;
 	roundNumber = 1;
-	if (NetworkSystem::NetSys != nullptr)
+	if (!NetworkSystem::NetSys)
 	{
-		//sending first message to opponent
-		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
-	}
-	else {
 		AMyStateMachProGameModeBase::hasGameStarted = true;
 		OnGameStarted.Broadcast(hasGameStarted);
 	}
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
-	if (NetworkSystem::NetSys != nullptr && NetworkSystem::NetSys->gameMessagesRivale.size() > 0)
+	if (!NetworkSystem::startGame && NetworkSystem::NetSys)
 	{
-		if (!AMyStateMachProGameModeBase::hasGameStarted) {
-			AMyStateMachProGameModeBase::hasGameStarted = true;
-			OnGameStarted.Broadcast(hasGameStarted);
+		if (NetworkSystem::roomFull)
+		{
+			NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
+			NetworkSystem::roomFull = false;
 		}
-
+		else {
+			return;
+		}
 	}
 
-	if (!hasGameStarted)
+	if (!AMyStateMachProGameModeBase::hasGameStarted && NetworkSystem::startGame && NetworkSystem::NetSys != nullptr)
 	{
-		return;
+		AMyStateMachProGameModeBase::hasGameStarted = true;
+		OnGameStarted.Broadcast(hasGameStarted);
 	}
+
 	if (startTimer == 3.0f) {
 
 		DisableInput(Cast<APlayerController>(player1));
@@ -218,7 +219,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				player1->CustomTimeDilation = 1.0F;
 				player2->CustomTimeDilation = 1.0F;
 				player2->playerWon = true;
-				
+
 			}
 			return;
 		}
@@ -491,7 +492,7 @@ void AMyStateMachProGameModeBase::CheckIfMatchIsOver(int playerScore)
 
 void AMyStateMachProGameModeBase::SetRoundTimer(float deltaSeconds)
 {
-	if (!NetworkSystem::NetSys->ticking) 
+	if (!NetworkSystem::NetSys->ticking)
 	{
 		NetworkSystem::NetSys->ticking = true;
 	}
