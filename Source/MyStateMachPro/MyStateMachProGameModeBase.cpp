@@ -221,7 +221,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				player2->playerWon = true;
 
 			}
-			if(transitionMaxDuration - transitiontime < 0.9F && playFadeoutFlag)
+			if(transitionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && player2Score < (uint8)MatchCount)
 			{
 				OnFadeOut.Broadcast(playFadeoutFlag);
 				playFadeoutFlag = false;
@@ -289,7 +289,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				player1->playerWon = true;
 
 			}
-			if (transitionMaxDuration - transitiontime < 0.9F && playFadeoutFlag)
+			if (transitionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && player1Score < (uint8)MatchCount)
 			{
 				OnFadeOut.Broadcast(playFadeoutFlag);
 				playFadeoutFlag = false;
@@ -548,7 +548,7 @@ void AMyStateMachProGameModeBase::RoundTimeOver(float DeltaSeconds)
 				player1->playerWon = true;
 
 			}
-			if (slowmotionMaxDuration - transitiontime < 0.9F && playFadeoutFlag)
+			if (slowmotionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && player1Score < (uint8)MatchCount)
 			{
 				OnFadeOut.Broadcast(playFadeoutFlag);
 				playFadeoutFlag = false;
@@ -603,7 +603,7 @@ void AMyStateMachProGameModeBase::RoundTimeOver(float DeltaSeconds)
 				player2->playerWon = true;
 
 			}
-			if (slowmotionMaxDuration - transitiontime < 0.9F && playFadeoutFlag)
+			if (slowmotionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && player2Score < (uint8)MatchCount)
 			{
 				OnFadeOut.Broadcast(playFadeoutFlag);
 				playFadeoutFlag = false;
