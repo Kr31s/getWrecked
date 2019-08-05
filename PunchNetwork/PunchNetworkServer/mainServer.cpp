@@ -142,7 +142,7 @@ int main()
 
 	std::thread t1(ServerThread);
 	std::thread t2(MessageThread);
-	//std::thread t3(HeartThread);
+	std::thread t3(HeartThread);
 
 	int i;
 	std::cin >> i;
@@ -151,7 +151,7 @@ int main()
 
 	t1.join();
 	t2.join();
-	//t3.join();
+	t3.join();
 
 	return 0;
 }

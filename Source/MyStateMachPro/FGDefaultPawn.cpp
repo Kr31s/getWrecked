@@ -123,19 +123,12 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			{
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
 
-					DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
-					InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter - 9);
-					FillInputsIntoStream(DeltaSeconds);
-					/*for (int ii = 9; ii > -1; --ii)
+					for (int ii = 11; ii > -1; --ii)
 					{
-						if (i + ii > 249) {
-							continue;
-						}
-
 						DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_input));
+						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_time);
 						FillInputsIntoStream(DeltaSeconds);
-						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_time - InputExpirationTime);
-					}*/
+					}
 					break;
 				}
 			}
@@ -164,7 +157,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			break;
 		}
 	}
-
 
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted/* && GetCharacterMovement()->IsMovingOnGround() -- check if everything works as intended*/)
