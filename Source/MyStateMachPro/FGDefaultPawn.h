@@ -228,7 +228,7 @@ protected:
 
 	// Input atoms are removed when they pass this age threshold. All moves must be executed in under this time.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float InputExpirationTime;
+		int InputExpirationTime = 9;
 
 	UPROPERTY(EditAnywhere, Category = "Input Atoms")
 		UFGDirectionalInputAtom* DirectionDownBackAtom;
@@ -283,7 +283,7 @@ protected:
 private:
 	//~ This array relates to InputStream. InputStream must not be updated without this stream being updated as well.
 	UPROPERTY(VisibleInstanceOnly)
-		TArray<float> InputTimeStamps;
+		TArray<int> InputTimeStamps;
 
 
 

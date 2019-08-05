@@ -84,6 +84,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	GetCharacterMovement()->Velocity = FVector(GetVelocity().X, 0.0F, -700.0F);
 	this->SetRotationOfPlayer();
 
+
 	if (isStunned)
 	{
 		HandleStun(DeltaSeconds); // player got stunned
@@ -105,20 +106,30 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		return;
 	}
 
+	if (!NetworkSystem::NetSys) {
+		InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
+	}
 	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
 		if (UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0)
 		{
-			FillInputsIntoStream(DeltaSeconds);
 			FrameSyncCheck();
 			NetworkSystem::NetSys->GameMessage(SendInputStream);
+			InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
 		}
 		else {
 			for (int i = 0; i < 249; ++i)
 			{
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
-					DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
-					FillInputsIntoStream(DeltaSeconds);
-					InputExpirationTime = 0;
+
+					for (int ii = 10; ii > -1; --ii) 
+					{
+						if (i + ii > 249) {
+							continue;
+						}
+
+						DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_input));
+						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_time - InputExpirationTime);
+					}
 					break;
 				}
 			}
@@ -126,20 +137,18 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	}
 	else
 	{
-		FillInputsIntoStream(DeltaSeconds);
 	}
-
+	FillInputsIntoStream(DeltaSeconds);
 	// Cache old button state so we can distinguish between held and just pressed.
 	ButtonsDown_Old = ButtonsDown;
 
 	// Always add an input time stamp to match the input sequence.
-	float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
-	InputTimeStamps.Add(CurrentTime);
+	//float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
 
 	// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
 	for (int32 i = 0; i < InputStream.Num(); ++i)
 	{
-		if ((InputTimeStamps[i] + InputExpirationTime) >= CurrentTime)
+		if ((InputTimeStamps[i] + InputExpirationTime) >= AMyStateMachProGameModeBase::sFrameCounter)
 		{
 			// Remove everything before this, then exit the loop.
 			if (i > 0)
