@@ -136,7 +136,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 					break;
 				}
 			}
-			RemoveOldInputs(9);
+			RemoveOldInputs(0);
 		}
 	}
 	else
