@@ -7,7 +7,8 @@
 NetworkSystem* NetworkSystem::NetSys = NULL;
 bool NetworkSystem::ticking = true;
 bool NetworkSystem::startGame = false;
-bool NetworkSystem::roomFull = false;
+bool NetworkSystem::firstMessage = false;
+bool NetworkSystem::roomFull = true;
 
 bool NetworkSystem::StartingMessageReceiveThread() {
 	MessageReceiveThread = FMessageReceiveThread::InitThread(&socketUDP, m_receiveArray);
@@ -36,9 +37,10 @@ void NetworkSystem::setGameMode(AMyStateMachProGameModeBase* p_gameMode)
 
 bool NetworkSystem::InitNetSystem()
 {
+	NetworkSystem::roomFull = false;
 	AMyStateMachProGameModeBase::hasGameStarted = false;
-	this->serverAddress = NetAddress(93, 201, 66, 22, 4023);
-	//this->serverAddress = NetAddress(10, 1, 1, 200, 4023);
+	//this->serverAddress = NetAddress(93, 201, 66, 22, 4023);
+	this->serverAddress = NetAddress(10, 1, 1, 200, 4023);
 	BWNet::InitializeSocketLayer();
 
 	if (socketUDP.OpenSocket(0).m_errorCode == 0)
@@ -338,6 +340,9 @@ void NetworkSystem::RoomJoin(char* p_receiveArray)
 		m_opponentName[i] = p_receiveArray[i + 2];
 	}
 	AMyStateMachProGameModeBase::m_opponentName = FString(UTF8_TO_TCHAR(m_opponentName));
+	if (UMyUserWidget::myUserWidget) {
+	UMyUserWidget::myUserWidget->RivalJoinMessage(FString(UTF8_TO_TCHAR(m_opponentName)));
+	}
 	NetworkSystem::roomFull = true;
 	UE_LOG(LogTemp, Warning, TEXT("RivalJoinMessage"));
 }
@@ -364,7 +369,9 @@ void NetworkSystem::LeaveRoomAnswer(char* p_receiveArray)
 }
 void NetworkSystem::OpponentLeftRoom(char* p_receiveArray)
 {
-	UMyUserWidget::myUserWidget->RivalLeaveMessage();
+	if (UMyUserWidget::myUserWidget) {
+		UMyUserWidget::myUserWidget->RivalLeaveMessage();
+	}
 }
 void NetworkSystem::ElementUpdate(char* p_receiveArray)
 {

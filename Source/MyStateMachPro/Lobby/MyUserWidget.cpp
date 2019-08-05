@@ -23,6 +23,10 @@ void UMyUserWidget::BeginDestroy()
 	UMyUserWidget::myUserWidget = nullptr;
 }
 
+void UMyUserWidget::SetSingelton() {
+	UMyUserWidget::myUserWidget = this;
+}
+
 void UMyUserWidget::CreateRoom(int p_timeValue, int p_roundValue, const FString& p_Name)
 {
 	AMyStateMachProGameModeBase::m_playerName = p_Name;
@@ -57,6 +61,11 @@ bool UMyUserWidget::CreateClient()
 	UE_LOG(LogTemp, Warning, TEXT("CreateClient"));
 
 	return NetworkSystem::NetSys->InitNetSystem();
+}
+
+bool UMyUserWidget::GetRoomFullStatus() 
+{
+	return NetworkSystem::roomFull;
 }
 
 void UMyUserWidget::ElementUpdateLobby(int slot1Pos, int slot2Pos, bool ready)

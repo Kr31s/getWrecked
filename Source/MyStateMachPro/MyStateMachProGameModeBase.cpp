@@ -107,10 +107,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
 	if (!NetworkSystem::startGame && NetworkSystem::NetSys)
 	{
-		if (NetworkSystem::roomFull)
+		if (!NetworkSystem::firstMessage && NetworkSystem::roomFull )
 		{
 			NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
-			NetworkSystem::roomFull = false;
+			NetworkSystem::firstMessage = false;
 		}
 		else {
 			return;

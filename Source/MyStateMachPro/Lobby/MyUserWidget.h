@@ -29,6 +29,11 @@ public:
 	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
+		void SetSingelton();
+
+	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
+		bool GetRoomFullStatus();
+	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
 		void CreateRoom(int timeValue, int roundValue, const FString& name);
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
 		void JoinRoom(int timeValue, int roundValue, const FString& name);

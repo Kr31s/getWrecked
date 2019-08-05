@@ -10,6 +10,7 @@ struct FColliderInfo
 	GENERATED_BODY()
 
 public:
+
 	FColliderInfo() = default;
 
 	FColliderInfo(FVector BoxExtent, FVector RelativeLocation, FRotator RelativRotation, EBoxType BoxType) :
