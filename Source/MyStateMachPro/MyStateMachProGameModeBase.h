@@ -85,6 +85,9 @@ public:
 		bool scoreFlag;
 
 	UPROPERTY()
+		bool playFadeoutFlag = true;
+
+	UPROPERTY()
 		bool isMatchOver;
 
 	UPROPERTY()
@@ -165,6 +168,10 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameStartedSignature, bool, hasGameStarted);
 	UPROPERTY(BlueprintAssignable)
 		FOnGameStartedSignature OnGameStarted;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFadeOutSignature, bool, playFadeOut);
+	UPROPERTY(BlueprintAssignable)
+		FOnFadeOutSignature OnFadeOut;
 
 	UFUNCTION()
 	void SetRoundTimer(float deltaSeconds);

@@ -221,6 +221,11 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				player2->playerWon = true;
 
 			}
+			if(transitionMaxDuration - transitiontime < 0.9F && playFadeoutFlag)
+			{
+				OnFadeOut.Broadcast(playFadeoutFlag);
+				playFadeoutFlag = false;
+			}
 			return;
 		}
 
@@ -284,6 +289,11 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				player1->playerWon = true;
 
 			}
+			if (transitionMaxDuration - transitiontime < 0.9F && playFadeoutFlag)
+			{
+				OnFadeOut.Broadcast(playFadeoutFlag);
+				playFadeoutFlag = false;
+			}
 			return;
 		}
 		CheckIfMatchIsOver(player1Score);
@@ -326,6 +336,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 void AMyStateMachProGameModeBase::SetupMatch()
 {
 	scoreFlag = false;
+	playFadeoutFlag = true;
 	startTimer = prepTime;
 	roundTimer = roundTime;
 	player1->CustomTimeDilation = 1.0F;
@@ -537,6 +548,11 @@ void AMyStateMachProGameModeBase::RoundTimeOver(float DeltaSeconds)
 				player1->playerWon = true;
 
 			}
+			if (slowmotionMaxDuration - transitiontime < 0.9F && playFadeoutFlag)
+			{
+				OnFadeOut.Broadcast(playFadeoutFlag);
+				playFadeoutFlag = false;
+			}
 			return;
 		}
 		CheckIfMatchIsOver(player1Score);
@@ -586,6 +602,11 @@ void AMyStateMachProGameModeBase::RoundTimeOver(float DeltaSeconds)
 				player2->CustomTimeDilation = 1.0F;
 				player2->playerWon = true;
 
+			}
+			if (slowmotionMaxDuration - transitiontime < 0.9F && playFadeoutFlag)
+			{
+				OnFadeOut.Broadcast(playFadeoutFlag);
+				playFadeoutFlag = false;
 			}
 			return;
 		}
