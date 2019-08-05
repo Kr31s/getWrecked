@@ -38,6 +38,8 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* InInputComponent) override;
 
 	void FrameSyncCheck();
+	void RemoveOldInputs(int minusFrameCounter);
+
 	FORCEINLINE float GetTimeInMove() const { return TimeInCurrentMove; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

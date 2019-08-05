@@ -109,6 +109,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	if (!NetworkSystem::NetSys) {
 		InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
 		FillInputsIntoStream(DeltaSeconds);
+		RemoveOldInputs(0);
+
 	}
 	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
 		if (UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0)
@@ -117,6 +119,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			NetworkSystem::NetSys->GameMessage(SendInputStream);
 			InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
 			FillInputsIntoStream(DeltaSeconds);
+			RemoveOldInputs(0);
+
 		}
 		else {
 			for (int i = 0; i < 249; ++i)
@@ -132,6 +136,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 					break;
 				}
 			}
+			RemoveOldInputs(9);
 		}
 	}
 	else
@@ -144,19 +149,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	//float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
 
 	// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
-	for (int32 i = 0; i < InputStream.Num(); ++i)
-	{
-		if ((InputTimeStamps[i] + InputExpirationTime) >= AMyStateMachProGameModeBase::sFrameCounter)
-		{
-			// Remove everything before this, then exit the loop.
-			if (i > 0)
-			{
-				InputTimeStamps.RemoveAt(0, i, false);
-				InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
-			}
-			break;
-		}
-	}
+	
 
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted/* && GetCharacterMovement()->IsMovingOnGround() -- check if everything works as intended*/)
@@ -262,6 +255,22 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	else
 	{
 		TimeInCurrentMove += DeltaSeconds;		// Modulate by move animation length
+	}
+}
+
+void AFGDefaultPawn::RemoveOldInputs(int minusFrameCounter) {
+	for (int32 i = 0; i < InputStream.Num(); ++i)
+	{
+		if ((InputTimeStamps[i] + InputExpirationTime) >= AMyStateMachProGameModeBase::sFrameCounter - minusFrameCounter)
+		{
+			// Remove everything before this, then exit the loop.
+			if (i > 0)
+			{
+				InputTimeStamps.RemoveAt(0, i, false);
+				InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
+			}
+			break;
+		}
 	}
 }
 
