@@ -6,7 +6,7 @@
 #include "Public/MyCameraActor.h"
 #include "Kismet/GameplayStatics.h"
 
-unsigned int AMyStateMachProGameModeBase::sFrameCounter = 1;
+int AMyStateMachProGameModeBase::sFrameCounter = 1;
 
 int AMyStateMachProGameModeBase::m_roundVal = 1;
 int AMyStateMachProGameModeBase::m_timeVal = 1;
