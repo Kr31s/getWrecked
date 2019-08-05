@@ -75,7 +75,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		AFGDefaultPawn* player2;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 		float roundTimer;
 
 	UPROPERTY()
@@ -176,5 +176,5 @@ public:
 		void ResetLoosingMontage();
 
 	UFUNCTION()
-		void RoundTimeOver();
+		void RoundTimeOver(float DeltaSeconds);
 };

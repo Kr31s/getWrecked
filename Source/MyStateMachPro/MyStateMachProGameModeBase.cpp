@@ -236,7 +236,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			player2->CustomTimeDilation = 1.0F;
 			while (roundTransitionMaxDuration < transitionMaxDuration) {
 				roundTransitionMaxDuration += DeltaSeconds;
-				GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(roundTransitionMaxDuration));
+				//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(roundTransitionMaxDuration));
 				return;
 			}
 			DetermineMatchWinner();
@@ -298,7 +298,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			player2->CustomTimeDilation = 1.0F;
 			while (roundTransitionMaxDuration < transitionMaxDuration) {
 				roundTransitionMaxDuration += DeltaSeconds;
-				GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(roundTransitionMaxDuration));
+				//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(roundTransitionMaxDuration));
 				return;
 			}
 			DetermineMatchWinner();
@@ -314,7 +314,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		AMyStateMachProGameModeBase::sFrameCounter = 0;
 		AMyStateMachProGameModeBase::m_framesToSync = 0;
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
-		RoundTimeOver();
+		RoundTimeOver(DeltaSeconds);
 		player1->isInputEnabled = false;
 		player2->isInputEnabled = false;
 		return;
@@ -501,28 +501,129 @@ void AMyStateMachProGameModeBase::SetRoundTimer(float deltaSeconds)
 	OnTimeChanged.Broadcast(this->roundTimer);
 }
 
-void AMyStateMachProGameModeBase::RoundTimeOver()
+void AMyStateMachProGameModeBase::RoundTimeOver(float DeltaSeconds)
 {
 	if (player1->RessourceComp->Health > player2->RessourceComp->Health)
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
-		player1Score++;
+		//player1Score++;
+		//OnP1ScoreChanged.Broadcast(player1Score);
+
+		if (!scoreFlag)
+		{
+			player1Score++;
+			//player2->playerLost = true;
+
+			scoreFlag = true;
+		}
 		OnP1ScoreChanged.Broadcast(player1Score);
+		player1->isInputEnabled = false;
+		player2->isInputEnabled = false;
+		player1->movingForward = 0;
+		player2->movingForward = 0;
+		player1->isCrouching = false;
+		player2->isCrouching = false;
+
+		while (transitiontime < slowmotionMaxDuration) {
+			transitiontime += DeltaSeconds;
+			if (transitiontime < 1.0F)
+			{
+			}
+			else
+			{
+				player1->CustomTimeDilation = 1.0F;
+				player2->CustomTimeDilation = 1.0F;
+				player1->playerWon = true;
+
+			}
+			return;
+		}
+		CheckIfMatchIsOver(player1Score);
+		if (!isMatchOver)
+		{
+			SetupMatch();
+			transitiontime = 0;
+		}
+		else
+		{
+			player1->CustomTimeDilation = 1.0F;
+			player2->CustomTimeDilation = 1.0F;
+			while (roundTransitionMaxDuration < transitionMaxDuration) {
+				roundTransitionMaxDuration += DeltaSeconds;
+				//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(roundTransitionMaxDuration));
+				return;
+			}
+			DetermineMatchWinner();
+		}
 	}
 	else if (player1->RessourceComp->Health < player2->RessourceComp->Health)
 	{
-		//player2->K2_DestroyActor();
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player2Wins"));
-		//UGameplayStatics::SetGamePaused(this, true);
-		player2Score++;
+
+		if (!scoreFlag)
+		{
+			player2Score++;
+			//player1->playerLost = true;
+			scoreFlag = true;
+		}
 		OnP2ScoreChanged.Broadcast(player2Score);
+		player1->isInputEnabled = false;
+		player2->isInputEnabled = false;
+
+		player1->movingForward = 0;
+		player2->movingForward = 0;
+		player1->isCrouching = false;
+		player2->isCrouching = false;
+		while (transitiontime < slowmotionMaxDuration) {
+			transitiontime += DeltaSeconds;
+			//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, TEXT("WHILE-TRANSITION"));
+			if (transitiontime < 1.0F)
+			{
+			}
+			else
+			{
+				player1->CustomTimeDilation = 1.0F;
+				player2->CustomTimeDilation = 1.0F;
+				player2->playerWon = true;
+
+			}
+			return;
+		}
+
+		CheckIfMatchIsOver(player2Score);
+		if (!isMatchOver)
+		{
+			SetupMatch();
+			transitiontime = 0;
+		}
+		else
+		{
+			player1->CustomTimeDilation = 1.0F;
+			player2->CustomTimeDilation = 1.0F;
+			while (roundTransitionMaxDuration < transitionMaxDuration) {
+				roundTransitionMaxDuration += DeltaSeconds;
+				//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(roundTransitionMaxDuration));
+				return;
+			}
+			DetermineMatchWinner();
+		}
 	}
 	else if (player1->RessourceComp->Health == player2->RessourceComp->Health) {
 		//draw
+		player1->isInputEnabled = false;
+		player2->isInputEnabled = false;
+
+		player1->movingForward = 0;
+		player2->movingForward = 0;
+		player1->isCrouching = false;
+		player2->isCrouching = false;
+		while (transitiontime < slowmotionMaxDuration) {
+			transitiontime += DeltaSeconds;
+			//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, TEXT("WHILE-TRANSITION"));
+
+			return;
+		}
+		SetupMatch();
 	}
-	player1->isInputEnabled = false;
-	player2->isInputEnabled = false;
-	SetupMatch();
-	DetermineMatchWinner();
+
 }
