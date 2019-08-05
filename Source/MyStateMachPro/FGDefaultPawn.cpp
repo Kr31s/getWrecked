@@ -211,7 +211,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		else if (CurrentMove == NeutralJump)
 		{
-			isCrouching = false;
+			//isCrouching = false;
 			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump)
 			{
 				movingForward = 0;
@@ -224,7 +224,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			movingForward = 1;
 			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump)
 			{
-				isCrouching = false;
+				//isCrouching = false;
 				movingForward = 1;
 				doJump = true;
 			}
@@ -234,7 +234,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			movingForward = -1;
 			if (this->GetMovementComponent()->IsMovingOnGround() && !doJump)
 			{
-				isCrouching = false;
+				//isCrouching = false;
 				movingForward = -1;
 				doJump = true;
 			}
@@ -246,7 +246,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		else if (CurrentMove == IdleMove)
 		{
 			movingForward = 0;
-			isCrouching = false;
+			//isCrouching = false;
 		}
 
 		TimeInCurrentMove = 0.0f;
@@ -366,7 +366,7 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 		{
 			InputDirection = DirectionNeutralAtom; // Idle
 			//movingForward = 0;
-			//isCrouching = false;
+			isCrouching = false;
 		}
 		else if (DirectionInput.Y > 0.9F)
 		{
