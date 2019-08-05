@@ -124,7 +124,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
 
 					DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
-					InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
+					InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter - 9);
 					FillInputsIntoStream(DeltaSeconds);
 					/*for (int ii = 9; ii > -1; --ii)
 					{
