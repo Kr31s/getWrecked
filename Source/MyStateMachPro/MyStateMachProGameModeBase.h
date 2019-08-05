@@ -99,6 +99,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		float prepTime = 3;
 
+	UPROPERTY(EditAnywhere)
+		float FadeoutStartTime = 1.0F;
+
 	UFUNCTION()
 		void SetupMatch();
 
