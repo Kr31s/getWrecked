@@ -360,7 +360,7 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 		if (DirectionInput.Y < -DirectionThreshold)
 		{
 			InputDirection = DirectionDownAtom; // Crouch
-			isCrouching = true;
+			//isCrouching = true;
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
 		{
