@@ -307,7 +307,7 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 			{
 				InputDirection = DirectionDownForwardAtom;; // Crouch + Forward is On RightSide
 			}
-			isCrouching = true;
+			//isCrouching = true;
 
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
@@ -396,11 +396,11 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 			if (this->isOnLeftSide)
 			{
 				InputDirection = DirectionDownForwardAtom; // Crouch + Forward on LeftSide
-				isCrouching = true;
+				//isCrouching = true;
 			}
 			else
 			{
-				isCrouching = true;
+				//isCrouching = true;
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
