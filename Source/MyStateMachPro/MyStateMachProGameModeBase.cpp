@@ -105,6 +105,11 @@ void AMyStateMachProGameModeBase::StartPlay() {
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
+
+	if (!NetworkSystem::NetSys) {
+		++AMyStateMachProGameModeBase::sFrameCounter;
+	}
+
 	if (!NetworkSystem::startGame && NetworkSystem::NetSys)
 	{
 		if (!NetworkSystem::firstMessage && NetworkSystem::roomFull )

@@ -84,9 +84,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	GetCharacterMovement()->Velocity = FVector(GetVelocity().X, 0.0F, -700.0F);
 	this->SetRotationOfPlayer();
 
-	if (!NetworkSystem::NetSys && UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0) {
-		++AMyStateMachProGameModeBase::sFrameCounter;
-	}
 
 	if (isStunned)
 	{
@@ -109,6 +106,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		return;
 	}
 
+	if (!NetworkSystem::NetSys) {
+		InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
+	}
 	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
 		if (UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0)
 		{
@@ -138,7 +138,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	else
 	{
 	}
-
 	FillInputsIntoStream(DeltaSeconds);
 	// Cache old button state so we can distinguish between held and just pressed.
 	ButtonsDown_Old = ButtonsDown;
