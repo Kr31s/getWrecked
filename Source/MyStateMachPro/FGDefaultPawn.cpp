@@ -149,7 +149,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
 	for (int32 i = 0; i < InputStream.Num(); ++i)
 	{
-		if ((InputTimeStamps[i] + InputExpirationTime) >= (int)AMyStateMachProGameModeBase::sFrameCounter)
+		if ((InputTimeStamps[i] + InputExpirationTime) >= AMyStateMachProGameModeBase::sFrameCounter)
 		{
 			// Remove everything before this, then exit the loop.
 			if (i > 0)
