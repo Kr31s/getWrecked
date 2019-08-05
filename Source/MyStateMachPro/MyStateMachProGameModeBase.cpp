@@ -219,9 +219,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				player1->CustomTimeDilation = 1.0F;
 				player2->CustomTimeDilation = 1.0F;
 				player2->playerWon = true;
+				CheckIfMatchIsOver(player2Score);
 
 			}
-			if(transitionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && player2Score < (uint8)MatchCount)
+			if(transitionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && !isMatchOver)
 			{
 				OnFadeOut.Broadcast(playFadeoutFlag);
 				playFadeoutFlag = false;
@@ -229,7 +230,6 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			return;
 		}
 
-		CheckIfMatchIsOver(player2Score);
 		if (!isMatchOver)
 		{
 			SetupMatch();
@@ -237,6 +237,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		}
 		else
 		{
+			OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
+
 			player1->CustomTimeDilation = 1.0F;
 			player2->CustomTimeDilation = 1.0F;
 			while (roundTransitionMaxDuration < transitionMaxDuration) {
@@ -287,16 +289,17 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				player1->CustomTimeDilation = 1.0F;
 				player2->CustomTimeDilation = 1.0F;
 				player1->playerWon = true;
+				CheckIfMatchIsOver(player1Score);
 
 			}
-			if (transitionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && player1Score < (uint8)MatchCount)
+			if (transitionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && !isMatchOver)
 			{
 				OnFadeOut.Broadcast(playFadeoutFlag);
 				playFadeoutFlag = false;
 			}
 			return;
 		}
-		CheckIfMatchIsOver(player1Score);
+
 		if (!isMatchOver)
 		{
 			SetupMatch();
@@ -304,6 +307,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		}
 		else
 		{
+			OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
 			player1->CustomTimeDilation = 1.0F;
 			player2->CustomTimeDilation = 1.0F;
 			while (roundTransitionMaxDuration < transitionMaxDuration) {
@@ -452,21 +456,21 @@ void AMyStateMachProGameModeBase::CheckIfMatchIsOver(int playerScore)
 			isMatchOver = playerScore > 0 ? true : false;
 			if (isMatchOver)
 			{
-				OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
+				//OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
 			}
 			break;
 		case EMatcheTypes::BestofThree:
 			isMatchOver = playerScore > 1 ? true : false;
 			if (isMatchOver)
 			{
-				OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
+				//OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
 			}
 			break;
 		case EMatcheTypes::BestofFive:
 			isMatchOver = playerScore > 2 ? true : false;
 			if (isMatchOver)
 			{
-				OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
+				//OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
 			}
 			break;
 		}
@@ -479,21 +483,21 @@ void AMyStateMachProGameModeBase::CheckIfMatchIsOver(int playerScore)
 			isMatchOver = playerScore > 0 ? true : false;
 			if (isMatchOver)
 			{
-				OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
+				//OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
 			}
 			break;
 		case EMatcheTypes::BestofThree:
 			isMatchOver = playerScore > 1 ? true : false;
 			if (isMatchOver)
 			{
-				OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
+				//OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
 			}
 			break;
 		case EMatcheTypes::BestofFive:
 			isMatchOver = playerScore > 2 ? true : false;
 			if (isMatchOver)
 			{
-				OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
+				//OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
 			}
 			break;
 		}
@@ -546,16 +550,16 @@ void AMyStateMachProGameModeBase::RoundTimeOver(float DeltaSeconds)
 				player1->CustomTimeDilation = 1.0F;
 				player2->CustomTimeDilation = 1.0F;
 				player1->playerWon = true;
+				CheckIfMatchIsOver(player1Score);
 
 			}
-			if (slowmotionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && player1Score < (uint8)MatchCount)
+			if (slowmotionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && !isMatchOver)
 			{
 				OnFadeOut.Broadcast(playFadeoutFlag);
 				playFadeoutFlag = false;
 			}
 			return;
 		}
-		CheckIfMatchIsOver(player1Score);
 		if (!isMatchOver)
 		{
 			SetupMatch();
@@ -563,6 +567,7 @@ void AMyStateMachProGameModeBase::RoundTimeOver(float DeltaSeconds)
 		}
 		else
 		{
+			OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
 			player1->CustomTimeDilation = 1.0F;
 			player2->CustomTimeDilation = 1.0F;
 			while (roundTransitionMaxDuration < transitionMaxDuration) {
@@ -601,9 +606,10 @@ void AMyStateMachProGameModeBase::RoundTimeOver(float DeltaSeconds)
 				player1->CustomTimeDilation = 1.0F;
 				player2->CustomTimeDilation = 1.0F;
 				player2->playerWon = true;
+				CheckIfMatchIsOver(player2Score);
 
 			}
-			if (slowmotionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && player2Score < (uint8)MatchCount)
+			if (slowmotionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && !isMatchOver)
 			{
 				OnFadeOut.Broadcast(playFadeoutFlag);
 				playFadeoutFlag = false;
@@ -611,7 +617,6 @@ void AMyStateMachProGameModeBase::RoundTimeOver(float DeltaSeconds)
 			return;
 		}
 
-		CheckIfMatchIsOver(player2Score);
 		if (!isMatchOver)
 		{
 			SetupMatch();
@@ -619,6 +624,7 @@ void AMyStateMachProGameModeBase::RoundTimeOver(float DeltaSeconds)
 		}
 		else
 		{
+			OnMatchIsOverCheckIfOnline.Broadcast(false, player1->playerWon);
 			player1->CustomTimeDilation = 1.0F;
 			player2->CustomTimeDilation = 1.0F;
 			while (roundTransitionMaxDuration < transitionMaxDuration) {
