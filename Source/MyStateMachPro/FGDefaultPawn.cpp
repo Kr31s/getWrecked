@@ -108,6 +108,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 	if (!NetworkSystem::NetSys) {
 		InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
+		FillInputsIntoStream(DeltaSeconds);
 	}
 	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
 		if (UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0)
@@ -115,21 +116,25 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			FrameSyncCheck();
 			NetworkSystem::NetSys->GameMessage(SendInputStream);
 			InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
+			FillInputsIntoStream(DeltaSeconds);
 		}
 		else {
 			for (int i = 0; i < 249; ++i)
 			{
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
 
-					for (int ii = 10; ii > -1; --ii) 
+						DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
+						FillInputsIntoStream(DeltaSeconds);
+					/*for (int ii = 9; ii > -1; --ii)
 					{
 						if (i + ii > 249) {
 							continue;
 						}
 
 						DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_input));
+						FillInputsIntoStream(DeltaSeconds);
 						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_time - InputExpirationTime);
-					}
+					}*/
 					break;
 				}
 			}
@@ -138,7 +143,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	else
 	{
 	}
-	FillInputsIntoStream(DeltaSeconds);
 	// Cache old button state so we can distinguish between held and just pressed.
 	ButtonsDown_Old = ButtonsDown;
 
@@ -320,7 +324,7 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 				}
 				else
 				{
-				//	movingForward = -1;
+					//	movingForward = -1;
 				}
 				InputDirection = DirectionBackAtom; // Back on Leftside
 			}
