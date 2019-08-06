@@ -126,21 +126,26 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			for (int i = 0; i < 249; ++i)
 			{
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
-
-					for (int ii = 11; ii > -1; --ii)
+					i += 10;
+					for (; i > -1; --i)
 					{
-						DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_input));
-						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_time);
+						DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
+						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);
 						FillInputsIntoStream(DeltaSeconds);
+					}
+					if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 0)
+					{
+						UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
 					}
 					break;
 				}
+
+				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time < AMyStateMachProGameModeBase::sFrameCounter - 9) {
+					i = 0;
+					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0);
+				}
 			}
-			RemoveOldInputs(0);
 		}
-	}
-	else
-	{
 	}
 	// Cache old button state so we can distinguish between held and just pressed.
 	ButtonsDown_Old = ButtonsDown;
@@ -276,6 +281,8 @@ void AFGDefaultPawn::RemoveOldInputs(int minusFrameCounter) {
 
 void AFGDefaultPawn::FrameSyncCheck()
 {
+	
+
 	if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 2)
 	{
 		NetworkSystem::NetSys->GameMessage(SendInputStream);
