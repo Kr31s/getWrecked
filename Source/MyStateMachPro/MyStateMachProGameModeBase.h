@@ -36,7 +36,7 @@ public:
 	static unsigned int m_framesToSync;
 
 
-	static unsigned int sFrameCounter;
+	static int sFrameCounter;
 
 	virtual void StartPlay() override;
 	virtual void Tick(float DeltaSeconds) override;

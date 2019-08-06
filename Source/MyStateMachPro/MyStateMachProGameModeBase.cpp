@@ -6,7 +6,7 @@
 #include "Public/MyCameraActor.h"
 #include "Kismet/GameplayStatics.h"
 
-unsigned int AMyStateMachProGameModeBase::sFrameCounter = 1;
+int AMyStateMachProGameModeBase::sFrameCounter = 1;
 
 int AMyStateMachProGameModeBase::m_roundVal = 1;
 int AMyStateMachProGameModeBase::m_timeVal = 1;
@@ -105,28 +105,14 @@ void AMyStateMachProGameModeBase::StartPlay() {
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
-	if (!NetworkSystem::startGame && NetworkSystem::NetSys)
-	{
-		if (!NetworkSystem::firstMessage && NetworkSystem::roomFull )
-		{
-			NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
-			NetworkSystem::firstMessage = false;
-		}
-		else {
-			return;
-		}
+
+	if (!NetworkSystem::NetSys) {
+		++AMyStateMachProGameModeBase::sFrameCounter;
 	}
 
-	if (!AMyStateMachProGameModeBase::hasGameStarted && NetworkSystem::startGame && NetworkSystem::NetSys != nullptr)
-	{
-		AMyStateMachProGameModeBase::hasGameStarted = true;
-		OnGameStarted.Broadcast(hasGameStarted);
-	}
 
 	if (startTimer == 3.0f) {
 
-		DisableInput(Cast<APlayerController>(player1));
-		DisableInput(Cast<APlayerController>(player2));
 		player1->AddMovementInput(player1->GetActorForwardVector(), 0.0F);
 		player2->AddMovementInput(player2->GetActorForwardVector(), 0.0F);
 		player1->doJump = false;
@@ -154,8 +140,6 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			player2->isOnLeftSide = true;
 			player1->isOnLeftSide = false;
 		}
-		//player1->GetMesh()->SetRelativeScale3D(FVector(1.0F, -1.0F, 1.0F));
-		//player2->GetMesh()->SetRelativeScale3D(FVector(1.0F, 1.0F, 1.0F));
 		roundTimer = roundTime;
 		player1->SetDirectionInputX(0.0F);
 		player2->SetDirectionInputX(0.0F);
@@ -163,13 +147,32 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player2->movingForward = 0;
 
 	}
+
+	if (!NetworkSystem::startGame && NetworkSystem::NetSys)
+	{
+		if (!NetworkSystem::firstMessage && NetworkSystem::roomFull )
+		{
+			NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
+			NetworkSystem::firstMessage = false;
+		}
+		else {
+			return;
+		}
+	}
+
+	if (!AMyStateMachProGameModeBase::hasGameStarted && NetworkSystem::startGame && NetworkSystem::NetSys != nullptr)
+	{
+		AMyStateMachProGameModeBase::hasGameStarted = true;
+		OnGameStarted.Broadcast(hasGameStarted);
+	}
+
+	
 	if (startTimer > 0.0f)
 	{
 
 		player1->isInputEnabled = false;
 		player2->isInputEnabled = false;
 		startTimer -= DeltaSeconds;
-		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Magenta, FString::SanitizeFloat(startTimer));
 		return;
 	}
 	if (enableInputOnRoundStart) {
