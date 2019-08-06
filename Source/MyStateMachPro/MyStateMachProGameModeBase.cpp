@@ -154,6 +154,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		{
 			NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 			NetworkSystem::firstMessage = false;
+			OnName1Changed.Broadcast(player1Name);
+			OnName2Changed.Broadcast(player2Name);
 		}
 		else {
 			return;
