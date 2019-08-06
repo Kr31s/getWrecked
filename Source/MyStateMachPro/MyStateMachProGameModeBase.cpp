@@ -240,11 +240,11 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		}
 		else
 		{
-			OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
+			OnMatchIsOverCheckIfOnline.Broadcast((bool)NetworkSystem::NetSys, player1->playerWon);
 
 			player1->CustomTimeDilation = 1.0F;
 			player2->CustomTimeDilation = 1.0F;
-			while (roundTransitionMaxDuration < transitionMaxDuration) {
+			while (roundTransitionMaxDuration < transitionMaxDuration - 2.0F) {
 				roundTransitionMaxDuration += DeltaSeconds;
 				//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(roundTransitionMaxDuration));
 				return;
@@ -310,10 +310,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		}
 		else
 		{
-			OnMatchIsOverCheckIfOnline.Broadcast(true, player1->playerWon);
+			OnMatchIsOverCheckIfOnline.Broadcast((bool)NetworkSystem::NetSys, player1->playerWon);
 			player1->CustomTimeDilation = 1.0F;
 			player2->CustomTimeDilation = 1.0F;
-			while (roundTransitionMaxDuration < transitionMaxDuration) {
+			while (roundTransitionMaxDuration < transitionMaxDuration-2.0F) {
 				roundTransitionMaxDuration += DeltaSeconds;
 				//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(roundTransitionMaxDuration));
 				return;

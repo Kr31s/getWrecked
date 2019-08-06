@@ -127,7 +127,7 @@ void UMyHitBoxComponent::CollisionEvent(UPrimitiveComponent* OverlappedComponent
 							Enemy->gotHit = true;
 							Enemy->isInputEnabled = false;
 							Enemy->RessourceComp->ReduceHealth(Owner->GetCurrentMove()->DamageValue);
-							Enemy->RessourceComp->IncreaseStunMeter(0.05F);
+							Enemy->RessourceComp->IncreaseStunMeter(Owner->GetCurrentMove()->StunValue);
 							Owner->RessourceComp->IncreasePowerMeter(Owner->CurrentMove->PowerMeterRaiseValue);
 							Owner->CustomTimeDilation = 0.3F;
 							Enemy->CustomTimeDilation = 0.3F;

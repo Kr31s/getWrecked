@@ -387,6 +387,7 @@ void NetworkSystem::SyncGame(char* p_receiveArray)
 }
 void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 {
+	messageRival.lock();
 	if (!NetworkSystem::startGame) {
 		NetworkSystem::startGame = true;
 	}
@@ -417,9 +418,23 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 				NetworkSystem::NetSys->gameMessagesRivale.insert(NetworkSystem::NetSys->gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
 			}
 			NetworkSystem::NetSys->gameMessagesRivale.resize(249, GameMessageData());
-			return;
+			//for (int i = 0; i < 248; ++i)
+			//{
+			//	NetworkSystem::NetSys->gameMessagesRivale[i].m_time;
+			//	NetworkSystem::NetSys->gameMessagesRivale[i + 1].m_time;
+
+			//	if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time - 1 == NetworkSystem::NetSys->gameMessagesRivale[i + 1].m_time) {
+			//		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Green, TEXT("Jop"));
+			//	}
+			//	else {
+			//		timeVal += 10;
+			//	}
+			//}
 		}
 	}
+
+	
+	messageRival.unlock();
 }
 void NetworkSystem::StartGame()
 {

@@ -123,16 +123,17 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 		}
 		else {
+			NetworkSystem::NetSys->messageRival.lock();
 			for (int i = 0; i < 249; ++i)
 			{
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
-					i += 10;
-					for (; i > -1; --i)
-					{
-						DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
-						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);
-						FillInputsIntoStream(DeltaSeconds);
-					}
+
+					DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
+					InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);
+					FillInputsIntoStream(DeltaSeconds);
+					RemoveOldInputs(0);
+
+
 					if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 0)
 					{
 						UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
@@ -145,17 +146,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0);
 				}
 			}
+			NetworkSystem::NetSys->messageRival.unlock();
 		}
 	}
 	// Cache old button state so we can distinguish between held and just pressed.
-	ButtonsDown_Old = ButtonsDown;
-
-	// Always add an input time stamp to match the input sequence.
-	//float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
-
-	// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
 	
-
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted/* && GetCharacterMovement()->IsMovingOnGround() -- check if everything works as intended*/)
 	{
@@ -264,6 +259,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 void AFGDefaultPawn::RemoveOldInputs(int minusFrameCounter) {
+	ButtonsDown_Old = ButtonsDown;
+
+
 	for (int32 i = 0; i < InputStream.Num(); ++i)
 	{
 		if ((InputTimeStamps[i] + InputExpirationTime) >= AMyStateMachProGameModeBase::sFrameCounter - minusFrameCounter)
@@ -281,7 +279,7 @@ void AFGDefaultPawn::RemoveOldInputs(int minusFrameCounter) {
 
 void AFGDefaultPawn::FrameSyncCheck()
 {
-	
+
 
 	if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 2)
 	{
@@ -300,6 +298,7 @@ void AFGDefaultPawn::FrameSyncCheck()
 
 void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 {
+
 	const float DirectionThreshold = 0.5f;
 
 	UFGDirectionalInputAtom* InputDirection = nullptr;
@@ -802,7 +801,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
 
 
-		if (timeInJump > 0.5F && prepareJump)
+		if (timeInJump > 0.2F && prepareJump)
 		{
 			prepareJump = false;
 		}

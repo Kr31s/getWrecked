@@ -37,7 +37,7 @@ class NetworkSystem
 {
 public:
 
-
+	std::mutex messageRival;
 	static NetworkSystem* NetSys;
 	static bool ticking;
 	static bool roomFull;
