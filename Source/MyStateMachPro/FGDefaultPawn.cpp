@@ -799,7 +799,7 @@ void AFGDefaultPawn::DiagonalJump(float direction, FVector position, float time,
 		jumpTargetLocation.X = FMath::Lerp(jumpStartLocation.X, jumpStartLocation.X + (jumpDistance * directionmodifier), timeInJump / jumpDuration);
 
 
-		if (timeInJump > 0.5F && prepareJump)
+		if (timeInJump > 0.2F && prepareJump)
 		{
 			prepareJump = false;
 		}
