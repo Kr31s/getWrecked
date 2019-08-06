@@ -109,6 +109,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	if (!NetworkSystem::NetSys) {
 		InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
 		FillInputsIntoStream(DeltaSeconds);
+		ButtonsDown_Old = ButtonsDown;
 		RemoveOldInputs(0);
 
 	}
@@ -119,6 +120,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			NetworkSystem::NetSys->GameMessage(SendInputStream);
 			InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
 			FillInputsIntoStream(DeltaSeconds);
+			ButtonsDown_Old = ButtonsDown;
 			RemoveOldInputs(0);
 
 		}
@@ -126,9 +128,10 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			for (int i = 0; i < 249; ++i)
 			{
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
-
+					ButtonsDown_Old = ButtonsDown;
 					DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
-					InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);
+					//InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);//kein delay aber keine kombos
+					InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);//delay aber kombos
 					FillInputsIntoStream(DeltaSeconds);
 					RemoveOldInputs(0);
 					break;
@@ -250,7 +253,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 void AFGDefaultPawn::RemoveOldInputs(int minusFrameCounter) {
-	ButtonsDown_Old = ButtonsDown;
+	
 
 
 	for (int32 i = 0; i < InputStream.Num(); ++i)
@@ -270,8 +273,6 @@ void AFGDefaultPawn::RemoveOldInputs(int minusFrameCounter) {
 
 void AFGDefaultPawn::FrameSyncCheck()
 {
-
-
 	if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 2)
 	{
 		NetworkSystem::NetSys->GameMessage(SendInputStream);
