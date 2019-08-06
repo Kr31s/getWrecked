@@ -59,16 +59,16 @@ void HeartThread()
 
 	while (BCServer::sTheServer->m_serverRunning)
 	{
+		sMutexMessageIDList.lock();
 		for (int i = 0; i < BCClient::sTotalClientID; ++i)
 		{
-			sMutexMessageIDList.lock();
 			if (BCServer::sTheServer->m_clientIDList->find(i) == BCServer::sTheServer->m_clientIDList->end())
 			{
 				continue;
 			}
 			BCServer::sTheServer->SendData(BCServer::sTheServer->m_clientIDList->at(i).m_clientID, SendType::NeedAnswer, heartThreadArray);
-			sMutexMessageIDList.unlock();
 		}
+		sMutexMessageIDList.unlock();
 
 		Println("Sleep 2sec");
 		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
