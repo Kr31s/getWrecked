@@ -50,7 +50,7 @@ void UMyUserWidget::LeaveRoom()
 	NetworkSystem::NetSys->LeaveRoom();
 }
 
-bool UMyUserWidget::CreateClient()
+bool UMyUserWidget::CreateClient(int p_IP1, int p_IP2, int p_IP3, int p_IP4, int p_Port)
 {
 	UMyUserWidget::myUserWidget = this;
 
@@ -59,6 +59,7 @@ bool UMyUserWidget::CreateClient()
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("CreateClient"));
+	NetworkSystem::NetSys->serverAddress = NetAddress(p_IP1, p_IP2, p_IP3, p_IP4, p_Port);
 
 	return NetworkSystem::NetSys->InitNetSystem();
 }

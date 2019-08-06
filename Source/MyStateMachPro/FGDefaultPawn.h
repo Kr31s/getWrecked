@@ -96,7 +96,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool canApplyDamage;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool isOnLeftSide;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

@@ -39,8 +39,7 @@ bool NetworkSystem::InitNetSystem()
 {
 	NetworkSystem::roomFull = false;
 	AMyStateMachProGameModeBase::hasGameStarted = false;
-	//this->serverAddress = NetAddress(93, 201, 95, 53, 4023);
-	this->serverAddress = NetAddress(10, 1, 1, 200, 4023);
+	//this->serverAddress = NetAddress(10, 1, 1, 200, 4023);
 	BWNet::InitializeSocketLayer();
 
 	if (socketUDP.OpenSocket(0).m_errorCode == 0)
@@ -387,7 +386,6 @@ void NetworkSystem::SyncGame(char* p_receiveArray)
 }
 void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 {
-	messageRival.lock();
 	if (!NetworkSystem::startGame) {
 		NetworkSystem::startGame = true;
 	}
@@ -418,23 +416,20 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 				NetworkSystem::NetSys->gameMessagesRivale.insert(NetworkSystem::NetSys->gameMessagesRivale.begin(), GameMessageData(timeVal, inputVal));
 			}
 			NetworkSystem::NetSys->gameMessagesRivale.resize(249, GameMessageData());
-			//for (int i = 0; i < 248; ++i)
-			//{
-			//	NetworkSystem::NetSys->gameMessagesRivale[i].m_time;
-			//	NetworkSystem::NetSys->gameMessagesRivale[i + 1].m_time;
+			for (int i = 0; i < 248; ++i)
+			{
+				NetworkSystem::NetSys->gameMessagesRivale[i].m_time;
+				NetworkSystem::NetSys->gameMessagesRivale[i + 1].m_time;
 
-			//	if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time - 1 == NetworkSystem::NetSys->gameMessagesRivale[i + 1].m_time) {
-			//		//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Green, TEXT("Jop"));
-			//	}
-			//	else {
-			//		timeVal += 10;
-			//	}
-			//}
+				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time - 1 == NetworkSystem::NetSys->gameMessagesRivale[i + 1].m_time) {
+					//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Green, TEXT("Jop"));
+				}
+				else {
+					timeVal += 10;
+				}
+			}
 		}
 	}
-
-	
-	messageRival.unlock();
 }
 void NetworkSystem::StartGame()
 {
