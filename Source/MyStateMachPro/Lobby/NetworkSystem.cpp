@@ -424,10 +424,10 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 				NetworkSystem::NetSys->gameMessagesRivale[i + 1].m_time;
 
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time - 1 == NetworkSystem::NetSys->gameMessagesRivale[i + 1].m_time) {
-					GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Green, TEXT("Jop"));
+					//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Green, TEXT("Jop"));
 				}
 				else {
-					GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("Nop"));
+					//GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("Nop"));
 				}
 			}
 		}
