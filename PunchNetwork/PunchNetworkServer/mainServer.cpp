@@ -141,8 +141,8 @@ int main()
 	BCServer::sTheServer = new BCServer(4023, true);
 
 	std::thread t1(ServerThread);
-	std::thread t2(MessageThread);
-	std::thread t3(HeartThread);
+	//std::thread t2(MessageThread);
+	//std::thread t3(HeartThread);
 
 	int i;
 	std::cin >> i;
@@ -150,8 +150,8 @@ int main()
 	BCServer::sTheServer->m_serverRunning = false;
 
 	t1.join();
-	t2.join();
-	t3.join();
+	//t2.join();
+	//t3.join();
 
 	return 0;
 }
