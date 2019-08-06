@@ -1,6 +1,6 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (PunchNetwork.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   mainServer.cpp
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,31): warning C4305:  "Initialisierung": Verkürzung von "int" in "unsigned char"
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,27): warning C4309:  "Initialisierung": Verkürzung eines konstanten Wertes
-E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(63,21): warning C4018:  "<": Konflikt zwischen "signed" und "unsigned"
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,31): warning C4305:  'initializing': truncation from 'int' to 'unsigned char'
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\BCClient.h(20,27): warning C4309:  'initializing': truncation of constant value
+E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\mainServer.cpp(63,21): warning C4018:  '<': signed/unsigned mismatch
   PunchNetwork.vcxproj -> E:\GitRepositories\getWrecked\PunchNetwork\PunchNetworkServer\x64\Debug\PunchNetworkServer.exe

@@ -123,7 +123,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 		}
 		else {
-			NetworkSystem::NetSys->messageRival.lock();
 			for (int i = 0; i < 249; ++i)
 			{
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
@@ -132,21 +131,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 					InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);
 					FillInputsIntoStream(DeltaSeconds);
 					RemoveOldInputs(0);
-
-
-					if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 0)
-					{
-						UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
-					}
 					break;
 				}
 
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time < AMyStateMachProGameModeBase::sFrameCounter - 9) {
 					i = 0;
-					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0);
 				}
 			}
-			NetworkSystem::NetSys->messageRival.unlock();
 		}
 	}
 	// Cache old button state so we can distinguish between held and just pressed.

@@ -50,20 +50,26 @@ void UMyUserWidget::LeaveRoom()
 	NetworkSystem::NetSys->LeaveRoom();
 }
 
-bool UMyUserWidget::CreateClient()
+bool UMyUserWidget::CreateClient(int p_IP1, int p_IP2, int p_IP3, int p_IP4, int p_Port)
 {
+
 	UMyUserWidget::myUserWidget = this;
 
 	if (NetworkSystem::NetSys == nullptr) {
 		NetworkSystem::NetSys = new NetworkSystem();
 	}
+	else {
+		NetworkSystem::NetSys->ShutdownNetwork();
+		NetworkSystem::NetSys = new NetworkSystem();
+	}
 
 	UE_LOG(LogTemp, Warning, TEXT("CreateClient"));
+	NetworkSystem::NetSys->serverAddress = NetAddress(p_IP1, p_IP2, p_IP3, p_IP4, p_Port);
 
 	return NetworkSystem::NetSys->InitNetSystem();
 }
 
-bool UMyUserWidget::GetRoomFullStatus() 
+bool UMyUserWidget::GetRoomFullStatus()
 {
 	return NetworkSystem::roomFull;
 }

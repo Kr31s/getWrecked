@@ -40,7 +40,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
 		void LeaveRoom();
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
-		bool CreateClient();
+		bool CreateClient(int IP1, int IP2, int IP3, int IP4, int Port);
 	UFUNCTION(BlueprintCallable, Category = MyUUserWidgetClass)
 		void ElementUpdateLobby(int slot1Pos, int slot2Pos, bool ready);
 

@@ -85,7 +85,9 @@ void BCServer::SendData(unsigned int p_clientID, SendType p_status, char* p_data
 #if DebugModus == true
 	ErrorCheck(BCServer::sTheServer->m_clientIDList->at(p_clientID).m_netaddress, (char*)p_dataArray, 1000).m_errorCode);
 #else
-	m_serverSocket.Send(BCServer::sTheServer->m_clientIDList->at(p_clientID).m_netaddress, (char*)p_dataArray, 1000);
+	if (BCServer::sTheServer->m_clientIDList->find(p_clientID) != BCServer::sTheServer->m_clientIDList->end()) {
+		m_serverSocket.Send(BCServer::sTheServer->m_clientIDList->at(p_clientID).m_netaddress, (char*)p_dataArray, 1000);
+	}
 #endif
 }
 
