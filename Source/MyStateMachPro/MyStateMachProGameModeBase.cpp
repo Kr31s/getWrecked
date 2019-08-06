@@ -240,7 +240,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		}
 		else
 		{
-			OnMatchIsOverCheckIfOnline.Broadcast(NetworkSystem::NetSys, player1->playerWon);
+			OnMatchIsOverCheckIfOnline.Broadcast((bool)NetworkSystem::NetSys, player1->playerWon);
 
 			player1->CustomTimeDilation = 1.0F;
 			player2->CustomTimeDilation = 1.0F;
@@ -310,7 +310,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		}
 		else
 		{
-			OnMatchIsOverCheckIfOnline.Broadcast(NetworkSystem::NetSys, player1->playerWon);
+			OnMatchIsOverCheckIfOnline.Broadcast((bool)NetworkSystem::NetSys, player1->playerWon);
 			player1->CustomTimeDilation = 1.0F;
 			player2->CustomTimeDilation = 1.0F;
 			while (roundTransitionMaxDuration < transitionMaxDuration-2.0F) {

@@ -259,6 +259,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 void AFGDefaultPawn::RemoveOldInputs(int minusFrameCounter) {
+	ButtonsDown_Old = ButtonsDown;
+
+
 	for (int32 i = 0; i < InputStream.Num(); ++i)
 	{
 		if ((InputTimeStamps[i] + InputExpirationTime) >= AMyStateMachProGameModeBase::sFrameCounter - minusFrameCounter)
@@ -295,7 +298,6 @@ void AFGDefaultPawn::FrameSyncCheck()
 
 void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 {
-	ButtonsDown_Old = ButtonsDown;
 
 	const float DirectionThreshold = 0.5f;
 
