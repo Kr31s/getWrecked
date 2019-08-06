@@ -185,6 +185,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void ResetLoosingMontage();
 
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void PlayStartUpMontage();
+
 	UFUNCTION()
 		void RoundTimeOver(float DeltaSeconds);
 };

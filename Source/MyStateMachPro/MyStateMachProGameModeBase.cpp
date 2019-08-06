@@ -145,7 +145,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player2->SetDirectionInputX(0.0F);
 		player1->movingForward = 0;
 		player2->movingForward = 0;
-
+		PlayStartUpMontage();
 	}
 
 	if (!NetworkSystem::startGame && NetworkSystem::NetSys)
