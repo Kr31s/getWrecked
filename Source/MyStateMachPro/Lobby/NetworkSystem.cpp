@@ -338,10 +338,10 @@ void NetworkSystem::RoomJoin(char* p_receiveArray)
 		m_opponentName[i] = p_receiveArray[i + 2];
 	}
 	AMyStateMachProGameModeBase::m_opponentName = FString(UTF8_TO_TCHAR(m_opponentName));
-	m_gameMode->OnName2Changed.Broadcast(AMyStateMachProGameModeBase::m_opponentName);
 
 	if (UMyUserWidget::myUserWidget) {
 	UMyUserWidget::myUserWidget->RivalJoinMessage(FString(UTF8_TO_TCHAR(m_opponentName)));
+	m_gameMode->OnName2Changed.Broadcast(AMyStateMachProGameModeBase::m_opponentName);
 	}
 	NetworkSystem::roomFull = true;
 	UE_LOG(LogTemp, Warning, TEXT("RivalJoinMessage"));
