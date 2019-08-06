@@ -338,7 +338,7 @@ void NetworkSystem::RoomJoin(char* p_receiveArray)
 		m_opponentName[i] = p_receiveArray[i + 2];
 	}
 	AMyStateMachProGameModeBase::m_opponentName = FString(UTF8_TO_TCHAR(m_opponentName));
-	m_gameMode->OnName2Changed.Broadcast(AMyStateMachProGameModeBase::m_opponentName);
+	//m_gameMode->OnName2Changed.Broadcast(AMyStateMachProGameModeBase::m_opponentName);
 
 	if (UMyUserWidget::myUserWidget) {
 	UMyUserWidget::myUserWidget->RivalJoinMessage(FString(UTF8_TO_TCHAR(m_opponentName)));
@@ -395,6 +395,8 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 	}
 
 	if (!NetworkSystem::ticking) {
+		NetworkSystem::NetSys->gameMessagesRivale.clear();
+		NetworkSystem::NetSys->gameMessagesPlayer.clear();
 		return;
 	}
 
