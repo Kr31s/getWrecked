@@ -126,13 +126,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			for (int i = 0; i < 249; ++i)
 			{
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
-					i += 10;
+					/*i += 10;
 					for (; i > -1; --i)
-					{
+					{*/
 						DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
 						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);
 						FillInputsIntoStream(DeltaSeconds);
-					}
+					//}
 					if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 0)
 					{
 						UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
