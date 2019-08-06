@@ -108,6 +108,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 	if (!NetworkSystem::NetSys) {
 		InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
+		FillInputsIntoStream(DeltaSeconds);
+		RemoveOldInputs(0);
 
 	}
 	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
@@ -116,6 +118,8 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			FrameSyncCheck();
 			NetworkSystem::NetSys->GameMessage(SendInputStream);
 			InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
+			FillInputsIntoStream(DeltaSeconds);
+			RemoveOldInputs(0);
 
 		}
 		else {
@@ -126,6 +130,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 					DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
 					InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);
+					FillInputsIntoStream(DeltaSeconds);
+					RemoveOldInputs(0);
+
 
 					if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 0)
 					{
@@ -143,14 +150,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 	}
 	// Cache old button state so we can distinguish between held and just pressed.
-	ButtonsDown_Old = ButtonsDown;
-
-
-	FillInputsIntoStream(DeltaSeconds);
-
-	RemoveOldInputs(0);
-
-
+	
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted/* && GetCharacterMovement()->IsMovingOnGround() -- check if everything works as intended*/)
 	{
@@ -295,6 +295,8 @@ void AFGDefaultPawn::FrameSyncCheck()
 
 void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 {
+	ButtonsDown_Old = ButtonsDown;
+
 	const float DirectionThreshold = 0.5f;
 
 	UFGDirectionalInputAtom* InputDirection = nullptr;
