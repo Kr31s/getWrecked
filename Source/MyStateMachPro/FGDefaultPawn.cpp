@@ -108,6 +108,9 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 	if (!NetworkSystem::NetSys) {
 		InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
+		FillInputsIntoStream(DeltaSeconds);
+		RemoveOldInputs(0);
+
 	}
 	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
 		if (UGameplayStatics::GetPlayerControllerID(Cast<APlayerController>(GetController())) == 0)
@@ -115,30 +118,30 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			FrameSyncCheck();
 			NetworkSystem::NetSys->GameMessage(SendInputStream);
 			InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
+			FillInputsIntoStream(DeltaSeconds);
+			RemoveOldInputs(0);
+
 		}
 		else {
 			for (int i = 0; i < 249; ++i)
 			{
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
 
-					for (int ii = 10; ii > -1; --ii) 
+					for (int ii = 11; ii > -1; --ii)
 					{
-						if (i + ii > 249) {
-							continue;
-						}
-
 						DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_input));
-						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_time - InputExpirationTime);
+						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_time);
+						FillInputsIntoStream(DeltaSeconds);
 					}
 					break;
 				}
 			}
+			RemoveOldInputs(0);
 		}
 	}
 	else
 	{
 	}
-	FillInputsIntoStream(DeltaSeconds);
 	// Cache old button state so we can distinguish between held and just pressed.
 	ButtonsDown_Old = ButtonsDown;
 
@@ -146,20 +149,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	//float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
 
 	// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
-	for (int32 i = 0; i < InputStream.Num(); ++i)
-	{
-		if ((InputTimeStamps[i] + InputExpirationTime) >= AMyStateMachProGameModeBase::sFrameCounter)
-		{
-			// Remove everything before this, then exit the loop.
-			if (i > 0)
-			{
-				InputTimeStamps.RemoveAt(0, i, false);
-				InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
-			}
-			break;
-		}
-	}
-
+	
 
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted/* && GetCharacterMovement()->IsMovingOnGround() -- check if everything works as intended*/)
@@ -268,6 +258,22 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	}
 }
 
+void AFGDefaultPawn::RemoveOldInputs(int minusFrameCounter) {
+	for (int32 i = 0; i < InputStream.Num(); ++i)
+	{
+		if ((InputTimeStamps[i] + InputExpirationTime) >= AMyStateMachProGameModeBase::sFrameCounter - minusFrameCounter)
+		{
+			// Remove everything before this, then exit the loop.
+			if (i > 0)
+			{
+				InputTimeStamps.RemoveAt(0, i, false);
+				InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
+			}
+			break;
+		}
+	}
+}
+
 void AFGDefaultPawn::FrameSyncCheck()
 {
 	if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 2)
@@ -307,7 +313,7 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 			{
 				InputDirection = DirectionDownForwardAtom;; // Crouch + Forward is On RightSide
 			}
-			isCrouching = true;
+			//isCrouching = true;
 
 		}
 		else if (DirectionInput.Y < DirectionThreshold)
@@ -320,7 +326,7 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 				}
 				else
 				{
-				//	movingForward = -1;
+					//	movingForward = -1;
 				}
 				InputDirection = DirectionBackAtom; // Back on Leftside
 			}
@@ -396,11 +402,11 @@ void AFGDefaultPawn::FillInputsIntoStream(float deltaTime)
 			if (this->isOnLeftSide)
 			{
 				InputDirection = DirectionDownForwardAtom; // Crouch + Forward on LeftSide
-				isCrouching = true;
+				//isCrouching = true;
 			}
 			else
 			{
-				isCrouching = true;
+				//isCrouching = true;
 				if (bCanBlock)
 				{
 					bIsBlocking = true;
