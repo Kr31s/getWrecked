@@ -126,13 +126,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			for (int i = 0; i < 249; ++i)
 			{
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
-					/*i += 10;
-					for (; i > -1; --i)
-					{*/
-						DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
-						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);
-						FillInputsIntoStream(DeltaSeconds);
-					//}
+
+					DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
+					InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);
+					FillInputsIntoStream(DeltaSeconds);
+
 					if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 0)
 					{
 						UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
@@ -154,7 +152,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 	//float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
 
 	// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
-	
+
 
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted/* && GetCharacterMovement()->IsMovingOnGround() -- check if everything works as intended*/)
@@ -281,7 +279,7 @@ void AFGDefaultPawn::RemoveOldInputs(int minusFrameCounter) {
 
 void AFGDefaultPawn::FrameSyncCheck()
 {
-	
+
 
 	if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 2)
 	{
