@@ -52,9 +52,14 @@ void UMyUserWidget::LeaveRoom()
 
 bool UMyUserWidget::CreateClient(int p_IP1, int p_IP2, int p_IP3, int p_IP4, int p_Port)
 {
+
 	UMyUserWidget::myUserWidget = this;
 
 	if (NetworkSystem::NetSys == nullptr) {
+		NetworkSystem::NetSys = new NetworkSystem();
+	}
+	else {
+		NetworkSystem::NetSys->ShutdownNetwork();
 		NetworkSystem::NetSys = new NetworkSystem();
 	}
 
@@ -64,7 +69,7 @@ bool UMyUserWidget::CreateClient(int p_IP1, int p_IP2, int p_IP3, int p_IP4, int
 	return NetworkSystem::NetSys->InitNetSystem();
 }
 
-bool UMyUserWidget::GetRoomFullStatus() 
+bool UMyUserWidget::GetRoomFullStatus()
 {
 	return NetworkSystem::roomFull;
 }
