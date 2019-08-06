@@ -387,6 +387,7 @@ void NetworkSystem::SyncGame(char* p_receiveArray)
 }
 void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 {
+	messageRival.lock();
 	if (!NetworkSystem::startGame) {
 		NetworkSystem::startGame = true;
 	}
@@ -422,6 +423,9 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 
 	for (int i = 0; i < 248; ++i)
 	{
+		NetworkSystem::NetSys->gameMessagesRivale[i].m_time;
+		NetworkSystem::NetSys->gameMessagesRivale[i + 1].m_time;
+
 		if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time - 1 == NetworkSystem::NetSys->gameMessagesRivale[i + 1].m_time) {
 			GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Green, TEXT("Jop"));
 		}
@@ -429,6 +433,7 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 			GEngine->AddOnScreenDebugMessage(-1, 2.0F, FColor::Red, TEXT("Nop"));
 		}
 	}
+	messageRival.unlock();
 }
 void NetworkSystem::StartGame()
 {

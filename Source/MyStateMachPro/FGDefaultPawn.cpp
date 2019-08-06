@@ -108,8 +108,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 
 	if (!NetworkSystem::NetSys) {
 		InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
-		FillInputsIntoStream(DeltaSeconds);
-		RemoveOldInputs(0);
 
 	}
 	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
@@ -118,18 +116,16 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			FrameSyncCheck();
 			NetworkSystem::NetSys->GameMessage(SendInputStream);
 			InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
-			FillInputsIntoStream(DeltaSeconds);
-			RemoveOldInputs(0);
 
 		}
 		else {
+			NetworkSystem::NetSys->messageRival.lock();
 			for (int i = 0; i < 249; ++i)
 			{
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
 
 					DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
 					InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);
-					FillInputsIntoStream(DeltaSeconds);
 
 					if (UGameplayStatics::GetGlobalTimeDilation(GetWorld()) == 0)
 					{
@@ -143,15 +139,16 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0);
 				}
 			}
+			NetworkSystem::NetSys->messageRival.unlock();
 		}
 	}
 	// Cache old button state so we can distinguish between held and just pressed.
 	ButtonsDown_Old = ButtonsDown;
 
-	// Always add an input time stamp to match the input sequence.
-	//float CurrentTime = UKismetSystemLibrary::GetGameTimeInSeconds(this);
 
-	// Prune old inputs. This would be better-suited to a ringbuffer than an array, but its not much data
+	FillInputsIntoStream(DeltaSeconds);
+
+	RemoveOldInputs(0);
 
 
 	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
