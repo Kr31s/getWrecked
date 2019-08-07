@@ -156,11 +156,11 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 					}
 					if (InputStream.Num() > 8) {
 
+						auto InputStream2 = InputStream;
 						for (int i = InputExpirationTime; i > 0; --i)
 						{
-							CurrentMove->TryLinks(this, InputStream);
-							InputStream.RemoveAt(0, 5, false);
-							InputTimeStamps.RemoveAt(0, 1, false);
+							CurrentMove->TryLinks(this, InputStream2);
+							InputStream2.RemoveAt(0, 5, false);
 						}
 					}
 					break;
