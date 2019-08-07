@@ -895,14 +895,14 @@ void AFGDefaultPawn::HandleStun(float deltaSeconds)
 	stunTimer += deltaSeconds;
 	if (gotHit && stunTimer > 0.5F)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("GOT HIT Check"));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("GOT HIT Check"));
 		stunTimer = 0.0F;
 		isStunned = false;
 		ResetStunMontage();
 	}
 	else if (stunTimer >= 5.6F)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset STUN"));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Reset STUN"));
 		//gotHit = false;
 		stunTimer = 0.0F;
 		isStunned = false;
