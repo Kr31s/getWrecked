@@ -112,7 +112,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		FillInputsIntoStream(DeltaSeconds);
 		ButtonsDown_Old = ButtonsDown;
 		RemoveOldInputs(0);
-		CurrentMove->TryLinks(this, InputStream);
+		MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 
 	}
 	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
@@ -124,7 +124,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			FillInputsIntoStream(DeltaSeconds);
 			ButtonsDown_Old = ButtonsDown;
 			RemoveOldInputs(0);
-			CurrentMove->TryLinks(this, InputStream);
+			MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 
 		}
 		else {
@@ -159,7 +159,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 						auto InputStream2 = InputStream;
 						for (int i = InputExpirationTime; i > 0; --i)
 						{
-							CurrentMove->TryLinks(this, InputStream2);
+							MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream2);
 							InputStream2.RemoveAt(0, 5, false);
 						}
 					}
