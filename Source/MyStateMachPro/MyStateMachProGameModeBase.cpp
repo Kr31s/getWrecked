@@ -107,7 +107,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	}
 
 
-	if (startTimer == prepTime) {
+	if (startTimer == prepTime - 3 ||  startTimer == prepTime) {
 
 		player1->AddMovementInput(player1->GetActorForwardVector(), 0.0F);
 		player2->AddMovementInput(player2->GetActorForwardVector(), 0.0F);
@@ -116,7 +116,8 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 
 		player1->GetMesh()->GetAnimInstance()->StopAllMontages(0.25F);
 		player2->GetMesh()->GetAnimInstance()->StopAllMontages(0.25F);
-
+		player1->prepareJump = false;
+		player2->prepareJump = false;
 		player1->isStunned = false;
 		player2->isStunned = false;
 		player1->isCrouching = false;
@@ -209,10 +210,14 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 
 	if (player1->RessourceComp->Health <= 0.0F)
 	{
+		if(NetworkSystem::NetSys)
+		{
 		NetworkSystem::NetSys->ticking = false;
 		AMyStateMachProGameModeBase::sFrameCounter = 0;
 		AMyStateMachProGameModeBase::m_framesToSync = 0;
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
+		}
+
 
 		//player1->K2_DestroyActor();
 		//UGameplayStatics::SetGamePaused(this, true);
@@ -279,10 +284,13 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	}
 	if (player2->RessourceComp->Health <= 0.0F)
 	{
-		NetworkSystem::NetSys->ticking = false;
-		AMyStateMachProGameModeBase::sFrameCounter = 0;
-		AMyStateMachProGameModeBase::m_framesToSync = 0;
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
+		if (NetworkSystem::NetSys)
+		{
+			NetworkSystem::NetSys->ticking = false;
+			AMyStateMachProGameModeBase::sFrameCounter = 0;
+			AMyStateMachProGameModeBase::m_framesToSync = 0;
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
+		}
 		//player2->K2_DestroyActor();
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0F, FColor::Yellow, TEXT("Player1Wins"));
 		//UGameplayStatics::SetGamePaused(this, true);
@@ -349,10 +357,13 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 
 	if (roundTimer <= 0.0F)
 	{
-		NetworkSystem::NetSys->ticking = false;
-		AMyStateMachProGameModeBase::sFrameCounter = 0;
-		AMyStateMachProGameModeBase::m_framesToSync = 0;
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
+		if (NetworkSystem::NetSys)
+		{
+			NetworkSystem::NetSys->ticking = false;
+			AMyStateMachProGameModeBase::sFrameCounter = 0;
+			AMyStateMachProGameModeBase::m_framesToSync = 0;
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
+		}
 		RoundTimeOver(DeltaSeconds);
 		player1->isInputEnabled = false;
 		player2->isInputEnabled = false;
@@ -366,7 +377,7 @@ void AMyStateMachProGameModeBase::SetupMatch()
 {
 	scoreFlag = false;
 	playFadeoutFlag = true;
-	startTimer = prepTime;
+	startTimer = prepTime - 3;
 	roundTimer = roundTime;
 	player1->CustomTimeDilation = 1.0F;
 	player2->CustomTimeDilation = 1.0F;

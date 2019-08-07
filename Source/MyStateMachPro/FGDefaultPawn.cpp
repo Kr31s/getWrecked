@@ -77,6 +77,7 @@ void AFGDefaultPawn::BeginPlay()
 	}
 	GetWorldTimerManager().SetTimerForNextTick(this, &AFGDefaultPawn::UseGameCamera);
 }
+#pragma optimize("", off)
 
 void AFGDefaultPawn::Tick(float DeltaSeconds)
 {
@@ -177,7 +178,10 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 	}
 	// Cache old button state so we can distinguish between held and just pressed.
-
+	if(InputStream.Num() > 200)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Linked Move: "), *CurrentMove->MoveName.ToString());
+	}
 	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted/* && GetCharacterMovement()->IsMovingOnGround() -- check if everything works as intended*/)
 	{
 		if (MoveLinkToFollow.Link->bClearInput || MoveLinkToFollow.Link->Move->bClearInputOnEntry || CurrentMove->bClearInputOnExit)
@@ -283,6 +287,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		TimeInCurrentMove += DeltaSeconds;		// Modulate by move animation length
 	}
 }
+#pragma optimize("", on)
 
 void AFGDefaultPawn::RemoveOldInputs(int minusFrameCounter) {
 
