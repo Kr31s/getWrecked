@@ -10,8 +10,8 @@ int AMyStateMachProGameModeBase::sFrameCounter = 1;
 
 int AMyStateMachProGameModeBase::m_roundVal = 1;
 int AMyStateMachProGameModeBase::m_timeVal = 1;
-FString AMyStateMachProGameModeBase::m_opponentName = "Hans";
-FString AMyStateMachProGameModeBase::m_playerName = "Kalle";
+FString AMyStateMachProGameModeBase::m_opponentName = "Player2";
+FString AMyStateMachProGameModeBase::m_playerName = "Player1";
 
 bool AMyStateMachProGameModeBase::hasGameStarted = false;
 
