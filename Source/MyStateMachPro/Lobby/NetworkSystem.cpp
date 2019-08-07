@@ -6,7 +6,7 @@
 
 NetworkSystem* NetworkSystem::NetSys = NULL;
 bool NetworkSystem::ticking = true;
-bool NetworkSystem::startGame = false;
+bool NetworkSystem::startGame = true;
 bool NetworkSystem::firstMessage = false;
 bool NetworkSystem::roomFull = true;
 
@@ -38,6 +38,7 @@ void NetworkSystem::setGameMode(AMyStateMachProGameModeBase* p_gameMode)
 bool NetworkSystem::InitNetSystem()
 {
 	NetworkSystem::roomFull = false;
+	NetworkSystem::startGame = false;
 	AMyStateMachProGameModeBase::hasGameStarted = false;
 	BWNet::InitializeSocketLayer();
 

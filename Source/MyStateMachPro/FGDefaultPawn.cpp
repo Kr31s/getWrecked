@@ -105,12 +105,14 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 		return;
 	}
+	FFGMoveLinkToFollow MoveLinkToFollow;
 
 	if (!NetworkSystem::NetSys) {
 		InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);
 		FillInputsIntoStream(DeltaSeconds);
 		ButtonsDown_Old = ButtonsDown;
 		RemoveOldInputs(0);
+		MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 
 	}
 	if (NetworkSystem::NetSys && AMyStateMachProGameModeBase::hasGameStarted) {
@@ -122,6 +124,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 			FillInputsIntoStream(DeltaSeconds);
 			ButtonsDown_Old = ButtonsDown;
 			RemoveOldInputs(0);
+			MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 
 		}
 		else {
@@ -130,10 +133,39 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
 					ButtonsDown_Old = ButtonsDown;
 					DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
-					//InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);//kein delay aber keine kombos
-					InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);//delay aber kombos
+					InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);//kein delay aber keine kombos
+					//InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);//delay aber kombos
 					FillInputsIntoStream(DeltaSeconds);
-					RemoveOldInputs(0);
+					/*if (InputStream.Num() > 5) {
+						InputStream.RemoveAt(0, InputStream.Num() - 5, false);
+						InputTimeStamps.RemoveAt(0, InputStream.Num()/5, false);
+					}*/
+
+					for (int32 i = 0; i < InputTimeStamps.Num(); ++i)
+					{
+						if (InputTimeStamps[i] > AMyStateMachProGameModeBase::sFrameCounter - 19)
+						{
+							// Remove everything before this, then exit the loop.
+							if (i > 0)
+							{
+								InputTimeStamps.RemoveAt(0, i, false);
+								InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
+							}
+							break;
+						}
+					}
+
+					auto InputStream2 = InputStream;
+					for (int i = InputExpirationTime; i > 0; --i)
+					{
+						MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream2);
+						if (InputStream2.Num() > 5) {
+							InputStream2.RemoveAt(0, 5, false);
+						}
+						else {
+							break;
+						}
+					}
 					break;
 				}
 
@@ -144,8 +176,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 		}
 	}
 	// Cache old button state so we can distinguish between held and just pressed.
-	
-	FFGMoveLinkToFollow MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
+
 	if (MoveLinkToFollow.SMR.CompletionType == EStateMachineCompletionType::Accepted/* && GetCharacterMovement()->IsMovingOnGround() -- check if everything works as intended*/)
 	{
 		if (MoveLinkToFollow.Link->bClearInput || MoveLinkToFollow.Link->Move->bClearInputOnEntry || CurrentMove->bClearInputOnExit)
@@ -253,8 +284,6 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 }
 
 void AFGDefaultPawn::RemoveOldInputs(int minusFrameCounter) {
-	
-
 
 	for (int32 i = 0; i < InputStream.Num(); ++i)
 	{

@@ -10,8 +10,8 @@ int AMyStateMachProGameModeBase::sFrameCounter = 1;
 
 int AMyStateMachProGameModeBase::m_roundVal = 1;
 int AMyStateMachProGameModeBase::m_timeVal = 1;
-FString AMyStateMachProGameModeBase::m_opponentName = "Hans";
-FString AMyStateMachProGameModeBase::m_playerName = "Kalle";
+FString AMyStateMachProGameModeBase::m_opponentName = "Player2";
+FString AMyStateMachProGameModeBase::m_playerName = "Player1";
 
 bool AMyStateMachProGameModeBase::hasGameStarted = false;
 
@@ -97,11 +97,7 @@ void AMyStateMachProGameModeBase::StartPlay() {
 	player1Score = 0;
 	player2Score = 0;
 	roundNumber = 1;
-	if (!NetworkSystem::NetSys)
-	{
-		AMyStateMachProGameModeBase::hasGameStarted = true;
-		OnGameStarted.Broadcast(hasGameStarted);
-	}
+
 }
 void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
@@ -111,7 +107,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 	}
 
 
-	if (startTimer == 3.0f) {
+	if (startTimer == prepTime) {
 
 		player1->AddMovementInput(player1->GetActorForwardVector(), 0.0F);
 		player2->AddMovementInput(player2->GetActorForwardVector(), 0.0F);
@@ -145,12 +141,18 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		player2->SetDirectionInputX(0.0F);
 		player1->movingForward = 0;
 		player2->movingForward = 0;
-		PlayStartUpMontage();
+
+		if (playStartAnimMontage)
+		{
+			PlayStartUpMontage();
+			playStartAnimMontage = false;
+		}
+
 	}
 
 	if (!NetworkSystem::startGame && NetworkSystem::NetSys)
 	{
-		if (!NetworkSystem::firstMessage && NetworkSystem::roomFull )
+		if (!NetworkSystem::firstMessage && NetworkSystem::roomFull)
 		{
 			NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
 			NetworkSystem::firstMessage = false;
@@ -162,16 +164,33 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			return;
 		}
 	}
-
-	if (!AMyStateMachProGameModeBase::hasGameStarted && NetworkSystem::startGame && NetworkSystem::NetSys != nullptr)
+	else if(NetworkSystem::startGame && NetworkSystem::NetSys && !NetworkSystem::firstMessage)
 	{
-		AMyStateMachProGameModeBase::hasGameStarted = true;
-		OnGameStarted.Broadcast(hasGameStarted);
+		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
+		NetworkSystem::firstMessage = false;
 	}
 
-	
-	if (startTimer > 0.0f)
+
+	if (startTimer < 3.0F && playStartAnim)
 	{
+		if (!AMyStateMachProGameModeBase::hasGameStarted && NetworkSystem::startGame && NetworkSystem::NetSys)
+		{
+			AMyStateMachProGameModeBase::hasGameStarted = true;
+			OnGameStarted.Broadcast(hasGameStarted);
+		}
+		else if (!NetworkSystem::NetSys)
+		{
+			AMyStateMachProGameModeBase::hasGameStarted = true;
+			OnGameStarted.Broadcast(hasGameStarted);
+		}
+
+		playStartAnim = false;
+	}
+
+	if (startTimer > 0.0f )
+	{
+		if (!NetworkSystem::startGame)
+			return;
 
 		player1->isInputEnabled = false;
 		player2->isInputEnabled = false;
@@ -228,7 +247,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 				CheckIfMatchIsOver(player2Score);
 
 			}
-			if(transitionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && !isMatchOver)
+			if (transitionMaxDuration - transitiontime < FadeoutStartTime && playFadeoutFlag && !isMatchOver)
 			{
 				OnFadeOut.Broadcast(playFadeoutFlag);
 				playFadeoutFlag = false;
@@ -316,7 +335,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			OnMatchIsOverCheckIfOnline.Broadcast((bool)NetworkSystem::NetSys, player1->playerWon);
 			player1->CustomTimeDilation = 1.0F;
 			player2->CustomTimeDilation = 1.0F;
-			while (roundTransitionMaxDuration < transitionMaxDuration-2.0F) {
+			while (roundTransitionMaxDuration < transitionMaxDuration - 2.0F) {
 				roundTransitionMaxDuration += DeltaSeconds;
 				//GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Yellow, FString::SanitizeFloat(roundTransitionMaxDuration));
 				return;

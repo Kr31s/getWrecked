@@ -91,6 +91,12 @@ public:
 		bool isMatchOver;
 
 	UPROPERTY()
+		bool playStartAnim = true;
+
+	UPROPERTY()
+		bool playStartAnimMontage = true;
+
+	UPROPERTY()
 		float startTimer;
 
 	UPROPERTY(BlueprintReadWrite)
