@@ -154,7 +154,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 							break;
 						}
 					}
-					if (InputStream.Num() > 8) {
+					if (InputTimeStamps.Num() > 8) {
 
 						auto InputStream2 = InputStream;
 						for (int i = InputExpirationTime; i > 0; --i)
