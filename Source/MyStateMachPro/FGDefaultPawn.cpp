@@ -129,11 +129,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time == AMyStateMachProGameModeBase::sFrameCounter - 9) {
 					ButtonsDown_Old = ButtonsDown;
 					DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
-					//InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);//kein delay aber keine kombos
+					InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);//kein delay aber keine kombos
 					//InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);//delay aber kombos
 					FillInputsIntoStream(DeltaSeconds);
 					if (InputStream.Num() > 5) {
 						InputStream.RemoveAt(0, InputStream.Num() - 5, false);
+						InputTimeStamps.RemoveAt(0, InputStream.Num() / 5, false);
+
 					}
 
 					//for (int32 i = 0; i < InputTimeStamps.Num(); ++i)
