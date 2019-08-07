@@ -68,7 +68,7 @@ public:
 	std::vector<GameMessageData> gameMessagesRivale;
 	std::vector<GameMessageData> gameMessagesPlayer;
 
-	bool roomOwner;
+	bool roomOwner = true;
 
 
 	bool StartingMessageReceiveThread();
