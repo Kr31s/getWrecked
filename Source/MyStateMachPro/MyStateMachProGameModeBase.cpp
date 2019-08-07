@@ -168,7 +168,7 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 
 	if (startTimer < 3.0F && playStartAnim)
 	{
-		if (!AMyStateMachProGameModeBase::hasGameStarted && NetworkSystem::startGame && NetworkSystem::NetSys != nullptr)
+		if (!AMyStateMachProGameModeBase::hasGameStarted && NetworkSystem::startGame && NetworkSystem::NetSys)
 		{
 			AMyStateMachProGameModeBase::hasGameStarted = true;
 			OnGameStarted.Broadcast(hasGameStarted);
@@ -182,8 +182,10 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 		playStartAnim = false;
 	}
 
-	if (startTimer > 0.0f)
+	if (startTimer > 0.0f )
 	{
+		if (!NetworkSystem::startGame)
+			return;
 
 		player1->isInputEnabled = false;
 		player2->isInputEnabled = false;
