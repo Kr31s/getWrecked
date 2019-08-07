@@ -191,6 +191,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void ResetLoosingMontage();
 
+	UFUNCTION(BlueprintCallable)
+		bool GetRoomOwner();
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void PlayStartUpMontage();

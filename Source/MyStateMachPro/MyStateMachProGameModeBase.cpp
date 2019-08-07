@@ -541,6 +541,17 @@ void AMyStateMachProGameModeBase::SetRoundTimer(float deltaSeconds)
 	OnTimeChanged.Broadcast(this->roundTimer);
 }
 
+bool AMyStateMachProGameModeBase::GetRoomOwner()
+{
+	if(!NetworkSystem::NetSys)
+	{
+		return true;
+	}else
+	{
+		return NetworkSystem::NetSys->roomOwner;
+	}
+}
+
 void AMyStateMachProGameModeBase::RoundTimeOver(float DeltaSeconds)
 {
 	if (player1->RessourceComp->Health > player2->RessourceComp->Health)
