@@ -164,6 +164,11 @@ void AMyStateMachProGameModeBase::Tick(float DeltaSeconds) {
 			return;
 		}
 	}
+	else if(NetworkSystem::startGame && NetworkSystem::NetSys && !NetworkSystem::firstMessage)
+	{
+		NetworkSystem::NetSys->GameMessage(player1->SendInputStream);
+		NetworkSystem::firstMessage = false;
+	}
 
 
 	if (startTimer < 3.0F && playStartAnim)
