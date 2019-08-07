@@ -394,11 +394,11 @@ void NetworkSystem::OppentGameMessage(char* p_receiveArray)
 		NetworkSystem::NetSys->gameMessagesRivale.resize(249, GameMessageData());
 	}
 
-	if (!NetworkSystem::ticking) {
+	/*if (!NetworkSystem::ticking) {
 		NetworkSystem::NetSys->gameMessagesRivale.clear();
 		NetworkSystem::NetSys->gameMessagesPlayer.clear();
 		return;
-	}
+	}*/
 
 	unsigned short inputVal;
 	unsigned short timeVal;
