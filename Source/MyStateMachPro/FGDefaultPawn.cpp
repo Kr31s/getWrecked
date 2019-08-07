@@ -159,6 +159,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 					for (int i = InputExpirationTime; i > 0; --i)
 					{
 						MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream2);
+
 						if (InputStream2.Num() > 5) {
 							InputStream2.RemoveAt(0, 5, false);
 						}
