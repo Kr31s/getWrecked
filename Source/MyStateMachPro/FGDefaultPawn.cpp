@@ -148,7 +148,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_time);//kein delay aber keine kombos
 					}
 
-					MoveLinkToFollow = kCurrentMove->TryLinks(this, InputStream);
+					MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 					break;
 				}
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time < AMyStateMachProGameModeBase::sFrameCounter - 9) {
