@@ -148,39 +148,13 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_time);//kein delay aber keine kombos
 					}
 
-					//	for (int32 i = 0; i < InputTimeStamps.Num(); ++i)
-					//	{
-					//		if (InputTimeStamps[i] > AMyStateMachProGameModeBase::sFrameCounter - 19)
-					//		{
-					//			// Remove everything before this, then exit the loop.
-					//			if (i > 0)
-					//			{
-					//				InputTimeStamps.RemoveAt(0, i, false);
-					//				InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
-					//			}
-					//			break;
-					//		}
-					//	}
-
-					//	auto InputStream2 = InputStream;
-					//	for (int i = InputExpirationTime; i > 0; --i)
-					//	{
-					//		MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream2);
-
-					//		if (InputStream2.Num() > 5) {
-					//			InputStream2.RemoveAt(0, 5, false);
-					//		}
-					//		else {
-					//			break;
-					//		}
-					//	}
-					//	break;
-					//}
-
-					if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time < AMyStateMachProGameModeBase::sFrameCounter - 9) {
-						i = 0;
-					}
+					MoveLinkToFollow = kCurrentMove->TryLinks(this, InputStream);
+					break;
 				}
+				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time < AMyStateMachProGameModeBase::sFrameCounter - 9) {
+					i = 0;
+				}
+
 			}
 		}
 	}
