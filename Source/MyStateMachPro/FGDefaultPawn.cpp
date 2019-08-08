@@ -136,19 +136,25 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 					//InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);//kein delay aber keine kombos
 					////InputTimeStamps.Add(AMyStateMachProGameModeBase::sFrameCounter);//delay aber kombos
 					//FillInputsIntoStream(DeltaSeconds);
+					ButtonsDown_Old = ButtonsDown;
+					DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i].m_input));
+					FillInputsIntoStream(DeltaSeconds);
+					InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i].m_time);//kein delay aber keine kombos
 
-					InputStream.RemoveAt(0, InputStream.Num(), false);
-					InputTimeStamps.RemoveAt(0, InputTimeStamps.Num(), false);
 
-					for (int ii = 0; ii < 9; ++ii)
+					for (int32 i = 0; i < InputTimeStamps.Num(); ++i)
 					{
-						ButtonsDown_Old = ButtonsDown;
-						DoMovesFromInputStream(std::bitset<12>(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_input));
-						FillInputsIntoStream(DeltaSeconds);
-						InputTimeStamps.Add(NetworkSystem::NetSys->gameMessagesRivale[i + ii].m_time);//kein delay aber keine kombos
+						if (InputTimeStamps[i] > AMyStateMachProGameModeBase::sFrameCounter - 19)
+						{
+							// Remove everything before this, then exit the loop.
+							if (i > 0)
+							{
+								InputTimeStamps.RemoveAt(0, i, false);
+								InputStream.RemoveAt(0, i * ((int32)EFGInputButtons::Count + 1), false);
+							}
+							break;
+						}
 					}
-
-					MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 					break;
 				}
 				if (NetworkSystem::NetSys->gameMessagesRivale[i].m_time < AMyStateMachProGameModeBase::sFrameCounter - 9) {
@@ -156,6 +162,7 @@ void AFGDefaultPawn::Tick(float DeltaSeconds)
 				}
 
 			}
+			MoveLinkToFollow = CurrentMove->TryLinks(this, InputStream);
 		}
 	}
 	// Cache old button state so we can distinguish between held and just pressed.
